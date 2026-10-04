@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rekap Absensi Pribadi — Tiyo Wahyudi</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
+      colors: {
+        ink: { 50:'#f7f8f9', 100:'#eceef1', 200:'#dcdfe4', 300:'#c2c7ce', 400:'#8e96a1', 500:'#5f6874', 600:'#464e58', 700:'#363d45', 800:'#232930', 900:'#141a20' }
+      },
+      keyframes: {
+        slideIn: { from: { opacity:0, transform:'translateX(20px)' }, to: { opacity:1, transform:'translateX(0)' } },
+        slideDown: { from: { opacity:0, transform:'translateY(-8px)' }, to: { opacity:1, transform:'translateY(0)' } }
+      },
+      animation: {
+        slideIn: 'slideIn .25s ease both',
+        slideDown: 'slideDown .2s ease both'
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  html, body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #dcdfe4; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #c2c7ce; }
+
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+
+  select { appearance: none; -webkit-appearance: none; background-image: none; }
+
+  .field {
+    background: transparent; border: 0; border-bottom: 1px solid transparent;
+    outline: none; padding: 2px 0; transition: border-color .15s ease; width: 100%;
+  }
+  .field:hover { border-bottom-color: #dcdfe4; }
+  .field:focus { border-bottom-color: #141a20; }
+
+  .quick-btn {
+    width: 26px; height: 26px; border-radius: 6px; display: inline-flex;
+    align-items: center; justify-content: center; font-size: 11px;
+    transition: all .12s; cursor: pointer; border: 1px solid transparent;
+  }
+  .quick-btn:hover { transform: translateY(-1px); }
+  .quick-btn.masuk { color: #047857; background: #ecfdf5; }
+  .quick-btn.masuk:hover { background: #d1fae5; border-color: #6ee7b7; }
+  .quick-btn.off   { color: #5f6874; background: #f1f5f9; }
+  .quick-btn.off:hover { background: #e2e8f0; border-color: #cbd5e1; }
+  .quick-btn.izin  { color: #0369a1; background: #f0f9ff; }
+  .quick-btn.izin:hover { background: #e0f2fe; border-color: #7dd3fc; }
+  .quick-btn.sakit { color: #be123c; background: #fff1f2; }
+  .quick-btn.sakit:hover { background: #ffe4e6; border-color: #fda4af; }
+  .quick-btn.cuti  { color: #6d28d9; background: #f5f3ff; }
+  .quick-btn.cuti:hover { background: #ede9fe; border-color: #c4b5fd; }
+  .quick-btn.alpha { color: #b45309; background: #fffbeb; }
+  .quick-btn.alpha:hover { background: #fef3c7; border-color: #fcd34d; }
+  .quick-btn.ghost { color: #8e96a1; background: transparent; }
+  .quick-btn.ghost:hover { background: #eceef1; color: #363d45; }
+
+  tr.row-hover { transition: background-color .15s ease; }
+  tr.row-hover:hover { background-color: #f7f8f9; }
+
+  tr.week-sep td { padding-top: 4px !important; }
+
+  .ring-track { stroke: #eceef1; }
+  .ring-bar { transition: stroke-dashoffset .6s ease; }
+
+  .bar-mini { transition: height .4s ease; }
+
+  /* Toast */
+  .toast { animation: slideIn .25s ease both; }
+
+  /* Modal fade */
+  .modal-fade { animation: slideDown .2s ease both; }
+
+  /* ====== PRINT ====== */
+  @page { size: A4 portrait; margin: 8mm; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    body:has(#reportModal:not(.hidden)) > header,
+    body:has(#reportModal:not(.hidden)) > main,
+    body:has(#reportModal:not(.hidden)) > footer { display: none !important; }
+    #reportModal:not(.hidden) { position: static !important; display: block !important; }
+    #reportModal:not(.hidden) > .modal-backdrop { display: none !important; }
+    #reportModal:not(.hidden) .modal-shell { position: static !important; display: block !important; height: auto !important; padding: 0 !important; }
+    #reportModal:not(.hidden) .modal-card { max-width: none !important; max-height: none !important; border-radius: 0 !important; box-shadow: none !important; overflow: visible !important; display: block !important; }
+    #reportScroll { overflow: visible !important; padding: 0 !important; background: #fff !important; }
+    #reportPreview { width: 100% !important; box-shadow: none !important; }
+  }
+</style>
+</head>
+
+<body class="bg-ink-50 text-ink-800 h-full flex flex-col">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-white border-b border-ink-100 sticky top-0 z-40 no-print">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-9 h-9 rounded-lg bg-ink-900 text-white flex items-center justify-center text-sm shrink-0">
+        <i class="fa-solid fa-user-check"></i>
+      </div>
+      <div class="min-w-0">
+        <h1 class="text-[15px] font-semibold text-ink-900 leading-tight truncate">Rekap Absensi</h1>
+        <p class="text-[11px] text-ink-400 leading-tight truncate">Dashboard kehadiran pribadi</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button onclick="undoLast()" id="undoBtn" title="Undo (Ctrl+Z)"
+        class="h-9 w-9 rounded-lg bg-white border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-400 hover:text-ink-700 transition flex items-center justify-center opacity-40 cursor-not-allowed" disabled>
+        <i class="fa-solid fa-rotate-left text-[12px]"></i>
+      </button>
+      <button onclick="openImport()" title="Import CSV"
+        class="h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-[12.5px] font-medium transition flex items-center gap-2">
+        <i class="fa-solid fa-file-import text-[11px]"></i>
+        <span class="hidden md:inline">Import</span>
+      </button>
+      <button onclick="saveNow()" title="Simpan (Ctrl+S)"
+        class="h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-[12.5px] font-medium transition flex items-center gap-2">
+        <i class="fa-solid fa-floppy-disk text-[11px]"></i>
+        <span class="hidden md:inline">Simpan</span>
+      </button>
+      <button onclick="exportCSV()" title="Export CSV"
+        class="h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-[12.5px] font-medium transition flex items-center gap-2">
+        <i class="fa-solid fa-arrow-down-to-line text-[11px]"></i>
+        <span class="hidden md:inline">CSV</span>
+      </button>
+      <button onclick="openReport()" title="Laporan bulanan"
+        class="h-9 px-3.5 rounded-lg bg-ink-900 hover:bg-ink-800 text-white text-[12.5px] font-medium transition flex items-center gap-2">
+        <i class="fa-solid fa-file-lines text-[11px]"></i>
+        <span>Laporan</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="flex-grow max-w-6xl w-full mx-auto px-5 sm:px-8 py-8 space-y-6">
+
+  <!-- ===== PROFILE + PERIODE ===== -->
+  <section class="bg-white rounded-xl border border-ink-100 p-6 sm:p-7">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+
+      <div class="lg:col-span-5 flex items-start gap-4">
+        <div id="avatar" class="w-12 h-12 shrink-0 rounded-full bg-ink-100 text-ink-700 flex items-center justify-center font-semibold text-sm">TW</div>
+        <div class="min-w-0 flex-1 space-y-3">
+          <div>
+            <label class="block text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider mb-1.5">Nama Karyawan</label>
+            <input id="inpName" type="text" class="field text-[15px] font-semibold text-ink-900">
+          </div>
+          <div>
+            <label class="block text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider mb-1.5">Perusahaan</label>
+            <input id="inpCompany" type="text" class="field text-[13px] font-medium text-ink-600">
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-4 lg:border-l lg:border-ink-100 lg:pl-8 space-y-3">
+        <div>
+          <label class="block text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider mb-1.5">Jabatan / Departemen</label>
+          <input id="inpPosition" type="text" class="field text-[13px] font-medium text-ink-600">
+        </div>
+        <div>
+          <label class="block text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider mb-1.5">NIP / ID Karyawan</label>
+          <input id="inpNip" type="text" class="field text-[13px] font-medium text-ink-600">
+        </div>
+        <div class="pt-1 flex items-center gap-2 flex-wrap">
+          <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-ink-500">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Akun aktif
+          </span>
+          <span id="savedBadge" class="text-[11px] font-medium text-emerald-600 opacity-0 transition-opacity duration-300">
+            <i class="fa-solid fa-check text-[10px] mr-0.5"></i>Tersimpan
+          </span>
+        </div>
+      </div>
+
+      <div class="lg:col-span-3 lg:border-l lg:border-ink-100 lg:pl-8">
+        <label class="block text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider mb-1.5">Periode Bulan</label>
+        <div class="flex items-center gap-1.5">
+          <select id="selMonth" class="flex-1 min-w-0 h-9 text-[13px] font-medium text-ink-800 bg-white border border-ink-200 rounded-lg px-2.5 focus:border-ink-900 focus:ring-2 focus:ring-ink-900/5 outline-none cursor-pointer transition"></select>
+          <select id="selYear" class="w-[78px] h-9 text-[13px] font-medium text-ink-800 bg-white border border-ink-200 rounded-lg px-2 focus:border-ink-900 focus:ring-2 focus:ring-ink-900/5 outline-none cursor-pointer transition"></select>
+        </div>
+        <div class="flex items-center justify-between mt-2.5">
+          <span id="periodLabel" class="text-[11.5px] text-ink-500 font-medium">—</span>
+          <div class="flex items-center gap-1">
+            <button onclick="shiftMonth(-1)" title="Bulan sebelumnya (Alt+←)"
+              class="w-6 h-6 rounded-md hover:bg-ink-100 text-ink-400 hover:text-ink-700 transition flex items-center justify-center">
+              <i class="fa-solid fa-chevron-left text-[10px]"></i>
+            </button>
+            <button onclick="shiftMonth(1)" title="Bulan berikutnya (Alt+→)"
+              class="w-6 h-6 rounded-md hover:bg-ink-100 text-ink-400 hover:text-ink-700 transition flex items-center justify-center">
+              <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== STATISTIK + PROGRESS RING ===== -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Progress ring card -->
+    <div class="lg:col-span-4 bg-white rounded-xl border border-ink-100 p-6 flex items-center gap-5">
+      <div class="relative shrink-0">
+        <svg width="110" height="110" viewBox="0 0 110 110" class="transform -rotate-90">
+          <circle cx="55" cy="55" r="46" fill="none" stroke-width="10" class="ring-track"/>
+          <circle id="ringBar" cx="55" cy="55" r="46" fill="none" stroke-width="10" stroke-linecap="round"
+            stroke="#059669" class="ring-bar" stroke-dasharray="289" stroke-dashoffset="289"/>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span id="ringPct" class="text-[22px] font-extrabold text-ink-900 leading-none tabular-nums">0%</span>
+          <span class="text-[9.5px] font-semibold text-ink-400 uppercase tracking-wider mt-0.5">Kehadiran</span>
+        </div>
+      </div>
+      <div class="min-w-0 flex-1 space-y-2">
+        <div>
+          <p class="text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider">Status Bulan Ini</p>
+          <p id="ringSummary" class="text-[13px] font-semibold text-ink-800 mt-0.5">—</p>
+        </div>
+        <div class="flex items-center gap-3 text-[11.5px]">
+          <span class="inline-flex items-center gap-1.5 text-emerald-600 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span id="ringHadir">0</span> hadir
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-ink-500 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-ink-400"></span>
+            <span id="ringOff">0</span> off
+          </span>
+        </div>
+        <div class="flex items-center gap-1.5 text-[11px] text-amber-600 font-medium">
+          <i class="fa-solid fa-clock text-[10px]"></i>
+          <span id="ringOt">0</span> jam lembur
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly mini chart -->
+    <div class="lg:col-span-8 bg-white rounded-xl border border-ink-100 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <p class="text-[13px] font-semibold text-ink-800">Tren Kehadiran Mingguan</p>
+          <p class="text-[11px] text-ink-400 mt-0.5">Persentase kehadiran per minggu</p>
+        </div>
+        <div class="flex items-center gap-3 text-[10.5px] font-medium text-ink-500">
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-sm bg-emerald-500"></span> Hadir %
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-sm bg-amber-400"></span> OT
+          </span>
+        </div>
+      </div>
+      <div id="weekChart" class="flex items-end gap-3 h-[110px] border-b border-ink-100 pb-1"></div>
+      <div id="weekLabels" class="flex items-center gap-3 mt-2"></div>
+    </div>
+
+  </section>
+
+  <!-- ===== STATISTIK ANGKA ===== -->
+  <section class="bg-white rounded-xl border border-ink-100 overflow-hidden">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-y lg:divide-y-0 divide-ink-100">
+      <div class="p-5">
+        <p class="text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider">Total Hari</p>
+        <p id="statTotal" class="text-[26px] font-bold text-ink-900 mt-1.5 leading-none tabular-nums">0</p>
+      </div>
+      <div class="p-5">
+        <p class="text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider">Hadir</p>
+        <p id="statHadir" class="text-[26px] font-bold text-emerald-600 mt-1.5 leading-none tabular-nums">0</p>
+      </div>
+      <div class="p-5">
+        <p class="text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider">Off / Libur</p>
+        <p id="statOff" class="text-[26px] font-bold text-ink-500 mt-1.5 leading-none tabular-nums">0</p>
+      </div>
+      <div class="p-5">
+        <p class="text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider">Tidak Hadir</p>
+        <p id="statAbsen" class="text-[26px] font-bold text-rose-600 mt-1.5 leading-none tabular-nums">0</p>
+      </div>
+      <div class="p-5">
+        <p class="text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider">Total OT</p>
+        <p class="text-[26px] font-bold text-amber-600 mt-1.5 leading-none tabular-nums"><span id="statOT">0</span><span class="text-[13px] font-medium text-ink-400 ml-1">jam</span></p>
+      </div>
+      <div class="p-5">
+        <p class="text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider">Hari Efektif</p>
+        <p id="statEfektif" class="text-[26px] font-bold text-ink-900 mt-1.5 leading-none tabular-nums">0</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TABEL ===== -->
+  <section class="bg-white rounded-xl border border-ink-100 overflow-hidden">
+
+    <!-- Header tabel -->
+    <div class="px-6 py-5 border-b border-ink-100">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+        <div>
+          <h2 class="text-[14px] font-semibold text-ink-900">Detail Rekap Harian</h2>
+          <p class="text-[12px] text-ink-400 mt-0.5">Klik tombol cepat atau ubah langsung di sel tabel.</p>
+        </div>
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <button onclick="bulkWeekendOff()" class="h-8 px-3 rounded-lg text-[11.5px] font-medium text-ink-600 hover:bg-ink-100 transition flex items-center gap-1.5">
+            <i class="fa-regular fa-calendar text-[10.5px]"></i> Minggu Off
+          </button>
+          <button onclick="bulkAllPresent()" class="h-8 px-3 rounded-lg text-[11.5px] font-medium text-ink-600 hover:bg-ink-100 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-check text-[10.5px]"></i> Semua Hadir
+          </button>
+          <button onclick="bulkClearOT()" class="h-8 px-3 rounded-lg text-[11.5px] font-medium text-ink-600 hover:bg-ink-100 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-broom text-[10.5px]"></i> Reset OT
+          </button>
+          <button onclick="resetMonth()" class="h-8 px-3 rounded-lg text-[11.5px] font-medium text-ink-400 hover:text-rose-600 hover:bg-rose-50 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate-left text-[10.5px]"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Search & filter bar -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <div class="relative flex-1 min-w-[180px]">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[11px] text-ink-400"></i>
+          <input id="searchInput" type="text" placeholder="Cari tanggal, status, keterangan..."
+            class="w-full h-9 pl-9 pr-3 text-[12.5px] border border-ink-200 rounded-lg focus:ring-2 focus:ring-ink-900/10 focus:border-ink-500 outline-none transition">
+        </div>
+        <select id="filterStatus" class="h-9 text-[12px] font-medium text-ink-700 bg-white border border-ink-200 rounded-lg px-3 focus:border-ink-900 outline-none cursor-pointer transition">
+          <option value="">Semua Status</option>
+          <option value="Masuk">Hadir</option>
+          <option value="Off">Off</option>
+          <option value="Libur">Libur</option>
+          <option value="Izin">Izin</option>
+          <option value="Sakit">Sakit</option>
+          <option value="Cuti">Cuti</option>
+          <option value="Alpha">Alpha</option>
+          <option value="__ot__">Ada OT</option>
+        </select>
+        <button onclick="clearFilters()" class="h-9 px-3 rounded-lg text-[11.5px] font-medium text-ink-500 hover:text-rose-600 hover:bg-rose-50 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-xmark text-[10px]"></i> Reset
+        </button>
+        <span id="filterInfo" class="text-[11px] text-ink-400 ml-auto hidden"></span>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-[880px]" style="table-layout:fixed;">
+        <colgroup>
+          <col style="width:52px;">
+          <col style="width:130px;">
+          <col style="width:90px;">
+          <col style="width:180px;">
+          <col style="width:150px;">
+          <col>
+          <col style="width:120px;">
+        </colgroup>
+        <thead>
+          <tr class="text-[11px] uppercase tracking-wider text-ink-400 border-b border-ink-100 bg-ink-50/40">
+            <th class="py-3.5 px-3 font-semibold text-center">No</th>
+            <th class="py-3.5 px-3 font-semibold">Tanggal</th>
+            <th class="py-3.5 px-3 font-semibold">Hari</th>
+            <th class="py-3.5 px-3 font-semibold">Status Kehadiran</th>
+            <th class="py-3.5 px-3 font-semibold">Lembur (OT)</th>
+            <th class="py-3.5 px-3 font-semibold">Keterangan</th>
+            <th class="py-3.5 px-3 font-semibold text-center">Aksi Cepat</th>
+          </tr>
+        </thead>
+        <tbody id="tbody" class="text-[13px]"></tbody>
+      </table>
+    </div>
+
+    <div id="emptyState" class="hidden p-12 text-center">
+      <i class="fa-solid fa-inbox text-[32px] text-ink-300 mb-3"></i>
+      <p class="text-[13px] font-medium text-ink-500">Tidak ada data yang cocok</p>
+      <p class="text-[11.5px] text-ink-400 mt-1">Coba ubah filter atau reset pencarian</p>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="border-t border-ink-100 mt-auto py-6 no-print">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 text-center text-[11.5px] text-ink-400">
+    &copy; <span id="yearNow"></span> <span class="text-ink-600 font-medium" id="footCompany">PT Flexo Solusi Indonesia</span>
+    &nbsp;·&nbsp; Dibuat untuk <span class="text-ink-600 font-medium" id="footName">Tiyo Wahyudi</span>
+    &nbsp;·&nbsp; <span class="text-ink-300">v4</span>
+  </div>
+</footer>
+
+<!-- ================= MODAL IMPORT ================= -->
+<div id="importModal" class="hidden fixed inset-0 z-50">
+  <div class="modal-backdrop absolute inset-0 bg-ink-900/40 backdrop-blur-sm no-print" onclick="closeImport()"></div>
+  <div class="relative h-full flex items-center justify-center p-4">
+    <div class="modal-fade bg-white rounded-2xl border border-ink-100 shadow-xl w-full max-w-xl">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-ink-100">
+        <div>
+          <h3 class="text-[14px] font-semibold text-ink-900">Import Data CSV</h3>
+          <p class="text-[11.5px] text-ink-400">Format: Tanggal, Status, OT, Keterangan</p>
+        </div>
+        <button onclick="closeImport()" class="w-8 h-8 rounded-lg hover:bg-ink-100 text-ink-400 hover:text-ink-700 transition flex items-center justify-center">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+      <div class="p-5 space-y-3">
+        <div class="bg-ink-50 rounded-lg p-3 text-[11.5px] text-ink-600 leading-relaxed">
+          <p class="font-semibold text-ink-800 mb-1">Contoh format:</p>
+          <code class="block text-[10.5px] font-mono bg-white px-2 py-1.5 rounded border border-ink-100 text-ink-700">
+1, Masuk, 2.5, Lembur produksi<br>
+2, Masuk, 0,<br>
+3, Off, 0, Libur nasional
+          </code>
+          <p class="mt-2">Format: <b>tanggal, status, OT, keterangan</b>. Status: Masuk, Off, Libur, Izin, Sakit, Cuti, Alpha.</p>
+        </div>
+        <textarea id="importArea" rows="8" placeholder="Tempel data CSV di sini..."
+          class="w-full px-3 py-2.5 text-[12px] font-mono text-ink-700 bg-white border border-ink-200 rounded-lg focus:ring-2 focus:ring-ink-900/10 focus:border-ink-500 outline-none resize-none"></textarea>
+      </div>
+      <div class="px-5 py-3 border-t border-ink-100 flex items-center justify-end gap-2">
+        <button onclick="closeImport()" class="h-9 px-4 rounded-lg text-[12.5px] font-medium text-ink-600 hover:bg-ink-100 transition">Batal</button>
+        <button onclick="doImport()" class="h-9 px-4 rounded-lg bg-ink-900 hover:bg-ink-800 text-white text-[12.5px] font-medium transition flex items-center gap-2">
+          <i class="fa-solid fa-check text-[11px]"></i> Import
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL LAPORAN ================= -->
+<div id="reportModal" class="hidden fixed inset-0 z-50">
+  <div class="modal-backdrop absolute inset-0 bg-ink-900/40 backdrop-blur-sm no-print" onclick="closeReport()"></div>
+  <div class="modal-shell relative h-full flex items-center justify-center p-4 sm:p-6">
+    <div class="modal-card bg-white rounded-2xl border border-ink-100 shadow-xl w-full max-w-5xl max-h-[94vh] flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-ink-100 no-print">
+        <div>
+          <h3 class="text-[14px] font-semibold text-ink-900">Preview Laporan</h3>
+          <p class="text-[11.5px] text-ink-400">Unduh sebagai PNG atau cetak jadi PDF.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btnDownload" onclick="downloadReport()" class="h-9 px-3.5 rounded-lg bg-ink-900 hover:bg-ink-800 text-white text-[12.5px] font-medium transition flex items-center gap-2">
+            <i class="fa-solid fa-download text-[11px]"></i> Download PNG
+          </button>
+          <button onclick="window.print()" class="h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-[12.5px] font-medium transition flex items-center gap-2">
+            <i class="fa-solid fa-print text-[11px]"></i> Cetak
+          </button>
+          <button onclick="closeReport()" class="w-9 h-9 rounded-lg hover:bg-ink-100 text-ink-400 hover:text-ink-700 transition flex items-center justify-center">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div id="reportScroll" class="overflow-auto bg-ink-100/60 p-5 sm:p-7">
+        <div id="reportPreview" class="bg-white mx-auto shadow-sm border border-ink-100" style="width:860px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TOAST CONTAINER ================= -->
+<div id="toastWrap" class="fixed top-20 right-5 z-[60] space-y-2 no-print"></div>
+
+<script>
+/* =========================================================
+   KONFIGURASI
+========================================================= */
+const MONTH_NAMES = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const MONTH_SHORT = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const DAY_NAMES   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+
+const STATUS_LIST = ['Masuk','Off','Libur','Izin','Sakit','Cuti','Alpha'];
+
+const STATUS = {
+  Masuk: { cls:'bg-emerald-50 text-emerald-700 border-emerald-200', hex:{bg:'#ecfdf5',fg:'#047857'}, icon:'fa-check',        btn:'masuk' },
+  Off:   { cls:'bg-ink-100 text-ink-500 border-ink-200',            hex:{bg:'#eceef1',fg:'#5f6874'}, icon:'fa-mug-hot',      btn:'off' },
+  Libur: { cls:'bg-blue-50 text-blue-700 border-blue-200',          hex:{bg:'#eff6ff',fg:'#1d4ed8'}, icon:'fa-umbrella-beach',btn:'off' },
+  Izin:  { cls:'bg-sky-50 text-sky-700 border-sky-200',             hex:{bg:'#f0f9ff',fg:'#0369a1'}, icon:'fa-file-lines',   btn:'izin' },
+  Sakit: { cls:'bg-rose-50 text-rose-700 border-rose-200',          hex:{bg:'#fff1f2',fg:'#be123c'}, icon:'fa-bed-pulse',    btn:'sakit' },
+  Cuti:  { cls:'bg-violet-50 text-violet-700 border-violet-200',    hex:{bg:'#f5f3ff',fg:'#6d28d9'}, icon:'fa-plane',        btn:'cuti' },
+  Alpha: { cls:'bg-amber-50 text-amber-700 border-amber-200',       hex:{bg:'#fffbeb',fg:'#b45309'}, icon:'fa-user-xmark',   btn:'alpha' }
+};
+
+const SELECT_BASE = 'w-full text-[13px] font-semibold px-3 py-2.5 rounded-lg border outline-none focus:ring-2 focus:ring-ink-900/10 cursor-pointer transition';
+const STORAGE_KEY = 'absensi_pribadi_v4';
+
+/* =========================================================
+   STATE + UNDO
+========================================================= */
+let state = {
+  profile: { name:'Tiyo Wahyudi', company:'PT Flexo Solusi Indonesia', position:'Staff Produksi', nip:'-' },
+  current: { year: new Date().getFullYear(), month: new Date().getMonth() },
+  months: {}
+};
+
+let undoStack = [];
+const MAX_UNDO = 20;
+
+function pushUndo(label) {
+  try {
+    undoStack.push({
+      label: label || 'Perubahan',
+      snapshot: JSON.stringify(state.months),
+      time: Date.now()
+    });
+    if (undoStack.length > MAX_UNDO) undoStack.shift();
+    updateUndoBtn();
+  } catch(e) {}
+}
+function updateUndoBtn() {
+  const b = $('undoBtn');
+  if (!b) return;
+  if (undoStack.length === 0) {
+    b.disabled = true;
+    b.classList.add('opacity-40','cursor-not-allowed');
+  } else {
+    b.disabled = false;
+    b.classList.remove('opacity-40','cursor-not-allowed');
+    b.title = `Undo: ${undoStack[undoStack.length-1].label}`;
+  }
+}
+function undoLast() {
+  if (undoStack.length === 0) return;
+  const last = undoStack.pop();
+  try {
+    state.months = JSON.parse(last.snapshot);
+    persist();
+    renderTable();
+    updateUndoBtn();
+    toast('success', `Undo: ${last.label}`);
+  } catch(e) { toast('error', 'Gagal undo'); }
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+function toast(type, msg) {
+  const wrap = $('toastWrap');
+  const icons = { success:'fa-circle-check', error:'fa-circle-exclamation', info:'fa-circle-info', warning:'fa-triangle-exclamation' };
+  const colors = {
+    success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
+    error:   'bg-rose-50 border-rose-200 text-rose-800',
+    info:    'bg-sky-50 border-sky-200 text-sky-800',
+    warning: 'bg-amber-50 border-amber-200 text-amber-800'
+  };
+  const el = document.createElement('div');
+  el.className = `toast flex items-start gap-2.5 px-4 py-3 rounded-xl border shadow-lg min-w-[240px] max-w-[380px] ${colors[type] || colors.info}`;
+  el.innerHTML = `
+    <i class="fa-solid ${icons[type] || icons.info} text-[14px] mt-0.5"></i>
+    <span class="text-[12.5px] font-medium leading-snug flex-1">${escapeHtml(msg)}</span>
+    <button class="text-current opacity-50 hover:opacity-100 text-[12px] leading-none ml-1" onclick="this.parentElement.remove()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>`;
+  wrap.appendChild(el);
+  setTimeout(() => { if (el.parentElement) el.remove(); }, 3500);
+}
+
+/* =========================================================
+   UTIL
+========================================================= */
+const $ = id => document.getElementById(id);
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function pad2(n){ return String(n).padStart(2,'0'); }
+function monthKey(y,m){ return `${y}-${pad2(m+1)}`; }
+function fmtDate(dateStr){
+  const [y,m,d] = dateStr.split('-');
+  return `${d} ${MONTH_SHORT[Number(m)-1]} ${y}`;
+}
+function round1(n){ return Math.round(n*10)/10; }
+
+/* =========================================================
+   PERSISTENSI
+========================================================= */
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p.profile) state.profile = Object.assign(state.profile, p.profile);
+      if (p.current && typeof p.current.year === 'number') state.current = p.current;
+      if (p.months && typeof p.months === 'object') state.months = p.months;
+    }
+  } catch (e) { console.warn('Gagal memuat data:', e); }
+}
+
+let saveTimer = null;
+function persist() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }, 150);
+}
+
+function flashSaved() {
+  const el = $('savedBadge');
+  el.style.opacity = '1';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.opacity = '0'; }, 1600);
+}
+
+/* =========================================================
+   GENERATOR BULAN
+========================================================= */
+function buildMonth(year, month) {
+  const totalDays = new Date(year, month + 1, 0).getDate();
+  const arr = [];
+  for (let d = 1; d <= totalDays; d++) {
+    const dt = new Date(year, month, d);
+    const dow = dt.getDay();
+    arr.push({
+      no: d,
+      date: `${year}-${pad2(month+1)}-${pad2(d)}`,
+      day: DAY_NAMES[dow],
+      dow,
+      status: dow === 0 ? 'Off' : 'Masuk',
+      ot: 0,
+      note: ''
+    });
+  }
+  return arr;
+}
+
+function currentData() {
+  const { year, month } = state.current;
+  const key = monthKey(year, month);
+  if (!state.months[key]) state.months[key] = buildMonth(year, month);
+  return state.months[key];
+}
+
+/* =========================================================
+   STATISTIK
+========================================================= */
+function computeStats(data) {
+  let hadir = 0, off = 0, absen = 0, ot = 0;
+  data.forEach(it => {
+    if (it.status === 'Masuk') hadir++;
+    else if (it.status === 'Off' || it.status === 'Libur') off++;
+    else absen++;
+    ot += Number(it.ot) || 0;
+  });
+  const total = data.length;
+  const efektif = total - off;
+  const pct = efektif > 0 ? Math.round((hadir / efektif) * 100) : 0;
+  return { total, hadir, off, absen, ot: round1(ot), pct, efektif };
+}
+
+/* =========================================================
+   RENDER TABEL
+========================================================= */
+let filterQuery = '';
+let filterStatusVal = '';
+
+function getFilteredData() {
+  const data = currentData();
+  const q = filterQuery.trim().toLowerCase();
+  const fs = filterStatusVal;
+
+  return data.filter(it => {
+    if (q) {
+      const haystack = [it.date, it.day, it.status, String(it.ot||''), it.note||''].join(' ').toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    if (fs === '__ot__') { if (!(Number(it.ot) > 0)) return false; }
+    else if (fs && it.status !== fs) return false;
+    return true;
+  });
+}
+
+function renderTable() {
+  const allData = currentData();
+  const filtered = getFilteredData();
+  const tbody = $('tbody');
+  const empty = $('emptyState');
+  const info = $('filterInfo');
+
+  if (filtered.length === 0 && (filterQuery || filterStatusVal)) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    info.classList.remove('hidden');
+    info.textContent = `0 dari ${allData.length} baris`;
+  } else {
+    empty.classList.add('hidden');
+    if (filterQuery || filterStatusVal) {
+      info.classList.remove('hidden');
+      info.textContent = `${filtered.length} dari ${allData.length} baris`;
+    } else {
+      info.classList.add('hidden');
+    }
+
+    tbody.innerHTML = filtered.map((it, i) => {
+      const idx = allData.indexOf(it);
+      const st = STATUS[it.status] || STATUS.Masuk;
+      const weekend = it.dow === 0;
+      const isNewWeek = it.dow === 1 || i === 0;
+      const options = STATUS_LIST.map(k =>
+        `<option value="${k}" ${k === it.status ? 'selected' : ''}>${k}</option>`
+      ).join('');
+
+      const weekSep = (isNewWeek && i !== 0)
+        ? `<tr class="week-sep"><td colspan="7" class="px-3 pt-3 pb-1"><div class="h-px bg-ink-100"></div></td></tr>` : '';
+
+      const otNum = Number(it.ot) || 0;
+      const otCls = otNum > 0
+        ? 'text-amber-700 bg-amber-50/40 border-amber-200'
+        : 'text-ink-500 bg-white border-ink-200';
+
+      return weekSep + `
+        <tr class="row-hover border-b border-ink-100 last:border-b-0 ${weekend ? 'bg-ink-50/40' : ''}" data-idx="${idx}">
+          <td class="px-3 py-3 text-center text-[12px] font-semibold text-ink-400 tabular-nums">${it.no}</td>
+
+          <td class="px-3 py-3 whitespace-nowrap">
+            <span class="font-bold text-ink-800 text-[13.5px] tabular-nums">${fmtDate(it.date)}</span>
+          </td>
+
+          <td class="px-3 py-3 whitespace-nowrap">
+            <span class="text-[13px] font-semibold ${weekend ? 'text-rose-500' : 'text-ink-500'}">${it.day}</span>
+          </td>
+
+          <td class="px-3 py-3">
+            <select data-role="status" data-idx="${idx}" class="${SELECT_BASE} ${st.cls}">${options}</select>
+          </td>
+
+          <td class="px-3 py-3">
+            <div class="flex items-center gap-2">
+              <input type="number" min="0" max="24" step="0.5" data-role="ot" data-idx="${idx}"
+                value="${otNum}"
+                class="w-[88px] px-3 py-2.5 text-[15px] font-bold text-center border-2 rounded-lg focus:ring-2 focus:ring-amber-400/30 focus:border-amber-500 focus:bg-white outline-none tabular-nums transition ${otCls}">
+              <span class="text-[12px] font-bold ${otNum > 0 ? 'text-amber-600' : 'text-ink-400'} uppercase tracking-wide">Jam</span>
+            </div>
+          </td>
+
+          <td class="px-3 py-3">
+            <input type="text" data-role="note" data-idx="${idx}"
+              value="${escapeHtml(it.note || '')}" placeholder="—"
+              class="w-full px-2.5 py-2 text-[11.5px] text-ink-500 bg-transparent border border-transparent hover:border-ink-200 focus:border-ink-500 focus:bg-white rounded-md outline-none placeholder:text-ink-300 transition">
+          </td>
+
+          <td class="px-3 py-3">
+            <div class="flex items-center justify-center gap-1">
+              <button class="quick-btn masuk" title="Tandai Hadir" onclick="quickSet(${idx},'Masuk')">
+                <i class="fa-solid fa-check"></i>
+              </button>
+              <button class="quick-btn off" title="Tandai Off" onclick="quickSet(${idx},'Off')">
+                <i class="fa-solid fa-mug-hot"></i>
+              </button>
+              <button class="quick-btn izin" title="Tandai Izin" onclick="quickSet(${idx},'Izin')">
+                <i class="fa-solid fa-file-lines"></i>
+              </button>
+              <button class="quick-btn sakit" title="Tandai Sakit" onclick="quickSet(${idx},'Sakit')">
+                <i class="fa-solid fa-bed-pulse"></i>
+              </button>
+              <button class="quick-btn ghost" title="Hapus baris" onclick="clearRow(${idx})">
+                <i class="fa-solid fa-eraser"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  renderStats();
+  renderWeekChart();
+}
+
+function renderStats() {
+  const s = computeStats(currentData());
+  $('statTotal').textContent = s.total;
+  $('statHadir').textContent = s.hadir;
+  $('statOff').textContent   = s.off;
+  $('statAbsen').textContent = s.absen;
+  $('statOT').textContent    = s.ot;
+  $('statEfektif').textContent = s.efektif;
+
+  // Ring
+  const ring = $('ringBar');
+  const circ = 2 * Math.PI * 46;
+  const offset = circ - (circ * s.pct / 100);
+  ring.setAttribute('stroke-dasharray', circ.toFixed(2));
+  ring.setAttribute('stroke-dashoffset', offset.toFixed(2));
+  $('ringPct').textContent = s.pct + '%';
+  $('ringHadir').textContent = s.hadir;
+  $('ringOff').textContent = s.off;
+  $('ringOt').textContent = s.ot;
+  $('ringSummary').textContent = `${s.hadir} dari ${s.efektif} hari efektif`;
+}
+
+/* =========================================================
+   WEEK CHART
+========================================================= */
+function renderWeekChart() {
+  const data = currentData();
+  const weeks = [];
+  let current = null;
+
+  data.forEach((it, i) => {
+    const isStart = i === 0 || it.dow === 1;
+    if (isStart) {
+      if (current) weeks.push(current);
+      current = { days: [], startDay: it.no };
+    }
+    if (current) current.days.push(it);
+  });
+  if (current) weeks.push(current);
+
+  const chart = $('weekChart');
+  const labels = $('weekLabels');
+
+  const weekStats = weeks.map((w, i) => {
+    let hadir = 0, efektif = 0, ot = 0;
+    w.days.forEach(d => {
+      const isOff = d.status === 'Off' || d.status === 'Libur';
+      if (!isOff) efektif++;
+      if (d.status === 'Masuk') hadir++;
+      ot += Number(d.ot) || 0;
+    });
+    const pct = efektif > 0 ? Math.round((hadir / efektif) * 100) : 0;
+    return { pct, ot, days: w.days.length, start: w.startDay, label: `M${i+1}` };
+  });
+
+  const maxOt = Math.max(...weekStats.map(w => w.ot), 1);
+
+  chart.innerHTML = weekStats.map(w => {
+    const hPct = Math.max(w.pct, 4);
+    const hOt  = Math.max((w.ot / maxOt) * 100, w.ot > 0 ? 8 : 0);
+    return `
+      <div class="flex-1 flex flex-col items-center justify-end gap-1 group relative" title="Minggu ${w.label}: ${w.pct}% hadir, ${w.ot} jam OT">
+        <div class="w-full flex items-end justify-center gap-0.5" style="height:100px;">
+          <div class="bar-mini w-1/2 bg-emerald-500/85 rounded-t-md group-hover:bg-emerald-500" style="height:${hPct}%"></div>
+          <div class="bar-mini w-1/2 bg-amber-400/85 rounded-t-md group-hover:bg-amber-400" style="height:${hOt}%"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  labels.innerHTML = weekStats.map(w => `
+    <div class="flex-1 text-center">
+      <p class="text-[10.5px] font-semibold text-ink-500">${w.label}</p>
+      <p class="text-[9.5px] text-ink-400 mt-0.5">${w.days}hr</p>
+    </div>`).join('');
+}
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+function quickSet(idx, status) {
+  pushUndo(`Ubah status ke ${status}`);
+  const data = currentData();
+  if (!data[idx]) return;
+  data[idx].status = status;
+  persist();
+  renderTable();
+  flashSaved();
+}
+
+function clearRow(idx) {
+  pushUndo('Reset baris');
+  const data = currentData();
+  if (!data[idx]) return;
+  data[idx].status = data[idx].dow === 0 ? 'Off' : 'Masuk';
+  data[idx].ot = 0;
+  data[idx].note = '';
+  persist();
+  renderTable();
+  flashSaved();
+}
+
+/* =========================================================
+   EVENT TABEL
+========================================================= */
+function bindTable() {
+  const tbody = $('tbody');
+
+  tbody.addEventListener('change', e => {
+    const el = e.target;
+    const role = el.dataset.role;
+    const idx = Number(el.dataset.idx);
+    if (isNaN(idx)) return;
+    const data = currentData();
+
+    if (role === 'status') {
+      pushUndo('Ubah status');
+      data[idx].status = el.value;
+      el.className = `${SELECT_BASE} ${(STATUS[el.value] || STATUS.Masuk).cls}`;
+      renderStats(); renderWeekChart();
+      persist(); flashSaved();
+    }
+
+    if (role === 'ot') {
+      pushUndo('Ubah OT');
+      let v = Number(el.value);
+      if (isNaN(v) || v < 0) v = 0;
+      if (v > 24) v = 24;
+      data[idx].ot = round1(v);
+      el.value = data[idx].ot;
+      // Update visual style
+      const isOt = data[idx].ot > 0;
+      el.className = `w-[88px] px-3 py-2.5 text-[15px] font-bold text-center border-2 rounded-lg focus:ring-2 focus:ring-amber-400/30 focus:border-amber-500 focus:bg-white outline-none tabular-nums transition ${isOt ? 'text-amber-700 bg-amber-50/40 border-amber-200' : 'text-ink-500 bg-white border-ink-200'}`;
+      const sib = el.nextElementSibling;
+      if (sib) sib.className = `text-[12px] font-bold ${isOt ? 'text-amber-600' : 'text-ink-400'} uppercase tracking-wide`;
+      renderStats(); renderWeekChart();
+      persist(); flashSaved();
+    }
+  });
+
+  tbody.addEventListener('input', e => {
+    const el = e.target;
+    const role = el.dataset.role;
+    const idx = Number(el.dataset.idx);
+    if (isNaN(idx)) return;
+    const data = currentData();
+
+    if (role === 'ot') {
+      let v = Number(el.value);
+      if (isNaN(v) || v < 0) v = 0;
+      data[idx].ot = round1(v);
+      renderStats(); renderWeekChart();
+      persist();
+    }
+
+    if (role === 'note') {
+      data[idx].note = el.value;
+      persist();
+    }
+  });
+}
+
+/* =========================================================
+   KONTROL PERIODE
+========================================================= */
+function buildSelectors() {
+  const selM = $('selMonth');
+  selM.innerHTML = MONTH_NAMES.map((m, i) => `<option value="${i}">${m}</option>`).join('');
+
+  const selY = $('selYear');
+  const cy = new Date().getFullYear();
+  const start = Math.min(2020, cy - 1);
+  const end = Math.max(2035, cy + 1);
+  let html = '';
+  for (let y = start; y <= end; y++) html += `<option value="${y}">${y}</option>`;
+  selY.innerHTML = html;
+
+  selM.addEventListener('change', () => {
+    state.current.month = Number(selM.value);
+    persist(); syncControls(); renderTable();
+  });
+  selY.addEventListener('change', () => {
+    state.current.year = Number(selY.value);
+    persist(); syncControls(); renderTable();
+  });
+}
+
+function shiftMonth(delta) {
+  let { year, month } = state.current;
+  month += delta;
+  if (month < 0) { month = 11; year--; }
+  if (month > 11) { month = 0; year++; }
+  state.current = { year, month };
+  persist(); syncControls(); renderTable();
+}
+
+function syncControls() {
+  const { year, month } = state.current;
+  $('selMonth').value = month;
+  $('selYear').value = year;
+  $('periodLabel').textContent = `${MONTH_NAMES[month]} ${year}`;
+}
+
+/* =========================================================
+   PROFIL
+========================================================= */
+function bindProfile() {
+  const map = { inpName:'name', inpCompany:'company', inpPosition:'position', inpNip:'nip' };
+  Object.entries(map).forEach(([id, key]) => {
+    const el = $(id);
+    el.value = state.profile[key] || '';
+    el.addEventListener('input', () => {
+      state.profile[key] = el.value;
+      if (key === 'name') {
+        $('avatar').textContent = initials(el.value);
+        $('footName').textContent = el.value || '—';
+      }
+      if (key === 'company') $('footCompany').textContent = el.value || '—';
+      persist();
+    });
+  });
+  $('avatar').textContent = initials(state.profile.name);
+  $('footName').textContent = state.profile.name || '—';
+  $('footCompany').textContent = state.profile.company || '—';
+}
+
+function initials(name) {
+  const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '—';
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+/* =========================================================
+   AKSI BULK
+========================================================= */
+function bulkWeekendOff() {
+  pushUndo('Minggu Off');
+  const data = currentData();
+  data.forEach(it => { if (it.dow === 0) it.status = 'Off'; });
+  renderTable(); persist(); flashSaved();
+  toast('success', 'Semua hari Minggu ditandai Off');
+}
+
+function bulkAllPresent() {
+  pushUndo('Semua Hadir');
+  const data = currentData();
+  data.forEach(it => { if (it.dow !== 0) it.status = 'Masuk'; });
+  renderTable(); persist(); flashSaved();
+  toast('success', 'Semua hari kerja ditandai Hadir');
+}
+
+function bulkClearOT() {
+  pushUndo('Reset OT');
+  const data = currentData();
+  data.forEach(it => { it.ot = 0; });
+  renderTable(); persist(); flashSaved();
+  toast('success', 'Semua jam OT direset');
+}
+
+function resetMonth() {
+  const { year, month } = state.current;
+  if (!confirm(`Reset data ${MONTH_NAMES[month]} ${year} ke pengaturan awal?`)) return;
+  pushUndo('Reset bulan');
+  state.months[monthKey(year, month)] = buildMonth(year, month);
+  renderTable(); persist();
+  toast('success', 'Bulan direset');
+}
+
+/* =========================================================
+   SIMPAN & EXPORT CSV
+========================================================= */
+function saveNow() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    flashSaved();
+    toast('success', 'Data tersimpan');
+  } catch (e) {
+    toast('error', 'Gagal menyimpan: ' + e.message);
+  }
+}
+
+function exportCSV() {
+  const { year, month } = state.current;
+  const data = currentData();
+  const s = computeStats(data);
+
+  let csv = '\uFEFF';
+  csv += `REKAP ABSENSI KARYAWAN\n`;
+  csv += `Nama;${state.profile.name}\n`;
+  csv += `NIP;${state.profile.nip}\n`;
+  csv += `Perusahaan;${state.profile.company}\n`;
+  csv += `Jabatan;${state.profile.position}\n`;
+  csv += `Periode;${MONTH_NAMES[month]} ${year}\n\n`;
+  csv += `No;Tanggal;Hari;Status;Lembur (Jam);Keterangan\n`;
+
+  data.forEach(r => {
+    csv += `${r.no};${fmtDate(r.date)};${r.day};${r.status};${r.ot || 0};"${String(r.note || '').replace(/"/g, '""')}"\n`;
+  });
+
+  csv += `\nTotal Hadir;${s.hadir}\n`;
+  csv += `Total Off/Libur;${s.off}\n`;
+  csv += `Total Tidak Hadir;${s.absen}\n`;
+  csv += `Total Lembur;${s.ot} Jam\n`;
+  csv += `Persentase Kehadiran;${s.pct}%\n`;
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `Rekap_Absensi_${state.profile.name.replace(/\s+/g,'_')}_${MONTH_NAMES[month]}_${year}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  toast('success', 'CSV berhasil diunduh');
+}
+
+/* =========================================================
+   IMPORT CSV
+========================================================= */
+function openImport() { $('importModal').classList.remove('hidden'); }
+function closeImport() { $('importModal').classList.add('hidden'); $('importArea').value = ''; }
+
+function doImport() {
+  const text = $('importArea').value.trim();
+  if (!text) { toast('warning', 'Kosong'); return; }
+
+  pushUndo('Import CSV');
+  const data = currentData();
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  let ok = 0, skip = 0;
+
+  lines.forEach(line => {
+    const parts = line.split(/[,;\t]/).map(p => p.trim());
+    if (parts.length < 2) { skip++; return; }
+    const day = Number(parts[0]);
+    const status = parts[1];
+    const ot = Number(parts[2]) || 0;
+    const note = parts[3] || '';
+
+    if (!day || day < 1 || day > data.length) { skip++; return; }
+    if (!STATUS_LIST.includes(status)) { skip++; return; }
+
+    data[day-1].status = status;
+    data[day-1].ot = round1(ot);
+    data[day-1].note = note;
+    ok++;
+  });
+
+  renderTable(); persist(); closeImport();
+  if (ok > 0) toast('success', `${ok} baris berhasil diimport${skip ? `, ${skip} dilewati` : ''}`);
+  else toast('warning', 'Tidak ada baris yang valid');
+}
+
+/* =========================================================
+   FILTER
+========================================================= */
+function clearFilters() {
+  $('searchInput').value = '';
+  $('filterStatus').value = '';
+  filterQuery = '';
+  filterStatusVal = '';
+  renderTable();
+}
+
+/* =========================================================
+   LAPORAN
+========================================================= */
+function buildReportHTML() {
+  const { year, month } = state.current;
+  const data = currentData();
+  const s = computeStats(data);
+  const p = state.profile;
+
+  // Weekly mini stats
+  const weeks = [];
+  let current = null;
+  data.forEach((it, i) => {
+    const isStart = i === 0 || it.dow === 1;
+    if (isStart) {
+      if (current) weeks.push(current);
+      current = { days: [], startDay: it.no };
+    }
+    if (current) current.days.push(it);
+  });
+  if (current) weeks.push(current);
+
+  const weekBars = weeks.map((w, i) => {
+    let hadir = 0, efektif = 0, ot = 0;
+    w.days.forEach(d => {
+      const isOff = d.status === 'Off' || d.status === 'Libur';
+      if (!isOff) efektif++;
+      if (d.status === 'Masuk') hadir++;
+      ot += Number(d.ot) || 0;
+    });
+    const pct = efektif > 0 ? Math.round((hadir / efektif) * 100) : 0;
+    return { pct, ot, label: `M${i+1}`, days: w.days.length };
+  });
+
+  const maxOt = Math.max(...weekBars.map(w => w.ot), 1);
+  const chartBars = weekBars.map(w => {
+    const hPct = Math.max(w.pct, 4);
+    const hOt = Math.max((w.ot / maxOt) * 100, w.ot > 0 ? 8 : 0);
+    return `
+      <td style="vertical-align:bottom;padding:0 8px;text-align:center;height:90px;">
+        <div style="display:flex;align-items:flex-end;justify-content:center;gap:2px;height:80px;">
+          <div style="width:16px;height:${hPct*0.8}px;background:#059669;border-radius:3px 3px 0 0;opacity:.85;"></div>
+          <div style="width:16px;height:${hOt*0.8}px;background:#f59e0b;border-radius:3px 3px 0 0;opacity:.85;"></div>
+        </div>
+      </td>`;
+  }).join('');
+
+  const chartLabels = weekBars.map(w => `
+    <td style="text-align:center;padding:6px 8px 0;">
+      <div style="font-size:9.5px;font-weight:700;color:#5f6874;">${w.label}</div>
+      <div style="font-size:8.5px;color:#8e96a1;margin-top:1px;">${w.pct}% · ${w.ot}j</div>
+    </td>`).join('');
+
+  const rows = data.map((it, i) => {
+    const hex = (STATUS[it.status] || STATUS.Masuk).hex;
+    const bg = i % 2 ? '#fafbfc' : '#ffffff';
+    return `
+      <tr style="background:${bg}">
+        <td style="padding:6px 10px;text-align:center;color:#8e96a1;font-size:10px;border-bottom:1px solid #eceef1;">${it.no}</td>
+        <td style="padding:6px 10px;color:#232930;font-size:11px;font-weight:600;border-bottom:1px solid #eceef1;white-space:nowrap;">${fmtDate(it.date)}</td>
+        <td style="padding:6px 10px;color:#5f6874;font-size:11px;border-bottom:1px solid #eceef1;white-space:nowrap;">${it.day}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #eceef1;">
+          <span style="display:inline-block;padding:2px 9px;border-radius:99px;font-size:9px;font-weight:700;letter-spacing:.02em;background:${hex.bg};color:${hex.fg};">${it.status}</span>
+        </td>
+        <td style="padding:6px 10px;text-align:center;color:#d97706;font-size:11px;font-weight:800;border-bottom:1px solid #eceef1;">${it.ot || 0}</td>
+        <td style="padding:6px 10px;color:#5f6874;font-size:10px;border-bottom:1px solid #eceef1;">${escapeHtml(it.note || '—')}</td>
+      </tr>`;
+  }).join('');
+
+  const statCell = (label, value, color) => `
+    <td style="width:16.66%;padding:0 10px;text-align:center;">
+      <div style="font-size:9px;font-weight:600;color:#8e96a1;letter-spacing:.08em;text-transform:uppercase;">${label}</div>
+      <div style="font-size:22px;font-weight:700;color:${color};margin-top:4px;line-height:1;letter-spacing:-.02em;">${value}</div>
+    </td>`;
+
+  return `
+  <div style="font-family:Inter,system-ui,Arial,sans-serif;background:#ffffff;padding:36px 40px 28px;">
+
+    <table style="width:100%;border-collapse:collapse;border-bottom:1px solid #eceef1;">
+      <tr>
+        <td style="vertical-align:middle;padding-bottom:22px;">
+          <table style="border-collapse:collapse;">
+            <tr>
+              <td style="vertical-align:middle;">
+                <div style="width:36px;height:36px;border-radius:9px;background:#141a20;color:#ffffff;text-align:center;line-height:36px;font-size:15px;">&#9679;</div>
+              </td>
+              <td style="vertical-align:middle;padding-left:11px;">
+                <div style="color:#141a20;font-size:14px;font-weight:700;letter-spacing:-.01em;">Rekap Absensi Karyawan</div>
+                <div style="color:#8e96a1;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-top:1px;">${escapeHtml(p.company || '-')}</div>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td style="vertical-align:middle;text-align:right;padding-bottom:22px;">
+          <div style="color:#8e96a1;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;">Periode</div>
+          <div style="color:#141a20;font-size:14px;font-weight:700;margin-top:2px;">${MONTH_NAMES[month]} ${year}</div>
+        </td>
+      </tr>
+    </table>
+
+    <table style="width:100%;border-collapse:collapse;margin-top:22px;">
+      <tr>
+        <td style="width:25%;vertical-align:top;padding-right:14px;">
+          <div style="font-size:9px;font-weight:600;color:#8e96a1;letter-spacing:.09em;text-transform:uppercase;margin-bottom:4px;">Nama</div>
+          <div style="font-size:12.5px;font-weight:700;color:#141a20;">${escapeHtml(p.name || '-')}</div>
+        </td>
+        <td style="width:25%;vertical-align:top;padding-right:14px;">
+          <div style="font-size:9px;font-weight:600;color:#8e96a1;letter-spacing:.09em;text-transform:uppercase;margin-bottom:4px;">NIP / ID</div>
+          <div style="font-size:12.5px;font-weight:600;color:#363d45;">${escapeHtml(p.nip || '-')}</div>
+        </td>
+        <td style="width:25%;vertical-align:top;padding-right:14px;">
+          <div style="font-size:9px;font-weight:600;color:#8e96a1;letter-spacing:.09em;text-transform:uppercase;margin-bottom:4px;">Jabatan</div>
+          <div style="font-size:12.5px;font-weight:600;color:#363d45;">${escapeHtml(p.position || '-')}</div>
+        </td>
+        <td style="width:25%;vertical-align:top;">
+          <div style="font-size:9px;font-weight:600;color:#8e96a1;letter-spacing:.09em;text-transform:uppercase;margin-bottom:4px;">Dibuat</div>
+          <div style="font-size:12.5px;font-weight:600;color:#363d45;">${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div>
+        </td>
+      </tr>
+    </table>
+
+    <div style="margin-top:26px;padding:18px 0;border-top:1px solid #eceef1;border-bottom:1px solid #eceef1;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          ${statCell('Total Hari', s.total, '#141a20')}
+          ${statCell('Hadir', s.hadir, '#059669')}
+          ${statCell('Off / Libur', s.off, '#5f6874')}
+          ${statCell('Tidak Hadir', s.absen, '#e11d48')}
+          ${statCell('Total OT', s.ot + ' j', '#d97706')}
+          ${statCell('Kehadiran', s.pct + '%', '#141a20')}
+        </tr>
+      </table>
+    </div>
+
+    <div style="margin-top:24px;">
+      <div style="font-size:10px;font-weight:700;color:#141a20;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;">Tren Mingguan</div>
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>${chartBars}</tr>
+      </table>
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>${chartLabels}</tr>
+      </table>
+      <div style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:9.5px;color:#5f6874;">
+        <span style="display:inline-flex;align-items:center;gap:4px;">
+          <span style="display:inline-block;width:8px;height:8px;background:#059669;border-radius:2px;"></span> Kehadiran %
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:4px;">
+          <span style="display:inline-block;width:8px;height:8px;background:#f59e0b;border-radius:2px;"></span> Lembur (jam)
+        </span>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;">
+      <div style="font-size:10px;font-weight:700;color:#141a20;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Detail Harian</div>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #eceef1;border-radius:8px;overflow:hidden;table-layout:fixed;">
+        <colgroup>
+          <col style="width:34px;">
+          <col style="width:100px;">
+          <col style="width:76px;">
+          <col style="width:100px;">
+          <col style="width:60px;">
+          <col>
+        </colgroup>
+        <thead>
+          <tr style="background:#f7f8f9;">
+            <th style="padding:9px 10px;color:#5f6874;font-size:9px;font-weight:700;letter-spacing:.08em;text-align:center;border-bottom:1px solid #eceef1;">NO</th>
+            <th style="padding:9px 10px;color:#5f6874;font-size:9px;font-weight:700;letter-spacing:.08em;text-align:left;border-bottom:1px solid #eceef1;">TANGGAL</th>
+            <th style="padding:9px 10px;color:#5f6874;font-size:9px;font-weight:700;letter-spacing:.08em;text-align:left;border-bottom:1px solid #eceef1;">HARI</th>
+            <th style="padding:9px 10px;color:#5f6874;font-size:9px;font-weight:700;letter-spacing:.08em;text-align:left;border-bottom:1px solid #eceef1;">STATUS</th>
+            <th style="padding:9px 10px;color:#5f6874;font-size:9px;font-weight:700;letter-spacing:.08em;text-align:center;border-bottom:1px solid #eceef1;">OT</th>
+            <th style="padding:9px 10px;color:#5f6874;font-size:9px;font-weight:700;letter-spacing:.08em;text-align:left;border-bottom:1px solid #eceef1;">KETERANGAN</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;margin-top:36px;">
+      <tr>
+        <td style="width:50%;vertical-align:top;"></td>
+        <td style="width:25%;vertical-align:top;text-align:center;">
+          <div style="font-size:9.5px;color:#5f6874;padding-bottom:52px;">Dibuat oleh,</div>
+          <div style="font-size:10.5px;font-weight:700;color:#141a20;border-top:1px solid #c2c7ce;padding-top:6px;">${escapeHtml(p.name || '-')}</div>
+        </td>
+        <td style="width:25%;vertical-align:top;text-align:center;">
+          <div style="font-size:9.5px;color:#5f6874;padding-bottom:52px;">Disetujui oleh,</div>
+          <div style="font-size:10.5px;font-weight:700;color:#141a20;border-top:1px solid #c2c7ce;padding-top:6px;">HRD / Atasan</div>
+        </td>
+      </tr>
+    </table>
+
+    <div style="margin-top:22px;padding-top:12px;border-top:1px solid #eceef1;text-align:center;font-size:8.5px;color:#a3adb9;letter-spacing:.04em;">
+      Dokumen ini dihasilkan otomatis oleh Sistem Rekap Absensi Pribadi &mdash; ${escapeHtml(p.company || '')}
+    </div>
+
+  </div>`;
+}
+
+function openReport() {
+  $('reportPreview').innerHTML = buildReportHTML();
+  $('reportModal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeReport() {
+  $('reportModal').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+async function downloadReport() {
+  const el = $('reportPreview');
+  const btn = $('btnDownload');
+  const original = btn.innerHTML;
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Memproses...';
+
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false,
+      width: el.scrollWidth, height: el.scrollHeight, windowWidth: el.scrollWidth
+    });
+    const { year, month } = state.current;
+    const safeName = (state.profile.name || 'Karyawan').replace(/\s+/g, '_');
+    const link = document.createElement('a');
+    link.download = `Rekap_Absensi_${safeName}_${MONTH_NAMES[month]}_${year}.png`;
+    link.href = canvas.toDataURL('image/png');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast('success', 'PNG berhasil diunduh');
+  } catch (err) {
+    console.error(err);
+    toast('error', 'Gagal membuat gambar: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
+}
+
+/* =========================================================
+   KEYBOARD SHORTCUTS
+========================================================= */
+function bindShortcuts() {
+  document.addEventListener('keydown', e => {
+    // Ctrl+S — Save
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault(); saveNow();
+    }
+    // Ctrl+Z — Undo
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+      // Skip if in input
+      if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
+      e.preventDefault(); undoLast();
+    }
+    // Ctrl+E — Export
+    if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+      e.preventDefault(); exportCSV();
+    }
+    // Ctrl+P — Report
+    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+      e.preventDefault(); openReport();
+    }
+    // Alt+Arrow — Month nav
+    if (e.altKey && e.key === 'ArrowLeft') { e.preventDefault(); shiftMonth(-1); }
+    if (e.altKey && e.key === 'ArrowRight') { e.preventDefault(); shiftMonth(1); }
+    // Escape
+    if (e.key === 'Escape') { closeReport(); closeImport(); }
+  });
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+function init() {
+  loadState();
+  $('yearNow').textContent = new Date().getFullYear();
+  buildSelectors();
+  bindProfile();
+  bindTable();
+  bindShortcuts();
+  syncControls();
+  renderTable();
+
+  // Filter listeners
+  const si = $('searchInput');
+  si.addEventListener('input', () => { filterQuery = si.value; renderTable(); });
+  const fs = $('filterStatus');
+  fs.addEventListener('change', () => { filterStatusVal = fs.value; renderTable(); });
+
+  updateUndoBtn();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
