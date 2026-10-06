@@ -258,9 +258,18 @@ tailwind.config = { theme: { extend: {
     </section>
 
     <section class="bg-white rounded-xl border border-ink-100 overflow-hidden">
-      <div class="px-4 md:px-5 py-3.5 border-b border-ink-100 flex items-center justify-between gap-3">
+      <div class="px-4 md:px-5 py-3.5 border-b border-ink-100 flex items-center justify-between gap-3 flex-wrap">
         <div><h2 id="absTableTitle" class="text-[13px] md:text-[14px] font-bold text-ink-900">Schedule —</h2><p id="absTableSub" class="text-[11px] md:text-[11.5px] text-ink-500 mt-0.5"></p></div>
-        <span id="absResultCount" class="text-[11px] md:text-[11.5px] font-medium text-ink-500 bg-ink-100 px-2.5 py-1 rounded-full">0</span>
+        <div class="flex items-center gap-2 flex-wrap">
+          <select id="absSortSelect" onchange="absApplySort(this.value)" class="h-9 px-3 text-[12px] font-medium rounded-lg bg-white border border-ink-200 text-ink-700 outline-none cursor-pointer">
+            <option value="default">⇅ Urutan Asli</option>
+            <option value="name-asc">🔤 Nama A → Z</option>
+            <option value="name-desc">🔤 Nama Z → A</option>
+            <option value="shift-asc">🕐 Shift Pagi dulu</option>
+            <option value="shift-desc">🌙 Shift Malam dulu</option>
+          </select>
+          <span id="absResultCount" class="text-[11px] md:text-[11.5px] font-medium text-ink-500 bg-ink-100 px-2.5 py-1 rounded-full">0</span>
+        </div>
       </div>
 
       <div class="desktop-view overflow-x-auto">
@@ -515,9 +524,14 @@ tailwind.config = { theme: { extend: {
   </main>
 </div>
 
-<footer class="border-t border-ink-100 mt-auto py-6 no-print mobile-view" style="padding-bottom: calc(env(safe-area-inset-bottom) + 76px);">
-  <div class="max-w-[1400px] mx-auto px-5 text-center text-[11px] text-ink-400">
-    &copy; <span id="yearNow"></span> <span class="text-ink-600 font-medium">PT Flexo Solusi Indonesia</span>
+<footer class="border-t border-ink-100 mt-auto py-6 no-print" style="padding-bottom: calc(env(safe-area-inset-bottom) + 76px);">
+  <div class="max-w-[1400px] mx-auto px-5 text-center space-y-1.5">
+    <p class="text-[11px] text-ink-400">
+      &copy; <span id="yearNow"></span> <span class="text-ink-600 font-medium">PT Flexo Solusi Indonesia</span>
+    </p>
+    <p class="text-[10.5px] text-ink-400">
+      Rekap ini dibuat oleh <span class="font-semibold text-ink-600">@tyowhydi</span>
+    </p>
   </div>
 </footer>
 
@@ -538,27 +552,43 @@ tailwind.config = { theme: { extend: {
 <div id="masterModal" class="hidden fixed inset-0 z-50">
   <div class="absolute inset-0 bg-ink-900/60 backdrop-blur-sm" onclick="absCloseMaster()"></div>
   <div class="relative h-full flex items-end md:items-center justify-center p-0 md:p-4">
-    <div class="bg-white rounded-t-3xl md:rounded-2xl shadow-2xl w-full md:max-w-6xl max-h-[92vh] md:max-h-[94vh] flex flex-col overflow-hidden">
+    <div class="bg-white rounded-t-3xl md:rounded-2xl shadow-2xl w-full md:max-w-7xl max-h-[92vh] md:max-h-[94vh] flex flex-col overflow-hidden">
       <div class="flex items-center justify-between px-4 md:px-5 py-3 md:py-4 border-b border-ink-200">
         <div><h3 class="text-[15px] md:text-base font-bold text-ink-900">Master Data & Profil</h3><p class="text-[11px] md:text-[11.5px] text-ink-500">Data karyawan, PKL & Non-PKL</p></div>
         <button onclick="absCloseMaster()" class="w-10 h-10 md:w-9 md:h-9 rounded-lg hover:bg-ink-100 text-ink-400 hover:text-ink-700 transition flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="flex-1 overflow-y-auto p-3 md:p-5">
-        <div class="bg-amber-50 border border-amber-100 rounded-lg p-3 mb-3 md:mb-4 text-[11.5px] text-amber-800">💡 Total <b id="totalEmp">0</b> · <span id="totalPkl">0</span> PKL · <span id="totalNonPkl">0</span> Non-PKL · <span id="totalReg">0</span> reguler</div>
+        <div class="bg-amber-50 border border-amber-100 rounded-lg p-3 mb-3 md:mb-4 text-[11.5px] text-amber-800">
+          💡 Total <b id="totalEmp">0</b> · <span id="totalPkl">0</span> PKL · <span id="totalNonPkl">0</span> Non-PKL · <span id="totalReg">0</span> reguler
+          <br><span class="text-[10.5px] opacity-75">Kolom biru muda = Nama Pendek & Shift Pendek (opsional, kosongkan untuk auto)</span>
+        </div>
         <div class="flex flex-wrap gap-2 mb-3 md:mb-4">
           <input id="empNIK" type="text" placeholder="NIK" class="h-10 md:h-9 w-full sm:w-28 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empNama" type="text" placeholder="Nama lengkap" class="h-10 md:h-9 flex-1 min-w-[180px] px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empNameShort" type="text" placeholder="Nama Pendek" class="h-10 md:h-9 w-full sm:w-36 px-3 text-[13px] md:text-[12.5px] border border-sky-200 bg-sky-50/50 rounded-lg outline-none">
           <input id="empTask" type="text" list="dlTask" placeholder="Task" class="h-10 md:h-9 w-full sm:w-40 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empSub" type="text" list="dlSub" placeholder="Sub" class="h-10 md:h-9 w-full sm:w-24 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empGroup" type="text" list="dlGroup" placeholder="Group" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empShift" type="text" list="dlShift" placeholder="Shift" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empShiftShort" type="text" placeholder="Shift Pendek" class="h-10 md:h-9 w-full sm:w-28 px-3 text-[13px] md:text-[12.5px] border border-sky-200 bg-sky-50/50 rounded-lg outline-none">
           <input id="empBreak" type="text" list="dlBreak" placeholder="Break" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <button onclick="absAddEmployee()" class="h-10 md:h-9 w-full sm:w-auto px-4 rounded-lg bg-ink-900 text-white text-[13px] md:text-[12px] font-medium">Tambah</button>
         </div>
-        <div class="desktop-view border border-ink-200 rounded-lg overflow-hidden">
-          <table class="w-full text-[12px]">
+        <div class="desktop-view border border-ink-200 rounded-lg overflow-x-auto">
+          <table class="w-full text-[12px] min-w-[1000px]">
             <thead class="bg-ink-50 text-ink-500 text-[10.5px] uppercase tracking-wider">
-              <tr><th class="px-3 py-2 text-left font-semibold w-24">NIK</th><th class="px-3 py-2 text-left font-semibold">Nama</th><th class="px-3 py-2 text-left font-semibold">Task</th><th class="px-3 py-2 text-left font-semibold">Sub</th><th class="px-3 py-2 text-left font-semibold">Group</th><th class="px-3 py-2 text-left font-semibold">Shift</th><th class="px-3 py-2 text-left font-semibold">Break</th><th class="px-3 py-2 w-10"></th></tr>
+              <tr>
+                <th class="px-3 py-2 text-left font-semibold w-24">NIK</th>
+                <th class="px-3 py-2 text-left font-semibold">Nama</th>
+                <th class="px-3 py-2 text-left font-semibold w-32 bg-sky-50/40">Pendek</th>
+                <th class="px-3 py-2 text-left font-semibold">Task</th>
+                <th class="px-3 py-2 text-left font-semibold">Sub</th>
+                <th class="px-3 py-2 text-left font-semibold">Group</th>
+                <th class="px-3 py-2 text-left font-semibold">Shift</th>
+                <th class="px-3 py-2 text-left font-semibold w-24 bg-sky-50/40">Shift P.</th>
+                <th class="px-3 py-2 text-left font-semibold">Break</th>
+                <th class="px-3 py-2 w-10"></th>
+              </tr>
             </thead>
             <tbody id="empTableBody" class="divide-y divide-ink-100"></tbody>
           </table>
@@ -566,8 +596,9 @@ tailwind.config = { theme: { extend: {
         <div id="empMobileList" class="mobile-view space-y-1.5"></div>
       </div>
       <div class="px-4 md:px-5 py-3 border-t border-ink-100 flex items-center justify-between bg-ink-50">
-        <button onclick="absResetMaster()" class="text-[11.5px] text-ink-500 hover:text-rose-600 transition">Reset</button>
-        <button onclick="absCloseMaster()" class="h-10 md:h-9 px-4 rounded-lg bg-ink-900 text-white text-[13px] md:text-[12px] font-medium">Selesai</button>
+      <button onclick="absResetMaster()" class="text-[11.5px] text-ink-500 hover:text-rose-600 transition">Reset</button>
+      <span class="text-[10.5px] text-ink-400">by <span class="font-semibold text-ink-600">@tyowhydi</span></span>
+      <button onclick="absCloseMaster()" class="h-10 md:h-9 px-4 rounded-lg bg-ink-900 text-white text-[13px] md:text-[12px] font-medium">Selesai</button>
       </div>
     </div>
   </div>
@@ -577,7 +608,7 @@ tailwind.config = { theme: { extend: {
 <div id="reportModal" class="hidden fixed inset-0 z-50">
   <div class="absolute inset-0 bg-ink-900/70 backdrop-blur-sm" onclick="closeReport()"></div>
   <div class="relative h-full flex items-end md:items-center justify-center p-0 md:p-4">
-    <div class="bg-white rounded-t-3xl md:rounded-2xl shadow-2xl w-full md:max-w-5xl h-[94vh] md:h-auto md:max-h-[94vh] flex flex-col overflow-hidden">
+    <div class="bg-white rounded-t-3xl md:rounded-2xl shadow-2xl w-full md:max-w-[1500px] h-[94vh] md:h-auto md:max-h-[94vh] flex flex-col overflow-hidden">
       <div class="flex items-center justify-between px-4 md:px-5 py-3 md:py-3.5 border-b border-ink-200">
         <div><h3 class="text-[15px] md:text-sm font-bold text-ink-900">Preview Laporan</h3><p class="text-[11px] md:text-[11px] text-ink-500">Unduh PNG atau cetak</p></div>
         <div class="flex items-center gap-2">
@@ -586,7 +617,9 @@ tailwind.config = { theme: { extend: {
           <button onclick="closeReport()" class="w-10 h-10 md:w-9 md:h-9 rounded-lg hover:bg-ink-100 text-ink-400 hover:text-ink-700 transition flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
         </div>
       </div>
-      <div class="flex-1 overflow-auto p-3 md:p-5 bg-ink-100/60"><div id="reportPreview" class="bg-white mx-auto shadow-sm border border-ink-100" style="width:100%; max-width:900px;"></div></div>
+      <div class="flex-1 overflow-auto p-3 md:p-5 bg-ink-100/60">
+        <div id="reportPreview" class="bg-white mx-auto shadow-sm border border-ink-100"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -651,6 +684,88 @@ function isIOS(){
          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
 
+/* ========== SHORT NAME & SHIFT ========== */
+let displayMode = 'short';
+
+function autoShortName(nama){
+  if (!nama) return '';
+  const parts = String(nama).trim().split(/\s+/);
+  if (parts.length <= 1) return nama;
+  if (parts.length === 2) return `${parts[0]} ${parts[1][0]}.`;
+  const first = parts[0];
+  const initials = parts.slice(1).map(w => w[0] + '.').join(' ');
+  return `${first} ${initials}`;
+}
+
+const SHIFT_SHORT_MAP = {
+  '05:00-13:00': 'PAGI', '06:00-14:00': 'PAGI', '07:00-15:00': 'PAGI',
+  '07:00-16:00': 'PAGI', '08:00-16:00': 'PAGI', '08:00-17:00': 'PAGI',
+  '09:00-17:00': 'SIANG', '10:00-18:00': 'SIANG', '11:00-19:00': 'SIANG',
+  '12:00-20:00': 'SIANG', '12:00-21:00': 'SIANG',
+  '13:00-21:00': 'SORE', '14:00-22:00': 'SORE', '15:00-23:00': 'SORE',
+  '16:00-00:00': 'MALAM', '17:00-01:00': 'MALAM', '19:00-03:00': 'MALAM',
+  '21:00-05:00': 'MALAM', 'OFF': 'OFF'
+};
+
+function autoShortShift(shift){
+  if (!shift) return '—';
+  if (shift === 'OFF') return 'OFF';
+  if (SHIFT_SHORT_MAP[shift]) return SHIFT_SHORT_MAP[shift];
+  return String(shift).replace(/:/g,'').replace(/-/g,'–');
+}
+
+/* Ambil menit mulai dari shift, untuk sorting */
+function shiftStartMin(shift){
+  if (!shift) return 99998;
+  if (shift === 'OFF') return 99999;
+  const m = String(shift).match(/^(\d{1,2}):(\d{2})/);
+  if (!m) return 99997;
+  return parseInt(m[1]) * 60 + parseInt(m[2]);
+}
+
+function getDisplayName(item){
+  if (displayMode === 'long') return item.nama || '';
+  const master = state.master.employees.find(e => e.nama === item.nama);
+  if (master && master.namaShort) return master.namaShort;
+  return autoShortName(item.nama);
+}
+
+function getDisplayShift(item){
+  if (displayMode === 'long') return item.shift || '—';
+  const master = state.master.employees.find(e => e.nama === item.nama);
+  if (master && master.shiftShort) return master.shiftShort;
+  return autoShortShift(item.shift);
+}
+
+function toggleDisplayMode(){
+  displayMode = displayMode === 'short' ? 'long' : 'short';
+  try { localStorage.setItem('display_mode', displayMode); } catch(e){}
+  const btn = $('toggleDisplayBtn');
+  if (btn){
+    btn.innerHTML = displayMode === 'short'
+      ? '<i class="fa-solid fa-text-width text-[11px]"></i><span class="hidden sm:inline">Pendek</span>'
+      : '<i class="fa-solid fa-text-width text-[11px]"></i><span class="hidden sm:inline">Panjang</span>';
+  }
+  absRenderTable();
+  if (currentTab === 'rekap') rkRenderTable();
+  toast('info', `Tampilan: ${displayMode === 'short' ? 'Pendek' : 'Panjang'}`);
+}
+
+/* ========== SORT ========== */
+function absApplySort(mode){
+  const iso = absCurrentDate();
+  const day = state.schedule[iso];
+  if (!day || !day.length){ toast('warning', 'Tidak ada data untuk diurutkan'); return; }
+  if (mode === 'name-asc') day.sort((a,b) => String(a.nama||'').localeCompare(String(b.nama||''), 'id', { sensitivity: 'base' }));
+  else if (mode === 'name-desc') day.sort((a,b) => String(b.nama||'').localeCompare(String(a.nama||''), 'id', { sensitivity: 'base' }));
+  else if (mode === 'shift-asc') day.sort((a,b) => shiftStartMin(a.shift) - shiftStartMin(b.shift));
+  else if (mode === 'shift-desc') day.sort((a,b) => shiftStartMin(b.shift) - shiftStartMin(a.shift));
+  // default: no sort
+  persist();
+  absRenderTable();
+  if (mode !== 'default') toast('success', 'Data diurutkan');
+}
+
 function toast(type, msg){
   const wrap = $('toastWrap');
   const icons = { success:'fa-circle-check', error:'fa-circle-exclamation', info:'fa-circle-info', warning:'fa-triangle-exclamation' };
@@ -662,7 +777,7 @@ function toast(type, msg){
   setTimeout(() => el.remove(), 3000);
 }
 
-/* ========== CAPTURE HELPERS (iOS Friendly) ========== */
+/* ========== CAPTURE HELPERS ========== */
 let _capturedImage = null;
 
 function showCapturePreview(dataUrl, blob, filename, title){
@@ -706,16 +821,11 @@ async function saveCapturedImage(){
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
 
   try {
-    // iOS & Android: Web Share API (bisa save ke Photos/Galeri)
     if (navigator.canShare){
       try {
         const file = new File([blob], filename, { type: 'image/png' });
         if (navigator.canShare({ files: [file] })){
-          await navigator.share({
-            files: [file],
-            title: 'Schedule',
-            text: 'Schedule Karyawan — PT Flexo Solusi Indonesia'
-          });
+          await navigator.share({ files: [file], title: 'Schedule', text: 'Schedule Karyawan' });
           toast('success', 'Gambar berhasil disimpan');
           setTimeout(closeCapturePreview, 600);
           return;
@@ -726,7 +836,6 @@ async function saveCapturedImage(){
       }
     }
 
-    // iOS fallback: buka di tab baru → long press save
     if (isIOS()){
       const w = window.open('', '_blank');
       if (w){
@@ -737,18 +846,17 @@ async function saveCapturedImage(){
           img{max-width:100%;height:auto;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.5);margin-bottom:20px}
           .btn{background:#fff;color:#0f172a;border:none;padding:14px 28px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer}
         </style></head><body>
-        <div class="hint">📱 Tekan lama gambar di bawah, lalu pilih <b>"Simpan ke Foto"</b> atau <b>"Simpan ke File"</b></div>
+        <div class="hint">📱 Tekan lama gambar di bawah, lalu pilih <b>"Simpan ke Foto"</b></div>
         <img src="${dataUrl}">
-        <br><button class="btn" onclick="window.close()">Tutup Halaman Ini</button>
+        <br><button class="btn" onclick="window.close()">Tutup</button>
         </body></html>`);
         w.document.close();
-        toast('info', 'Tekan lama gambar untuk simpan ke Foto');
+        toast('info', 'Tekan lama gambar untuk simpan');
         setTimeout(closeCapturePreview, 800);
         return;
       }
     }
 
-    // Desktop / Android fallback: download
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.download = filename;
@@ -757,7 +865,7 @@ async function saveCapturedImage(){
     link.click();
     document.body.removeChild(link);
     setTimeout(() => URL.revokeObjectURL(url), 2000);
-    toast('success', 'Gambar tersimpan di Downloads');
+    toast('success', 'Gambar tersimpan');
     setTimeout(closeCapturePreview, 800);
   } catch(err){
     toast('error', 'Gagal: ' + err.message);
@@ -789,6 +897,10 @@ function renderHeaderActions(){
   const box = $('headerActions');
   if (currentTab === 'absensi'){
     box.innerHTML = `
+      <button onclick="toggleDisplayMode()" id="toggleDisplayBtn" class="h-10 md:h-9 px-3 md:px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-medium transition flex items-center gap-1.5" title="Toggle tampilan pendek/panjang">
+        <i class="fa-solid fa-text-width text-[11px]"></i>
+        <span class="hidden sm:inline">${displayMode === 'short' ? 'Pendek' : 'Panjang'}</span>
+      </button>
       <button onclick="absOpenMaster()" class="hidden md:flex h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-medium transition items-center gap-1.5"><i class="fa-solid fa-users text-[11px]"></i><span>Master</span></button>
       <button onclick="absOpenMaster()" class="md:hidden w-10 h-10 rounded-lg bg-white border border-ink-200 text-ink-700 flex items-center justify-center" title="Profil">
         <i class="fa-solid fa-users text-[13px]"></i>
@@ -797,7 +909,7 @@ function renderHeaderActions(){
       <button onclick="absExportCSV()" class="md:hidden w-10 h-10 rounded-lg bg-white border border-ink-200 text-ink-700 flex items-center justify-center" title="CSV">
         <i class="fa-solid fa-file-csv text-[13px]"></i>
       </button>
-      <button onclick="absCapture()" class="h-10 md:h-9 px-3 md:px-3.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs md:text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+      <button onclick="absCapture()" class="h-10 md:h-9 px-3 md:px-3.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
         <i class="fa-solid fa-camera text-[12px] md:text-[11px]"></i><span class="hidden md:inline">Ambil Gambar</span>
       </button>`;
   } else {
@@ -806,7 +918,7 @@ function renderHeaderActions(){
       <button onclick="rkExportCSV()" class="md:hidden w-10 h-10 rounded-lg bg-white border border-ink-200 text-ink-700 flex items-center justify-center" title="CSV">
         <i class="fa-solid fa-file-csv text-[13px]"></i>
       </button>
-      <button onclick="rkOpenReport()" class="h-10 md:h-9 px-3 md:px-3.5 rounded-lg bg-ink-900 hover:bg-ink-800 text-white text-xs md:text-xs font-medium transition flex items-center gap-1.5">
+      <button onclick="rkOpenReport()" class="h-10 md:h-9 px-3 md:px-3.5 rounded-lg bg-ink-900 hover:bg-ink-800 text-white text-xs font-medium transition flex items-center gap-1.5">
         <i class="fa-solid fa-file-lines text-[12px] md:text-[11px]"></i><span>Laporan</span>
       </button>`;
   }
@@ -814,68 +926,68 @@ function renderHeaderActions(){
 
 const DEFAULT_MASTER = {
   employees: [
-    { nik:'44821', nama:'NADIA ALIEFIA CHANDRA', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'448247', nama:'DEA RAHMADANI', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'447637', nama:'HENNI SAPUTRI', task:'SAMEDAY&INSTAN', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', break:'10:00-11:00', cat:'regular' },
-    { nik:'44809', nama:'RIDA FARIDA', task:'SAMEDAY&INSTAN', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', break:'10:00-11:00', cat:'regular' },
-    { nik:'448239', nama:'MURTI', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'451675', nama:'JAMES TANUARTHA', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'448472', nama:'AGUSTINA AGUSLINA HALAWA', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'07:00-16:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'44715', nama:'AYU DIAH MASITOH', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'07:00-16:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'44448', nama:'DIANA SAFITRI', task:'SAMEDAY&INSTAN', sub:'B2C', group:'Helper Admin', shift:'09:00-17:00', break:'10:00-11:00', cat:'regular' },
-    { nik:'448198', nama:'BRENDI LEE', task:'HELPER CCTV', sub:'B2C', group:'Helper Admin', shift:'09:00-17:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'447099', nama:'DIKI NUR HANIF', task:'TIM SWEEPING', sub:'B2C', group:'SWEEPING', shift:'09:00-17:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'452036', nama:'DINDA DESFIYANI', task:'SWEEPING', sub:'B2C', group:'SWEEPING', shift:'09:00-17:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'250081123', nama:'MUHAMAD IRVAN SAPUTRA', task:'LEADER ADMIN', sub:'B2C', group:'LEADER', shift:'09:00-17:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'44122', nama:'CUCUN CUNAYAH', task:'LEADER ADMIN', sub:'B2C', group:'LEADER', shift:'09:00-17:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'445084', nama:'LITA NURAENI', task:'PRINT PICKLIST', sub:'B2C', group:'JR LEADER ADMIN', shift:'09:00-17:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'449550', nama:'UPILINA BUULOLO', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'10:00-18:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'240091093', nama:'INDRY ARDIYANI SUDIAR', task:'SPV', sub:'B2C', group:'SPV', shift:'10:00-18:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'449623', nama:'NADYA PASYA RAMADANI', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'10:00-18:00', break:'00:00-01:00', cat:'regular' },
-    { nik:'44800', nama:'CINTA NABILA', task:'SAMEDAY&INSTAN', sub:'B2C', group:'SWEEPING', shift:'11:00-19:00', break:'16:00-00:00', cat:'regular' },
-    { nik:'43345', nama:'PUTRI WULANDARI', task:'SWEEPING & ONHOLD', sub:'B2C', group:'ONHOLD', shift:'13:00-21:00', break:'16:00-00:00', cat:'regular' },
-    { nik:'44381', nama:'NITA ANDINI', task:'SWEEPING', sub:'B2C', group:'ONHOLD', shift:'13:00-21:00', break:'16:00-00:00', cat:'regular' },
-    { nik:'447085', nama:'SINTA PRASETYA', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'13:00-21:00', break:'16:00-00:00', cat:'regular' },
-    { nik:'449440', nama:'ANGKASA MANGGALA MUKTI', task:'TIM SWEEPING', sub:'B2C', group:'SWEEPING', shift:'13:00-21:00', break:'16:00-00:00', cat:'regular' },
-    { nik:'447216', nama:'MARIA OCTAVIANI', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'13:00-21:00', break:'16:00-00:00', cat:'regular' },
-    { nik:'446002', nama:'TIYO WAHYUDI', task:'RECONCILE', sub:'B2C', group:'Admin B2C', shift:'15:00-23:00', break:'18:00-19:00', cat:'regular' },
-    { nik:'44515', nama:'UNIK GANDA REZEKI', task:'PRINT PICKLIST', sub:'B2C', group:'JR LEADER ADMIN', shift:'16:00-00:00', break:'00:00-01:00', cat:'regular' },
-    { nik:'449594', nama:'MUHAMMAD FAREL ADRIYANA', task:'HELPER CCTV', sub:'B2C', group:'Helper Admin', shift:'16:00-00:00', break:'18:00-19:00', cat:'regular' },
-    { nik:'450282', nama:'SUGIARTO', task:'TIM SWEEPING', sub:'B2C', group:'SWEEPING', shift:'16:00-00:00', break:'18:00-19:00', cat:'regular' },
-    { nik:'449151', nama:'NADIA NUR RAMADHANI', task:'SWEEPING', sub:'B2C', group:'SWEEPING', shift:'16:00-00:00', break:'18:00-19:00', cat:'regular' },
-    { nik:'44901', nama:'FAIRUZ', task:'SWEEPING', sub:'B2C', group:'SWEEPING', shift:'16:00-00:00', break:'18:00-19:00', cat:'regular' },
-    { nik:'448991', nama:'NAZWA TEGAR JANUARI', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'16:00-00:00', break:'18:00-19:00', cat:'regular' },
-    { nik:'2607099', nama:'HAMELIA WULANDARI', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'16:00-00:00', break:'18:00-19:00', cat:'regular' },
-    { nik:'453057', nama:'SYIFA SYAHIRA', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'19:00-03:00', break:'00:00-01:00', cat:'regular' },
-    { nik:'452992', nama:'ADAM RIZA NOVALDI', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'19:00-03:00', break:'00:00-01:00', cat:'regular' },
-    { nik:'24051069', nama:'SALSABILA', task:'KOORDINATOR', sub:'B2C', group:'KOORDINATOR', shift:'21:00-05:00', break:'00:00-01:00', cat:'regular' },
-    { nik:'452425', nama:'AYU NOVITASARI', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'21:00-05:00', break:'00:00-01:00', cat:'regular' },
-    { nik:'44441', nama:'HULFANA HUSNA', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'21:00-05:00', break:'00:00-01:00', cat:'regular' },
-    { nik:'448128', nama:'NURUL HASANAH', task:'SWEEPING & ONHOLD', sub:'B2C', group:'SWEEPING', shift:'21:00-05:00', break:'00:00-01:00', cat:'regular' },
-    { nik:'449762', nama:'TUANI SETIO IRAWAN PANDIANGAN', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', break:'-', cat:'regular' },
-    { nik:'452766', nama:'NADIA SHAKILA HERDIANA', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', break:'-', cat:'regular' },
-    { nik:'447794', nama:'DESITILA WARUWU', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', break:'-', cat:'regular' },
-    { nik:'447071', nama:'ABDUL MOHOLIK', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', break:'-', cat:'regular' },
-    { nik:'240041052', nama:'TULUS OCTAFIAYUB', task:'SPV BRANCHES', sub:'OUTBOUND', group:'SPV BRANCHES', shift:'10:00-18:00', break:'12:00-13:00', cat:'regular' },
-    { nik:'-', nama:'ZAHROTU SYITA', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'AURA RAHAYU', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'GRACE KARTIKA ANATASYA MANULLANG', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'LUTFI ZULFIAH', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'REVA AULIA', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'ALISHA', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'FITRI', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'AMANDA NOPIANTI', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'CLAURA WIDYA PREYANSYAH', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'ZULFIAH MANSURIA PRADITA', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'07:00-15:00', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'Viana Auri', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Annisa Chikal Rahmadani', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Ratu Nadya Hidayat', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Nabillah Safitri', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Siska Nurmala', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Novi Kusumawati', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Lutfiah Aini', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Sesilia Ardiani', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Indah Pemba Rezki', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', break:'00:00-01:00', cat:'nonpkl' }
+    { nik:'44821', nama:'NADIA ALIEFIA CHANDRA', namaShort:'NADIA A.C.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
+    { nik:'448247', nama:'DEA RAHMADANI', namaShort:'DEA R.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
+    { nik:'447637', nama:'HENNI SAPUTRI', namaShort:'HENNI S.', task:'SAMEDAY&INSTAN', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'10:00-11:00', cat:'regular' },
+    { nik:'44809', nama:'RIDA FARIDA', namaShort:'RIDA F.', task:'SAMEDAY&INSTAN', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'10:00-11:00', cat:'regular' },
+    { nik:'448239', nama:'MURTI', namaShort:'MURTI', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
+    { nik:'451675', nama:'JAMES TANUARTHA', namaShort:'JAMES T.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
+    { nik:'448472', nama:'AGUSTINA AGUSLINA HALAWA', namaShort:'AGUSTINA A.H.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'07:00-16:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
+    { nik:'44715', nama:'AYU DIAH MASITOH', namaShort:'AYU D.M.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'07:00-16:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
+    { nik:'44448', nama:'DIANA SAFITRI', namaShort:'DIANA S.', task:'SAMEDAY&INSTAN', sub:'B2C', group:'Helper Admin', shift:'09:00-17:00', shiftShort:'SIANG', break:'10:00-11:00', cat:'regular' },
+    { nik:'448198', nama:'BRENDI LEE', namaShort:'BRENDI L.', task:'HELPER CCTV', sub:'B2C', group:'Helper Admin', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
+    { nik:'447099', nama:'DIKI NUR HANIF', namaShort:'DIKI N.H.', task:'TIM SWEEPING', sub:'B2C', group:'SWEEPING', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
+    { nik:'452036', nama:'DINDA DESFIYANI', namaShort:'DINDA D.', task:'SWEEPING', sub:'B2C', group:'SWEEPING', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
+    { nik:'250081123', nama:'MUHAMAD IRVAN SAPUTRA', namaShort:'IRVAN S.', task:'LEADER ADMIN', sub:'B2C', group:'LEADER', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
+    { nik:'44122', nama:'CUCUN CUNAYAH', namaShort:'CUCUN C.', task:'LEADER ADMIN', sub:'B2C', group:'LEADER', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
+    { nik:'445084', nama:'LITA NURAENI', namaShort:'LITA N.', task:'PRINT PICKLIST', sub:'B2C', group:'JR LEADER ADMIN', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
+    { nik:'449550', nama:'UPILINA BUULOLO', namaShort:'UPILINA B.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'10:00-18:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
+    { nik:'240091093', nama:'INDRY ARDIYANI SUDIAR', namaShort:'INDRY A.S.', task:'SPV', sub:'B2C', group:'SPV', shift:'10:00-18:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
+    { nik:'449623', nama:'NADYA PASYA RAMADANI', namaShort:'NADYA P.R.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'10:00-18:00', shiftShort:'SIANG', break:'00:00-01:00', cat:'regular' },
+    { nik:'44800', nama:'CINTA NABILA', namaShort:'CINTA N.', task:'SAMEDAY&INSTAN', sub:'B2C', group:'SWEEPING', shift:'11:00-19:00', shiftShort:'SIANG', break:'16:00-00:00', cat:'regular' },
+    { nik:'43345', nama:'PUTRI WULANDARI', namaShort:'PUTRI W.', task:'SWEEPING & ONHOLD', sub:'B2C', group:'ONHOLD', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
+    { nik:'44381', nama:'NITA ANDINI', namaShort:'NITA A.', task:'SWEEPING', sub:'B2C', group:'ONHOLD', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
+    { nik:'447085', nama:'SINTA PRASETYA', namaShort:'SINTA P.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
+    { nik:'449440', nama:'ANGKASA MANGGALA MUKTI', namaShort:'ANGKASA M.M.', task:'TIM SWEEPING', sub:'B2C', group:'SWEEPING', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
+    { nik:'447216', nama:'MARIA OCTAVIANI', namaShort:'MARIA O.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
+    { nik:'446002', nama:'TIYO WAHYUDI', namaShort:'TIYO W.', task:'RECONCILE', sub:'B2C', group:'Admin B2C', shift:'15:00-23:00', shiftShort:'SORE', break:'18:00-19:00', cat:'regular' },
+    { nik:'44515', nama:'UNIK GANDA REZEKI', namaShort:'UNIK G.R.', task:'PRINT PICKLIST', sub:'B2C', group:'JR LEADER ADMIN', shift:'16:00-00:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
+    { nik:'449594', nama:'MUHAMMAD FAREL ADRIYANA', namaShort:'FAREL A.', task:'HELPER CCTV', sub:'B2C', group:'Helper Admin', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
+    { nik:'450282', nama:'SUGIARTO', namaShort:'SUGIARTO', task:'TIM SWEEPING', sub:'B2C', group:'SWEEPING', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
+    { nik:'449151', nama:'NADIA NUR RAMADHANI', namaShort:'NADIA N.R.', task:'SWEEPING', sub:'B2C', group:'SWEEPING', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
+    { nik:'44901', nama:'FAIRUZ', namaShort:'FAIRUZ', task:'SWEEPING', sub:'B2C', group:'SWEEPING', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
+    { nik:'448991', nama:'NAZWA TEGAR JANUARI', namaShort:'NAZWA T.J.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
+    { nik:'2607099', nama:'HAMELIA WULANDARI', namaShort:'HAMELIA W.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
+    { nik:'453057', nama:'SYIFA SYAHIRA', namaShort:'SYIFA S.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
+    { nik:'452992', nama:'ADAM RIZA NOVALDI', namaShort:'ADAM R.N.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
+    { nik:'24051069', nama:'SALSABILA', namaShort:'SALSABILA', task:'KOORDINATOR', sub:'B2C', group:'KOORDINATOR', shift:'21:00-05:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
+    { nik:'452425', nama:'AYU NOVITASARI', namaShort:'AYU N.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'21:00-05:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
+    { nik:'44441', nama:'HULFANA HUSNA', namaShort:'HULFANA H.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'21:00-05:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
+    { nik:'448128', nama:'NURUL HASANAH', namaShort:'NURUL H.', task:'SWEEPING & ONHOLD', sub:'B2C', group:'SWEEPING', shift:'21:00-05:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
+    { nik:'449762', nama:'TUANI SETIO IRAWAN PANDIANGAN', namaShort:'TUANI S.I.P.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', shiftShort:'OFF', break:'-', cat:'regular' },
+    { nik:'452766', nama:'NADIA SHAKILA HERDIANA', namaShort:'NADIA S.H.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', shiftShort:'OFF', break:'-', cat:'regular' },
+    { nik:'447794', nama:'DESITILA WARUWU', namaShort:'DESITILA W.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', shiftShort:'OFF', break:'-', cat:'regular' },
+    { nik:'447071', nama:'ABDUL MUHOLIK', namaShort:'ABDUL M.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', shiftShort:'OFF', break:'-', cat:'regular' },
+    { nik:'240041052', nama:'TULUS OCTAFIAYUB', namaShort:'TULUS O.', task:'SPV BRANCHES', sub:'OUTBOUND', group:'SPV BRANCHES', shift:'10:00-18:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
+    { nik:'-', nama:'ZAHROTU SYITA', namaShort:'ZAHROTU S.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'AURA RAHAYU', namaShort:'AURA R.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'GRACE KARTIKA ANATASYA MANULLANG', namaShort:'GRACE K.A.M.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'LUTFI ZULFIAH', namaShort:'LUTFI Z.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'REVA AULIA', namaShort:'REVA A.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'ALISHA', namaShort:'ALISHA', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'FITRI', namaShort:'FITRI', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'AMANDA NOPIANTI', namaShort:'AMANDA N.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'CLAURA WIDYA PREYANSYAH', namaShort:'CLAURA W.P.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'ZULFIAH MANSURIA PRADITA', namaShort:'ZULFIAH M.P.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'07:00-15:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'pkl' },
+    { nik:'-', nama:'Viana Auri', namaShort:'Viana A.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
+    { nik:'-', nama:'Annisa Chikal Rahmadani', namaShort:'Annisa C.R.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
+    { nik:'-', nama:'Ratu Nadya Hidayat', namaShort:'Ratu N.H.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
+    { nik:'-', nama:'Nabillah Safitri', namaShort:'Nabillah S.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
+    { nik:'-', nama:'Siska Nurmala', namaShort:'Siska N.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
+    { nik:'-', nama:'Novi Kusumawati', namaShort:'Novi K.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
+    { nik:'-', nama:'Lutfiah Aini', namaShort:'Lutfiah A.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
+    { nik:'-', nama:'Sesilia Ardiani', namaShort:'Sesilia A.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
+    { nik:'-', nama:'Indah Pemba Rezki', namaShort:'Indah P.R.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' }
   ],
   tasks: ['PRINT PICKLIST','SUPPLY PICKLIST','SAMEDAY&INSTAN','TIM SWEEPING','SWEEPING','SWEEPING & ONHOLD','HELPER CCTV','LEADER ADMIN','PERBANTUAN SOBEK','RECONCILE','SPV','SPV BRANCHES','KOORDINATOR'],
   groups: ['Helper Admin','SWEEPING','ONHOLD','LEADER','JR LEADER ADMIN','Admin B2C','SPV','SPV BRANCHES','KOORDINATOR','PKL','NON PKL'],
@@ -933,11 +1045,11 @@ const SEED_OCT_1 = [
   ['447071','ABDUL MOHOLIK','SUPPLY PICKLIST','B2C','Helper Admin','OFF','-']
 ];
 
-const KEY = 'dashboard_hybrid_v2';
+const KEY = 'dashboard_hybrid_v4';
 let state = {
   master: JSON.parse(JSON.stringify(DEFAULT_MASTER)),
   schedule: {},
-  rekapProfile: { name:'Tiyo Wahyudi', company:'PT Flexo Solusi Indonesia', position:'Staff Produksi', nip:'-' },
+  rekapProfile: { name:'Tiyo Wahyudi', company:'PT Flexo Solusi Indonesia', position:'Admin B2C', nip:'446002' },
   rekapCurrent: { year: new Date().getFullYear(), month: new Date().getMonth() },
   rekapMonths: {},
   payrollPeriod: 'bulanan'
@@ -951,7 +1063,23 @@ function seedInitial(){
 function load(){
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw){ seedInitial(); return; }
+    if (!raw){
+      // migrate from v3 / v2
+      const old = localStorage.getItem('dashboard_hybrid_v3') || localStorage.getItem('dashboard_hybrid_v2');
+      if (old){
+        try {
+          const p = JSON.parse(old);
+          if (p.master) state.master = Object.assign(state.master, p.master);
+          if (p.schedule) state.schedule = p.schedule;
+          if (p.rekapProfile) state.rekapProfile = Object.assign(state.rekapProfile, p.rekapProfile);
+          if (p.rekapCurrent) state.rekapCurrent = p.rekapCurrent;
+          if (p.rekapMonths) state.rekapMonths = p.rekapMonths;
+          if (p.payrollPeriod) state.payrollPeriod = p.payrollPeriod;
+        } catch(e){}
+      }
+      seedInitial();
+      return;
+    }
     const p = JSON.parse(raw);
     if (p.master) state.master = Object.assign(state.master, p.master);
     if (p.schedule) state.schedule = p.schedule;
@@ -994,7 +1122,7 @@ function absRenderQuickPanel(){
     if (cat === 'nonpkl' && e.cat !== 'nonpkl') return false;
     if (cat === 'regular' && (e.cat === 'pkl' || e.cat === 'nonpkl')) return false;
     if (!q) return true;
-    return [e.nik, e.nama, e.task, e.group, e.shift].some(v => String(v||'').toLowerCase().includes(q));
+    return [e.nik, e.nama, e.namaShort, e.task, e.group, e.shift].some(v => String(v||'').toLowerCase().includes(q));
   });
   if (!list.length){ panel.innerHTML = '<p class="text-[12px] text-ink-400 italic p-4 col-span-full text-center">Tidak ada yang cocok.</p>'; $('absQuickStats').textContent = '0'; $('absQuickStatsMobile').textContent = '0 karyawan'; return; }
   panel.innerHTML = list.map(e => {
@@ -1002,11 +1130,12 @@ function absRenderQuickPanel(){
     const off = isOff(e.shift);
     const catCls = e.cat === 'pkl' ? 'pkl' : e.cat === 'nonpkl' ? 'nonpkl' : '';
     const badge = e.cat === 'pkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PKL</span>' : e.cat === 'nonpkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">NP</span>' : '';
-    const name = isMobile() ? e.nama.split(' ').slice(0,2).join(' ') : e.nama;
+    const name = isMobile() ? (e.namaShort || autoShortName(e.nama)) : e.nama;
+    const shiftDisplay = displayMode === 'short' ? (e.shiftShort || autoShortShift(e.shift)) : e.shift;
     return `<div class="emp-card ${isAdded ? 'added' : ''} ${catCls}" onclick="absQuickAdd('${esc(e.nama).replace(/'/g,"\\'")}')">
       <div class="text-[12px] font-bold text-ink-800 truncate leading-tight pr-4">${esc(name)}</div>
       <div class="text-[10.5px] text-ink-400 font-medium mt-0.5">${esc(e.nik || '-')}</div>
-      <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">${badge}<span class="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-ink-100 text-ink-600">${esc(e.group || '—')}</span><span class="text-[9.5px] font-semibold px-1.5 py-0.5 rounded ${off ? 'bg-rose-100 text-rose-600' : 'bg-sky-100 text-sky-700'}">${esc(e.shift || '—')}</span></div>
+      <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">${badge}<span class="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-ink-100 text-ink-600">${esc(e.group || '—')}</span><span class="text-[9.5px] font-semibold px-1.5 py-0.5 rounded ${off ? 'bg-rose-100 text-rose-600' : 'bg-sky-100 text-sky-700'}">${esc(shiftDisplay || '—')}</span></div>
     </div>`;
   }).join('');
   $('absQuickStats').textContent = `${list.length} dari ${state.master.employees.length} · ${today.length} ditambahkan`;
@@ -1035,7 +1164,7 @@ function absAddAll(){
     if (cat === 'nonpkl' && e.cat !== 'nonpkl') return false;
     if (cat === 'regular' && (e.cat === 'pkl' || e.cat === 'nonpkl')) return false;
     if (!q) return true;
-    return [e.nik, e.nama, e.task, e.group, e.shift].some(v => String(v||'').toLowerCase().includes(q));
+    return [e.nik, e.nama, e.namaShort, e.task, e.group, e.shift].some(v => String(v||'').toLowerCase().includes(q));
   });
   if (!list.length){ toast('warning', 'Tidak ada karyawan baru'); return; }
   if (!confirm(`Tambahkan ${list.length} karyawan?`)) return;
@@ -1078,11 +1207,17 @@ function absRenderTable(){
     return `<tr class="${rowBg} border-b border-ink-100 hover:bg-ink-50/60 transition-colors" data-idx="${idx}">
       <td class="px-2 py-1 text-center text-[11px] font-medium text-ink-400 tabular-nums">${idx+1}</td>
       <td class="px-1 py-1"><input class="cell-input" data-field="nik" value="${esc(item.nik)}" list="dlNIKx"></td>
-      <td class="px-1 py-1"><input class="cell-input !text-left" data-field="nama" value="${esc(item.nama)}" list="dlNamaX"></td>
+      <td class="px-1 py-1">
+        <input class="cell-input !text-left" data-field="nama" value="${esc(item.nama)}" list="dlNamaX">
+        <div class="text-[10px] ${displayMode === 'short' ? 'text-sky-600 font-semibold' : 'text-ink-400'} px-1.5 mt-0.5 truncate">${esc(getDisplayName(item))}</div>
+      </td>
       <td class="px-1 py-1"><input class="cell-input" data-field="task" value="${esc(item.task)}" list="dlTask"></td>
       <td class="px-1 py-1"><input class="cell-input" data-field="sub" value="${esc(item.sub)}" list="dlSub"></td>
       <td class="px-1 py-1"><input class="cell-input" data-field="group" value="${esc(item.group)}" list="dlGroup"></td>
-      <td class="px-1 py-1"><input class="cell-input ${off?'is-off':''}" data-field="shift" value="${esc(item.shift)}" list="dlShift"></td>
+      <td class="px-1 py-1">
+        <input class="cell-input ${off?'is-off':''}" data-field="shift" value="${esc(item.shift)}" list="dlShift">
+        <div class="text-[10px] text-center ${off?'text-rose-500 font-bold':'text-sky-600 font-bold'}">${esc(getDisplayShift(item))}</div>
+      </td>
       <td class="px-1 py-1"><input class="cell-input" data-field="break" value="${esc(item.break)}" list="dlBreak"></td>
       <td class="px-2 py-1 text-center whitespace-nowrap">
         <button onclick="absRefill(${idx})" class="text-ink-400 hover:text-emerald-600 text-[13px] leading-none px-1" title="Isi ulang">↻</button>
@@ -1096,17 +1231,19 @@ function absRenderTable(){
     const isNonPkl = item.sub === 'NON PKL' || item.group === 'NON PKL';
     const badge = isPkl ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PKL</span>' : isNonPkl ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">NON-PKL</span>' : '';
     const shiftCls = off ? 'bg-rose-100 text-rose-700' : 'bg-sky-100 text-sky-700';
-    const initials = item.nama.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+    const shortName = getDisplayName(item);
+    const shortShift = getDisplayShift(item);
+    const initials = (shortName || item.nama).split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
     return `<div class="att-card ${off ? 'is-off' : ''}" data-idx="${idx}">
       <div class="flex items-center gap-2.5">
         <div class="w-9 h-9 rounded-full ${off ? 'bg-rose-200 text-rose-800' : 'bg-ink-900 text-white'} flex items-center justify-center font-bold text-[11px] shrink-0">${initials}</div>
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <p class="text-[13px] font-bold text-ink-900 leading-tight truncate">${esc(item.nama)}</p>${badge}
+            <p class="text-[13px] font-bold text-ink-900 leading-tight truncate">${esc(shortName)}</p>${badge}
           </div>
           <p class="text-[10.5px] text-ink-500 mt-0.5">${esc(item.nik||'-')} · ${esc(item.task||'-')}</p>
         </div>
-        <span class="text-[10px] font-bold px-2 py-1 rounded-full ${shiftCls} shrink-0">${esc(item.shift||'—')}</span>
+        <span class="text-[10px] font-bold px-2 py-1 rounded-full ${shiftCls} shrink-0">${esc(shortShift)}</span>
       </div>
       <button onclick="toggleAttEdit(${idx})" class="mt-2 w-full text-left flex items-center justify-between text-[11px] font-semibold text-ink-500 hover:text-ink-800 py-1">
         <span><i class="fa-solid fa-pen-to-square text-[10px] mr-1"></i> Ubah / Hapus</span>
@@ -1200,14 +1337,13 @@ function absBindTable(){
         ? state.master.employees.find(e => String(e.nik) === t.value.trim())
         : state.master.employees.find(e => e.nama === t.value.trim().toUpperCase());
       if (p){
-        ['nik','nama','task','sub','group','shift','break'].forEach(f => { if (f !== field && p[f]){ item[f] = p[f]; const inp = tr.querySelector(`input[data-field="${f}"]`); if (inp) inp.value = p[f]; } });
-        const sh = tr.querySelector(`input[data-field="shift"]`);
-        if (sh){ const off = isOff(item.shift); sh.classList.toggle('is-off', off); tr.classList.toggle('row-off', off); }
+        ['nik','nama','task','sub','group','shift','break'].forEach(f => { if (f !== field && p[f]){ item[f] = p[f]; } });
+        absRenderTable();
+        return;
       }
     }
-    if (field === 'shift'){ const off = isOff(t.value); t.classList.toggle('is-off', off); tr.classList.toggle('row-off', off); }
     persist();
-    if (field === 'nama') absRenderQuickPanel();
+    if (field === 'nama' || field === 'shift') absRenderTable();
   });
   $('absCardList').addEventListener('input', e => {
     const t = e.target;
@@ -1232,24 +1368,28 @@ function absRenderEmpTable(){
     return `<tr class="hover:bg-ink-50/60 ${catColor}">
       <td class="px-1 py-0.5"><input data-emp="${i}" data-f="nik" value="${esc(e.nik)}" class="cell-input !text-[11.5px]"></td>
       <td class="px-1 py-0.5"><input data-emp="${i}" data-f="nama" value="${esc(e.nama)}" class="cell-input !text-[11.5px] !text-left"></td>
+      <td class="px-1 py-0.5 bg-sky-50/40"><input data-emp="${i}" data-f="namaShort" value="${esc(e.namaShort||'')}" placeholder="auto" class="cell-input !text-[11.5px] !text-left !bg-transparent"></td>
       <td class="px-1 py-0.5"><input data-emp="${i}" data-f="task" value="${esc(e.task)}" class="cell-input !text-[11.5px]" list="dlTask"></td>
       <td class="px-1 py-0.5"><input data-emp="${i}" data-f="sub" value="${esc(e.sub)}" class="cell-input !text-[11.5px]" list="dlSub"></td>
       <td class="px-1 py-0.5"><input data-emp="${i}" data-f="group" value="${esc(e.group)}" class="cell-input !text-[11.5px]" list="dlGroup"></td>
       <td class="px-1 py-0.5"><input data-emp="${i}" data-f="shift" value="${esc(e.shift)}" class="cell-input !text-[11.5px]" list="dlShift"></td>
+      <td class="px-1 py-0.5 bg-sky-50/40"><input data-emp="${i}" data-f="shiftShort" value="${esc(e.shiftShort||'')}" placeholder="auto" class="cell-input !text-[11.5px] !bg-transparent"></td>
       <td class="px-1 py-0.5"><input data-emp="${i}" data-f="break" value="${esc(e.break)}" class="cell-input !text-[11.5px]" list="dlBreak"></td>
       <td class="px-2 py-0.5 text-center"><button onclick="absRemoveEmployee(${i})" class="text-ink-300 hover:text-rose-500 text-sm leading-none px-1">×</button></td>
     </tr>`;
-  }).join('') || '<tr><td colspan="8" class="px-3 py-4 text-center text-[11.5px] text-ink-400 italic">Belum ada</td></tr>';
+  }).join('') || '<tr><td colspan="10" class="px-3 py-4 text-center text-[11.5px] text-ink-400 italic">Belum ada</td></tr>';
 
   $('empMobileList').innerHTML = state.master.employees.map((e, i) => {
     const catColor = e.cat === 'pkl' ? 'border-l-amber-400' : e.cat === 'nonpkl' ? 'border-l-violet-400' : 'border-l-ink-200';
     const badge = e.cat === 'pkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PKL</span>' : e.cat === 'nonpkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">NP</span>' : '';
-    const initials = e.nama.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+    const shortName = e.namaShort || autoShortName(e.nama);
+    const shortShift = e.shiftShort || autoShortShift(e.shift);
+    const initials = shortName.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
     return `<div class="bg-white rounded-xl border border-ink-200 border-l-4 ${catColor} p-3 flex items-center gap-2.5">
       <div class="w-9 h-9 rounded-full bg-ink-100 text-ink-700 flex items-center justify-center font-bold text-[11px] shrink-0">${initials}</div>
       <div class="min-w-0 flex-1">
-        <div class="flex items-center gap-1.5 flex-wrap"><p class="text-[13px] font-bold text-ink-900 truncate">${esc(e.nama)}</p>${badge}</div>
-        <p class="text-[10.5px] text-ink-500 truncate mt-0.5">${esc(e.nik||'-')} · ${esc(e.task||'-')} · ${esc(e.shift||'-')}</p>
+        <div class="flex items-center gap-1.5 flex-wrap"><p class="text-[13px] font-bold text-ink-900 truncate">${esc(shortName)}</p>${badge}</div>
+        <p class="text-[10.5px] text-ink-500 truncate mt-0.5">${esc(e.nik||'-')} · ${esc(e.task||'-')} · <span class="text-sky-600 font-semibold">${esc(shortShift)}</span></p>
       </div>
       <button onclick="absRemoveEmployee(${i})" class="w-9 h-9 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
         <i class="fa-solid fa-trash text-[12px]"></i>
@@ -1269,19 +1409,22 @@ function absRenderEmpTable(){
 function absAddEmployee(){
   const nik = $('empNIK').value.trim();
   const nama = $('empNama').value.trim().toUpperCase();
+  const namaShort = ($('empNameShort')?.value || '').trim().toUpperCase();
   const task = $('empTask').value.trim();
   const sub = $('empSub').value.trim();
   const group = $('empGroup').value.trim();
   const shift = $('empShift').value.trim();
+  const shiftShort = ($('empShiftShort')?.value || '').trim().toUpperCase();
   const brk = $('empBreak').value.trim();
   if (!nama){ toast('warning','Nama wajib'); return; }
   let cat = 'regular';
   if (sub === 'PKL' || group === 'PKL') cat = 'pkl';
   else if (sub === 'NON PKL' || group === 'NON PKL') cat = 'nonpkl';
-  state.master.employees.push({ nik: nik||'-', nama, task, sub, group, shift, break: brk, cat });
-  ['empNIK','empNama','empTask','empSub','empGroup','empShift','empBreak'].forEach(id => $(id).value = '');
+  state.master.employees.push({ nik: nik||'-', nama, namaShort, task, sub, group, shift, shiftShort, break: brk, cat });
+  ['empNIK','empNama','empNameShort','empTask','empSub','empGroup','empShift','empShiftShort','empBreak'].forEach(id => { if ($(id)) $(id).value = ''; });
   $('empNama').focus();
   absRenderEmpTable(); absRefreshDatalists(); persist();
+  toast('success', 'Karyawan ditambahkan');
 }
 function absRemoveEmployee(i){
   if (!confirm(`Hapus "${state.master.employees[i].nama}"?`)) return;
@@ -1296,7 +1439,7 @@ document.addEventListener('input', e => {
     state.master.employees[i][f] = t.value;
     if (f === 'sub' || f === 'group'){ const v = String(t.value).toUpperCase(); if (v === 'PKL') state.master.employees[i].cat = 'pkl'; else if (v === 'NON PKL') state.master.employees[i].cat = 'nonpkl'; }
     persist();
-    if (f === 'nama' || f === 'nik') absRenderQuickPanel();
+    if (f === 'nama' || f === 'nik' || f === 'namaShort' || f === 'shift' || f === 'shiftShort') absRenderQuickPanel();
   }
 });
 function absResetMaster(){
@@ -1314,8 +1457,12 @@ function absExportCSV(){
   const iso = absCurrentDate();
   const data = absGetDay(iso);
   if (!data.length){ toast('warning','Tidak ada data'); return; }
-  let csv = '\uFEFF' + `SCHEDULE — ${formatDateID(iso)}\n\nNo;NIK;Nama;Task;Sub Section;Group;Shift;Break Time\n`;
-  data.forEach((d, i) => { csv += `${i+1};${d.nik};"${d.nama}";"${d.task}";"${d.sub}";"${d.group}";"${d.shift}";"${d.break}"\n`; });
+  let csv = '\uFEFF' + `SCHEDULE — ${formatDateID(iso)}\n\nNo;NIK;Nama;Nama Pendek;Task;Sub;Group;Shift;Shift Pendek;Break\n`;
+  data.forEach((d, i) => {
+    const shortName = getDisplayName(d);
+    const shortShift = getDisplayShift(d);
+    csv += `${i+1};${d.nik};"${d.nama}";"${shortName}";"${d.task}";"${d.sub}";"${d.group}";"${d.shift}";"${shortShift}";"${d.break}"\n`;
+  });
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1369,51 +1516,62 @@ function buildCaptureHTML(iso, data){
     const isPkl = d.sub === 'PKL' || d.group === 'PKL';
     const isNonPkl = d.sub === 'NON PKL' || d.group === 'NON PKL';
     const bg = off2 ? '#fef2f2' : isPkl ? '#fffbeb' : isNonPkl ? '#f5f3ff' : (i % 2 ? '#f8fafc' : '#ffffff');
-    const badge = isPkl ? '<span style="font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:99px;background:#fef3c7;color:#b45309;margin-left:5px;">PKL</span>' : isNonPkl ? '<span style="font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:99px;background:#ede9fe;color:#6d28d9;margin-left:5px;">NON-PKL</span>' : '';
+    const badge = isPkl ? '<span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:99px;background:#fef3c7;color:#b45309;margin-left:6px;">PKL</span>' : isNonPkl ? '<span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:99px;background:#ede9fe;color:#6d28d9;margin-left:6px;">NON-PKL</span>' : '';
+    const displayName = getDisplayName(d);
+    const displayShift = getDisplayShift(d);
     return `<tr style="background:${bg};">
-      <td style="padding:5px 8px;text-align:center;color:#94a3b8;font-size:10.5px;border-bottom:1px solid #e2e8f0;">${i+1}</td>
-      <td style="padding:5px 8px;color:#334155;font-size:11px;font-weight:600;border-bottom:1px solid #e2e8f0;white-space:nowrap;">${esc(d.nik||'-')}</td>
-      <td style="padding:5px 8px;color:#0f172a;font-size:11px;font-weight:700;border-bottom:1px solid #e2e8f0;white-space:nowrap;">${esc(d.nama)}${badge}</td>
-      <td style="padding:5px 8px;color:#475569;font-size:10.5px;border-bottom:1px solid #e2e8f0;">${esc(d.task||'-')}</td>
-      <td style="padding:5px 8px;text-align:center;color:#475569;font-size:10.5px;border-bottom:1px solid #e2e8f0;">${esc(d.sub||'-')}</td>
-      <td style="padding:5px 8px;color:#475569;font-size:10.5px;border-bottom:1px solid #e2e8f0;">${esc(d.group||'-')}</td>
-      <td style="padding:5px 8px;text-align:center;border-bottom:1px solid #e2e8f0;"><span style="display:inline-block;padding:1.5px 7px;border-radius:99px;font-size:10px;font-weight:700;background:${off2?'#fee2e2':'#dbeafe'};color:${off2?'#b91c1c':'#1d4ed8'};">${esc(d.shift||'-')}</span></td>
-      <td style="padding:5px 8px;text-align:center;color:#64748b;font-size:10px;border-bottom:1px solid #e2e8f0;">${esc(d.break||'-')}</td>
+      <td style="padding:8px 10px;text-align:center;color:#94a3b8;font-size:13px;border-bottom:1px solid #e2e8f0;">${i+1}</td>
+      <td style="padding:8px 10px;color:#334155;font-size:13px;font-weight:600;border-bottom:1px solid #e2e8f0;white-space:nowrap;">${esc(d.nik||'-')}</td>
+      <td style="padding:8px 10px;color:#0f172a;font-size:14px;font-weight:700;border-bottom:1px solid #e2e8f0;white-space:nowrap;">${esc(displayName)}${badge}</td>
+      <td style="padding:8px 10px;color:#475569;font-size:13px;border-bottom:1px solid #e2e8f0;">${esc(d.task||'-')}</td>
+      <td style="padding:8px 10px;text-align:center;color:#475569;font-size:13px;border-bottom:1px solid #e2e8f0;">${esc(d.sub||'-')}</td>
+      <td style="padding:8px 10px;color:#475569;font-size:13px;border-bottom:1px solid #e2e8f0;">${esc(d.group||'-')}</td>
+      <td style="padding:8px 10px;text-align:center;border-bottom:1px solid #e2e8f0;"><span style="display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;background:${off2?'#fee2e2':'#dbeafe'};color:${off2?'#b91c1c':'#1d4ed8'};">${esc(displayShift)}</span></td>
+      <td style="padding:8px 10px;text-align:center;color:#64748b;font-size:12px;border-bottom:1px solid #e2e8f0;">${esc(d.break||'-')}</td>
     </tr>`;
   }).join('');
-  const statBox = (l, v, c) => `<td style="padding:0 10px;text-align:center;"><div style="font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:.08em;text-transform:uppercase;">${l}</div><div style="font-size:20px;font-weight:800;color:${c};margin-top:2px;line-height:1;">${v}</div></td>`;
-  return `<div style="font-family:Inter,Arial,sans-serif;background:#fff;padding:24px 22px 20px;width:880px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid #0f172a;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:40px;height:40px;border-radius:10px;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;">📅</div>
-        <div><div style="font-size:15px;font-weight:800;color:#0f172a;">Schedule Karyawan</div><div style="font-size:10.5px;color:#64748b;margin-top:1px;">PT Flexo Solusi Indonesia · Divisi B2C</div></div>
+  const statBox = (l, v, c) => `<td style="padding:0 14px;text-align:center;"><div style="font-size:12px;font-weight:700;color:#94a3b8;letter-spacing:.08em;text-transform:uppercase;">${l}</div><div style="font-size:28px;font-weight:800;color:${c};margin-top:6px;line-height:1;">${v}</div></td>`;
+  return `<div style="font-family:Inter,Arial,sans-serif;background:#fff;padding:40px 36px 32px;width:1400px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:22px;border-bottom:3px solid #0f172a;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="width:64px;height:64px;border-radius:14px;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;">📅</div>
+        <div>
+          <div style="font-size:24px;font-weight:800;color:#0f172a;letter-spacing:-.02em;">Schedule Karyawan</div>
+          <div style="font-size:15px;color:#64748b;margin-top:3px;">PT Flexo Solusi Indonesia · Divisi B2C</div>
+        </div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:.1em;text-transform:uppercase;">Tanggal</div>
-        <div style="font-size:13px;font-weight:800;color:#0f172a;margin-top:2px;">${dateLabel}</div>
-        <div style="font-size:9.5px;color:#94a3b8;margin-top:1px;">${timeLabel}</div>
+        <div style="font-size:12px;font-weight:700;color:#94a3b8;letter-spacing:.1em;text-transform:uppercase;">Tanggal</div>
+        <div style="font-size:20px;font-weight:800;color:#0f172a;margin-top:4px;">${dateLabel}</div>
+        <div style="font-size:13px;color:#94a3b8;margin-top:2px;">${timeLabel}</div>
       </div>
     </div>
-    <div style="padding:14px 0 12px;">
+    <div style="padding:24px 0 20px;">
       <table style="width:100%;border-collapse:collapse;"><tr>${statBox('Total', data.length, '#0f172a')}${statBox('Masuk', masuk, '#059669')}${statBox('OFF', off, '#dc2626')}${statBox('Malam', malam, '#4f46e5')}${statBox('PKL/Non', pkl, '#d97706')}</tr></table>
     </div>
-    <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+    <div style="border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;">
       <table style="width:100%;border-collapse:collapse;">
         <thead><tr style="background:#0f172a;">
-          <th style="padding:9px 8px;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;text-align:center;width:36px;">No</th>
-          <th style="padding:9px 8px;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;text-align:left;width:72px;">NIK</th>
-          <th style="padding:9px 8px;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;text-align:left;">Nama</th>
-          <th style="padding:9px 8px;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;text-align:left;">Task</th>
-          <th style="padding:9px 8px;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;text-align:center;width:50px;">Sub</th>
-          <th style="padding:9px 8px;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;text-align:left;width:110px;">Group</th>
-          <th style="padding:9px 8px;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;text-align:center;width:90px;">Shift</th>
-          <th style="padding:9px 8px;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;text-align:center;width:80px;">Break</th>
+          <th style="padding:14px 10px;color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:center;width:52px;">No</th>
+          <th style="padding:14px 10px;color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:left;width:100px;">NIK</th>
+          <th style="padding:14px 10px;color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:left;">Nama</th>
+          <th style="padding:14px 10px;color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:left;">Task</th>
+          <th style="padding:14px 10px;color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:center;width:70px;">Sub</th>
+          <th style="padding:14px 10px;color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:left;width:160px;">Group</th>
+          <th style="padding:14px 10px;color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:center;width:130px;">Shift</th>
+          <th style="padding:14px 10px;color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:center;width:110px;">Break</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
-    <div style="margin-top:14px;padding-top:10px;border-top:1px solid #e2e8f0;text-align:center;font-size:9px;color:#94a3b8;">${data.length} karyawan · ${masuk} masuk · ${off} off · ${malam} malam · ${pkl} PKL/Non</div>
-  </div>`;
+    <div style="margin-top:22px;padding-top:16px;border-top:2px solid #e2e8f0;text-align:center;">
+  <div style="font-size:13px;color:#94a3b8;">
+    ${data.length} karyawan · ${masuk} masuk · ${off} off · ${malam} malam · ${pkl} PKL/Non
+  </div>
+  <div style="font-size:12px;color:#64748b;margin-top:6px;">
+    Rekap ini dibuat oleh <span style="font-weight:700;color:#0f172a;">@tyowhydi</span>
+  </div>
+</div>`;
 }
 
 /* ========== REKAP ========== */
@@ -1773,71 +1931,118 @@ function rkExportCSV(){
   URL.revokeObjectURL(url);
   toast('success','CSV tersimpan');
 }
+
+/* ====== REPORT: TANPA TANDA TANGAN, LEBIH BESAR ====== */
 function rkOpenReport(){
   const { year, month } = state.rekapCurrent;
   const periodData = rkGetPeriodData();
   const s = rkComputeStats(periodData);
   const p = state.rekapProfile; const r = rkGetRange();
   const periodName = state.payrollPeriod === 'bulanan' ? 'Laporan Bulanan' : state.payrollPeriod === 'p1' ? 'Periode 1 (1–15)' : 'Periode 2 (16–Akhir)';
+
   const rows = periodData.map((it, i) => {
     const hex = (RK_STATUS[it.status]||RK_STATUS.Masuk).hex;
     return `<tr style="background:${i%2?'#fafbfc':'#ffffff'}">
-      <td style="padding:5px 9px;text-align:center;color:#8e96a1;font-size:10px;border-bottom:1px solid #eceef1;">${it.no}</td>
-      <td style="padding:5px 9px;color:#232930;font-size:11px;font-weight:600;border-bottom:1px solid #eceef1;white-space:nowrap;">${it.no} ${MONTH_SHORT[month]} ${year}</td>
-      <td style="padding:5px 9px;color:#5f6874;font-size:11px;border-bottom:1px solid #eceef1;">${it.day}</td>
-      <td style="padding:5px 9px;border-bottom:1px solid #eceef1;"><span style="display:inline-block;padding:1.5px 8px;border-radius:99px;font-size:9px;font-weight:700;background:${hex.bg};color:${hex.fg};">${it.status}</span></td>
-      <td style="padding:5px 9px;text-align:center;color:#d97706;font-size:11px;font-weight:800;border-bottom:1px solid #eceef1;">${it.ot||0}</td>
-      <td style="padding:5px 9px;color:#5f6874;font-size:10px;border-bottom:1px solid #eceef1;">${esc(it.note||'—')}</td>
+      <td style="padding:12px 14px;text-align:center;color:#8e96a1;font-size:15px;border-bottom:1px solid #eceef1;">${it.no}</td>
+      <td style="padding:12px 14px;color:#232930;font-size:16px;font-weight:600;border-bottom:1px solid #eceef1;white-space:nowrap;">${String(it.no).padStart(2,'0')} ${MONTH_SHORT[month]} ${year}</td>
+      <td style="padding:12px 14px;color:#5f6874;font-size:16px;border-bottom:1px solid #eceef1;">${it.day}</td>
+      <td style="padding:12px 14px;border-bottom:1px solid #eceef1;"><span style="display:inline-block;padding:5px 14px;border-radius:99px;font-size:14px;font-weight:700;background:${hex.bg};color:${hex.fg};">${it.status}</span></td>
+      <td style="padding:12px 14px;text-align:center;color:#d97706;font-size:16px;font-weight:800;border-bottom:1px solid #eceef1;">${it.ot||0}</td>
+      <td style="padding:12px 14px;color:#5f6874;font-size:15px;border-bottom:1px solid #eceef1;">${esc(it.note||'—')}</td>
     </tr>`;
   }).join('');
-  const statCell = (l, v, c) => `<td style="width:16.66%;padding:0 8px;text-align:center;"><div style="font-size:9px;font-weight:600;color:#8e96a1;text-transform:uppercase;">${l}</div><div style="font-size:20px;font-weight:700;color:${c};margin-top:3px;line-height:1;">${v}</div></td>`;
-  const html = `<div style="font-family:Inter,Arial,sans-serif;background:#fff;padding:32px 36px 24px;">
-    <table style="width:100%;border-collapse:collapse;border-bottom:1px solid #eceef1;"><tr>
-      <td style="padding-bottom:18px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:34px;height:34px;border-radius:8px;background:#141a20;color:#fff;text-align:center;line-height:34px;font-size:14px;">✓</div>
-          <div><div style="color:#141a20;font-size:14px;font-weight:700;">${periodName}</div><div style="color:#8e96a1;font-size:10px;text-transform:uppercase;margin-top:1px;">${esc(p.company||'-')}</div></div>
-        </div>
-      </td>
-      <td style="padding-bottom:18px;text-align:right;">
-        <div style="color:#8e96a1;font-size:9px;text-transform:uppercase;">Periode</div>
-        <div style="color:#141a20;font-size:14px;font-weight:700;margin-top:2px;">${MONTH_NAMES[month]} ${year}</div>
-        <div style="color:#8e96a1;font-size:10px;">${r.label}</div>
-      </td>
-    </tr></table>
-    <table style="width:100%;border-collapse:collapse;margin-top:20px;"><tr>
-      <td style="width:25%;"><div style="font-size:9px;color:#8e96a1;text-transform:uppercase;">Nama</div><div style="font-size:12.5px;font-weight:700;color:#141a20;">${esc(p.name||'-')}</div></td>
-      <td style="width:25%;"><div style="font-size:9px;color:#8e96a1;text-transform:uppercase;">NIP</div><div style="font-size:12.5px;font-weight:600;color:#363d45;">${esc(p.nip||'-')}</div></td>
-      <td style="width:25%;"><div style="font-size:9px;color:#8e96a1;text-transform:uppercase;">Jabatan</div><div style="font-size:12.5px;font-weight:600;color:#363d45;">${esc(p.position||'-')}</div></td>
-      <td style="width:25%;"><div style="font-size:9px;color:#8e96a1;text-transform:uppercase;">Dibuat</div><div style="font-size:12.5px;font-weight:600;color:#363d45;">${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}</div></td>
-    </tr></table>
-    <div style="margin-top:22px;padding:16px 0;border-top:1px solid #eceef1;border-bottom:1px solid #eceef1;">
-      <table style="width:100%;border-collapse:collapse;"><tr>
-        ${statCell('Total', s.total, '#141a20')}${statCell('Hadir', s.hadir, '#059669')}${statCell('Off', s.off, '#5f6874')}${statCell('Absen', s.absen, '#e11d48')}${statCell('OT', s.ot + 'j', '#d97706')}${statCell('Hadir %', s.pct + '%', '#141a20')}
-      </tr></table>
+
+  const statCell = (l, v, c) => `<td style="width:16.66%;padding:0 12px;text-align:center;"><div style="font-size:13px;font-weight:600;color:#8e96a1;letter-spacing:.06em;text-transform:uppercase;">${l}</div><div style="font-size:38px;font-weight:800;color:${c};margin-top:8px;line-height:1;">${v}</div></td>`;
+
+  const html = `<div style="font-family:Inter,Arial,sans-serif;background:#fff;padding:56px 60px 48px;width:1400px;box-sizing:border-box;">
+    <!-- HEADER -->
+    <table style="width:100%;border-collapse:collapse;border-bottom:3px solid #0f172a;padding-bottom:0;">
+      <tr>
+        <td style="padding-bottom:28px;vertical-align:middle;">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:64px;height:64px;border-radius:14px;background:#141a20;color:#fff;text-align:center;line-height:64px;font-size:28px;">✓</div>
+            <div>
+              <div style="color:#141a20;font-size:24px;font-weight:800;letter-spacing:-.02em;">${periodName}</div>
+              <div style="color:#8e96a1;font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-top:4px;">${esc(p.company||'-')}</div>
+            </div>
+          </div>
+        </td>
+        <td style="padding-bottom:28px;vertical-align:middle;text-align:right;">
+          <div style="color:#8e96a1;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;">Periode</div>
+          <div style="color:#141a20;font-size:22px;font-weight:800;margin-top:4px;">${MONTH_NAMES[month]} ${year}</div>
+          <div style="color:#8e96a1;font-size:14px;font-weight:600;margin-top:2px;">${r.label}</div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- IDENTITAS -->
+    <table style="width:100%;border-collapse:collapse;margin-top:32px;">
+      <tr>
+        <td style="width:25%;vertical-align:top;padding-right:20px;">
+          <div style="font-size:12px;font-weight:700;color:#8e96a1;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Nama</div>
+          <div style="font-size:18px;font-weight:800;color:#141a20;">${esc(p.name||'-')}</div>
+        </td>
+        <td style="width:25%;vertical-align:top;padding-right:20px;">
+          <div style="font-size:12px;font-weight:700;color:#8e96a1;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">NIP</div>
+          <div style="font-size:18px;font-weight:700;color:#363d45;">${esc(p.nip||'-')}</div>
+        </td>
+        <td style="width:25%;vertical-align:top;padding-right:20px;">
+          <div style="font-size:12px;font-weight:700;color:#8e96a1;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Jabatan</div>
+          <div style="font-size:18px;font-weight:700;color:#363d45;">${esc(p.position||'-')}</div>
+        </td>
+        <td style="width:25%;vertical-align:top;">
+          <div style="font-size:12px;font-weight:700;color:#8e96a1;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Dibuat</div>
+          <div style="font-size:18px;font-weight:700;color:#363d45;">${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- STATISTIK -->
+    <div style="margin-top:40px;padding:32px 0;border-top:2px solid #eceef1;border-bottom:2px solid #eceef1;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          ${statCell('Total Hari', s.total, '#141a20')}
+          ${statCell('Hadir', s.hadir, '#059669')}
+          ${statCell('Off / Libur', s.off, '#5f6874')}
+          ${statCell('Tidak Hadir', s.absen, '#e11d48')}
+          ${statCell('Total OT', s.ot + ' j', '#d97706')}
+          ${statCell('Kehadiran', s.pct + '%', '#141a20')}
+        </tr>
+      </table>
     </div>
-    <div style="margin-top:22px;">
-      <div style="font-size:10px;font-weight:700;color:#141a20;text-transform:uppercase;margin-bottom:8px;">Detail Harian</div>
-      <table style="width:100%;border-collapse:collapse;border:1px solid #eceef1;border-radius:8px;overflow:hidden;table-layout:fixed;">
-        <colgroup><col style="width:34px;"><col style="width:100px;"><col style="width:76px;"><col style="width:100px;"><col style="width:60px;"><col></colgroup>
-        <thead><tr style="background:#f7f8f9;">
-          <th style="padding:8px 9px;color:#5f6874;font-size:9px;font-weight:700;text-align:center;border-bottom:1px solid #eceef1;">NO</th>
-          <th style="padding:8px 9px;color:#5f6874;font-size:9px;font-weight:700;text-align:left;border-bottom:1px solid #eceef1;">TGL</th>
-          <th style="padding:8px 9px;color:#5f6874;font-size:9px;font-weight:700;text-align:left;border-bottom:1px solid #eceef1;">HARI</th>
-          <th style="padding:8px 9px;color:#5f6874;font-size:9px;font-weight:700;text-align:left;border-bottom:1px solid #eceef1;">STATUS</th>
-          <th style="padding:8px 9px;color:#5f6874;font-size:9px;font-weight:700;text-align:center;border-bottom:1px solid #eceef1;">OT</th>
-          <th style="padding:8px 9px;color:#5f6874;font-size:9px;font-weight:700;text-align:left;border-bottom:1px solid #eceef1;">KET</th>
-        </tr></thead>
+
+    <!-- DETAIL HARIAN -->
+    <div style="margin-top:40px;">
+      <div style="font-size:14px;font-weight:800;color:#141a20;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;">Detail Harian</div>
+      <table style="width:100%;border-collapse:collapse;border:2px solid #eceef1;border-radius:12px;overflow:hidden;table-layout:fixed;">
+        <colgroup>
+          <col style="width:56px;">
+          <col style="width:170px;">
+          <col style="width:130px;">
+          <col style="width:180px;">
+          <col style="width:100px;">
+          <col>
+        </colgroup>
+        <thead>
+          <tr style="background:#f7f8f9;">
+            <th style="padding:14px;color:#5f6874;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:center;border-bottom:2px solid #eceef1;">NO</th>
+            <th style="padding:14px;color:#5f6874;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:left;border-bottom:2px solid #eceef1;">TANGGAL</th>
+            <th style="padding:14px;color:#5f6874;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:left;border-bottom:2px solid #eceef1;">HARI</th>
+            <th style="padding:14px;color:#5f6874;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:left;border-bottom:2px solid #eceef1;">STATUS</th>
+            <th style="padding:14px;color:#5f6874;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:center;border-bottom:2px solid #eceef1;">OT</th>
+            <th style="padding:14px;color:#5f6874;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:left;border-bottom:2px solid #eceef1;">KETERANGAN</th>
+          </tr>
+        </thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
-    <table style="width:100%;border-collapse:collapse;margin-top:32px;"><tr>
-      <td style="width:50%;"></td>
-      <td style="width:25%;text-align:center;"><div style="font-size:9.5px;color:#5f6874;padding-bottom:46px;">Dibuat,</div><div style="font-size:10.5px;font-weight:700;color:#141a20;border-top:1px solid #c2c7ce;padding-top:5px;">${esc(p.name||'-')}</div></td>
-      <td style="width:25%;text-align:center;"><div style="font-size:9.5px;color:#5f6874;padding-bottom:46px;">Disetujui,</div><div style="font-size:10.5px;font-weight:700;color:#141a20;border-top:1px solid #c2c7ce;padding-top:5px;">HRD</div></td>
-    </tr></table>
-    <div style="margin-top:20px;padding-top:10px;border-top:1px solid #eceef1;text-align:center;font-size:8.5px;color:#a3adb9;">Sistem Rekap Absensi Pribadi — ${esc(p.company||'')}</div>
+
+    <!-- FOOTER MINIMAL (tanpa tanda tangan) -->
+    <div style="margin-top:40px;padding-top:20px;border-top:1px solid #eceef1;text-align:center;letter-spacing:.04em;">
+  <div style="font-size:13px;color:#a3adb9;">Dokumen ini dihasilkan otomatis oleh Sistem Rekap Absensi Pribadi</div>
+  <div style="font-size:12px;color:#8e96a1;margin-top:6px;">Rekap ini dibuat oleh <span style="font-weight:700;color:#141a20;">@tyowhydi</span></div>
   </div>`;
+
   $('reportPreview').innerHTML = html;
   $('reportModal').classList.remove('hidden');
   document.body.classList.add('sheet-open');
@@ -1853,14 +2058,16 @@ async function downloadReport(){
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i>';
   try {
-    const canvas = await html2canvas(el, {
+    const target = el.firstElementChild || el;
+    const canvas = await html2canvas(target, {
       scale: 4,
       backgroundColor: '#ffffff',
       useCORS: true,
       logging: false,
-      width: el.scrollWidth,
-      height: el.scrollHeight,
-      windowWidth: el.scrollWidth
+      width: target.scrollWidth,
+      height: target.scrollHeight,
+      windowWidth: target.scrollWidth,
+      windowHeight: target.scrollHeight
     });
     const dataUrl = canvas.toDataURL('image/png', 1.0);
     const blob = await new Promise(r => canvas.toBlob(r, 'image/png', 1.0));
@@ -1881,6 +2088,7 @@ async function downloadReport(){
 /* ========== INIT ========== */
 function init(){
   load();
+  displayMode = localStorage.getItem('display_mode') || 'short';
   $('yearNow').textContent = new Date().getFullYear();
   $('absDateInput').value = '2026-10-01';
   absRefreshDatalists();
