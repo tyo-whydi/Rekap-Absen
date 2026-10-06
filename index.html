@@ -150,7 +150,7 @@ tailwind.config = { theme: { extend: {
         </div>
         <div class="min-w-0">
           <h1 id="headerTitle" class="text-[13.5px] md:text-sm font-bold text-ink-900 leading-tight truncate">Dashboard Absensi & Rekap</h1>
-          <p id="headerSub" class="text-[10.5px] text-ink-400 leading-tight truncate">PT Flexo Solusi Indonesia · Sistem Terpadu</p>
+          <p id="headerSub" class="text-[10.5px] text-ink-400 leading-tight truncate">PT Flexofast Solusi Indonesia · Sistem Terpadu</p>
         </div>
       </div>
       <div class="flex items-center gap-1.5" id="headerActions"></div>
@@ -527,7 +527,7 @@ tailwind.config = { theme: { extend: {
 <footer class="border-t border-ink-100 mt-auto py-6 no-print" style="padding-bottom: calc(env(safe-area-inset-bottom) + 76px);">
   <div class="max-w-[1400px] mx-auto px-5 text-center space-y-1.5">
     <p class="text-[11px] text-ink-400">
-      &copy; <span id="yearNow"></span> <span class="text-ink-600 font-medium">PT Flexo Solusi Indonesia</span>
+      &copy; <span id="yearNow"></span> <span class="text-ink-600 font-medium">PT Flexofast Solusi Indonesia</span>
     </p>
     <p class="text-[10.5px] text-ink-400">
       Rekap ini dibuat oleh <span class="font-semibold text-ink-600">@tyowhydi</span>
@@ -886,7 +886,7 @@ function switchTab(tab){
   $('navAbsensi').classList.toggle('active', tab === 'absensi');
   $('navRekap').classList.toggle('active', tab === 'rekap');
   $('headerTitle').textContent = tab === 'absensi' ? 'Dashboard Absensi & Rekap' : 'Rekap Pribadi';
-  $('headerSub').textContent = tab === 'absensi' ? 'PT Flexo Solusi Indonesia · Sistem Terpadu' : 'Kehadiran & penggajian';
+  $('headerSub').textContent = tab === 'absensi' ? 'PT Flexofast Solusi Indonesia · Sistem Terpadu' : 'Kehadiran & penggajian';
   renderHeaderActions();
   if (tab === 'absensi'){ absRenderTable(); absRenderQuickPanel(); }
   if (tab === 'rekap'){ rkRenderTable(); }
@@ -1049,7 +1049,7 @@ const KEY = 'dashboard_hybrid_v4';
 let state = {
   master: JSON.parse(JSON.stringify(DEFAULT_MASTER)),
   schedule: {},
-  rekapProfile: { name:'Tiyo Wahyudi', company:'PT Flexo Solusi Indonesia', position:'Admin B2C', nip:'446002' },
+  rekapProfile: { name:'Tiyo Wahyudi', company:'PT Flexofast Solusi Indonesia', position:'Admin B2C', nip:'446002' },
   rekapCurrent: { year: new Date().getFullYear(), month: new Date().getMonth() },
   rekapMonths: {},
   payrollPeriod: 'bulanan'
@@ -1537,7 +1537,7 @@ function buildCaptureHTML(iso, data){
         <div style="width:64px;height:64px;border-radius:14px;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;">📅</div>
         <div>
           <div style="font-size:24px;font-weight:800;color:#0f172a;letter-spacing:-.02em;">Schedule Karyawan</div>
-          <div style="font-size:15px;color:#64748b;margin-top:3px;">PT Flexo Solusi Indonesia · Divisi B2C</div>
+          <div style="font-size:15px;color:#64748b;margin-top:3px;">PT Flexofast Solusi Indonesia · Divisi B2C</div>
         </div>
       </div>
       <div style="text-align:right;">
