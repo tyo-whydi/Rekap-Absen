@@ -75,7 +75,6 @@ tailwind.config = { theme: { extend: {
   @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
   .toast { animation: slideIn .25s ease both; }
 
-  /* ============ CALENDAR ============ */
   .cal-day {
     position: relative;
     border-radius: 12px;
@@ -320,19 +319,30 @@ tailwind.config = { theme: { extend: {
 <div id="pageRekap" class="hidden flex-grow flex flex-col mobile-pad">
   <main class="flex-grow max-w-[1400px] w-full mx-auto px-3 sm:px-6 py-4 md:py-6">
 
+    <!-- Profile bar — FIXED: semua field terlihat & bisa diedit -->
     <section class="bg-white rounded-2xl border border-ink-100 p-4 md:p-5 shadow-sm mb-4">
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex items-start gap-3">
         <div id="rkAvatar" class="w-11 h-11 shrink-0 rounded-full bg-gradient-to-br from-ink-800 to-ink-900 text-white flex items-center justify-center font-bold text-[14px] shadow">--</div>
         <div class="min-w-0 flex-1">
           <input id="rkInpName" type="text" class="w-full text-[15px] font-bold text-ink-900 bg-transparent outline-none border-b border-dashed border-transparent hover:border-ink-200 focus:border-ink-800 pb-0.5 transition" placeholder="Nama Anda">
           <p class="text-[10.5px] text-ink-400 mt-0.5">
-            <span id="rkRoleLabel">Admin B2C</span> · NIP <span id="rkNipLabel">446002</span> · <span class="text-emerald-600 font-semibold"><i class="fa-solid fa-pen text-[9px]"></i> Ketuk untuk ubah</span>
+            <span id="rkRoleLabel">Admin B2C</span> · NIP <span id="rkNipLabel">446002</span>
           </p>
         </div>
-        <div class="flex items-center gap-2">
-          <input id="rkInpCompany" type="text" class="hidden md:block w-44 text-[12.5px] text-ink-600 bg-ink-50 border border-ink-200 rounded-lg px-3 py-2 outline-none focus:border-ink-800" placeholder="Perusahaan">
-          <input id="rkInpPosition" type="text" class="hidden lg:block w-32 text-[12.5px] text-ink-600 bg-ink-50 border border-ink-200 rounded-lg px-3 py-2 outline-none focus:border-ink-800" placeholder="Jabatan">
-          <input id="rkInpNip" type="text" class="hidden lg:block w-28 text-[12.5px] text-ink-600 bg-ink-50 border border-ink-200 rounded-lg px-3 py-2 outline-none focus:border-ink-800" placeholder="NIP">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3 pt-3 border-t border-ink-100">
+        <div>
+          <label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Perusahaan</label>
+          <input id="rkInpCompany" type="text" class="w-full mt-1 h-9 text-[12.5px] text-ink-700 bg-ink-50 border border-ink-200 rounded-lg px-3 outline-none focus:bg-white focus:border-ink-800 transition" placeholder="Perusahaan">
+        </div>
+        <div>
+          <label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Jabatan</label>
+          <input id="rkInpPosition" type="text" class="w-full mt-1 h-9 text-[12.5px] text-ink-700 bg-ink-50 border border-ink-200 rounded-lg px-3 outline-none focus:bg-white focus:border-ink-800 transition" placeholder="Jabatan">
+        </div>
+        <div>
+          <label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">NIP</label>
+          <input id="rkInpNip" type="text" class="w-full mt-1 h-9 text-[12.5px] text-ink-700 bg-ink-50 border border-ink-200 rounded-lg px-3 outline-none focus:bg-white focus:border-ink-800 transition" placeholder="NIP">
         </div>
       </div>
     </section>
@@ -603,7 +613,7 @@ tailwind.config = { theme: { extend: {
   </div>
 </div>
 
-<!-- CAPTURE PREVIEW MODAL -->
+<!-- CAPTURE PREVIEW MODAL (untuk iOS) -->
 <div id="capturePreview" class="hidden fixed inset-0 z-[55]">
   <div class="absolute inset-0 bg-ink-900/80 backdrop-blur-sm" onclick="closeCapturePreview()"></div>
   <div class="relative h-full flex items-end md:items-center justify-center p-0 md:p-4">
@@ -660,6 +670,7 @@ function isIOS(){
   return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
+function isAndroid(){ return /Android/i.test(navigator.userAgent); }
 
 /* ========== SHORT NAME & SHIFT ========== */
 let displayMode = 'short';
@@ -745,7 +756,32 @@ function toast(type, msg){
   setTimeout(() => el.remove(), 3000);
 }
 
-/* ========== CAPTURE HELPERS ========== */
+/* ========== AUTO SAVE IMAGE ========== */
+async function autoSaveImage(dataUrl, blob, filename){
+  if (isIOS()){
+    showCapturePreview(dataUrl, blob, filename);
+    return;
+  }
+  try {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    toast('success', 'Gambar berhasil diunduh');
+  } catch(err){
+    console.error('Download failed:', err);
+    toast('error', 'Gagal mengunduh: ' + err.message);
+    showCapturePreview(dataUrl, blob, filename);
+  }
+}
+
+/* ========== CAPTURE PREVIEW (fallback untuk iOS) ========== */
 let _capturedImage = null;
 
 function showCapturePreview(dataUrl, blob, filename, title){
@@ -759,14 +795,11 @@ function showCapturePreview(dataUrl, blob, filename, title){
   const saveLabel = $('capSaveLabel');
   const hint = $('capHint');
   if (isIOS()){
-    saveLabel.textContent = 'Simpan ke Foto / File';
-    hint.textContent = 'Akan muncul menu iOS → pilih "Simpan Gambar"';
+    saveLabel.textContent = 'Simpan ke Foto';
+    hint.textContent = 'Akan muncul menu Share → pilih "Save Image"';
     hint.classList.remove('hidden');
-  } else if (/Android/i.test(navigator.userAgent)){
-    saveLabel.textContent = 'Simpan ke Galeri';
-    hint.classList.add('hidden');
   } else {
-    saveLabel.textContent = 'Download Gambar';
+    saveLabel.textContent = 'Simpan Gambar';
     hint.classList.add('hidden');
   }
 
@@ -788,22 +821,45 @@ async function saveCapturedImage(){
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
 
+  let saved = false;
+
   try {
-    if (navigator.canShare){
+    if (isIOS() && navigator.canShare && navigator.share){
       try {
         const file = new File([blob], filename, { type: 'image/png' });
         if (navigator.canShare({ files: [file] })){
-          await navigator.share({ files: [file], title: 'Schedule', text: 'Schedule Karyawan' });
+          await navigator.share({ files: [file], title: 'Schedule Karyawan' });
           toast('success', 'Gambar berhasil disimpan');
-          setTimeout(closeCapturePreview, 600);
-          return;
+          saved = true;
         }
       } catch(err){
-        if (err.name === 'AbortError'){ return; }
+        if (err.name === 'AbortError'){
+          saved = true;
+        } else {
+          console.warn('Share failed:', err);
+        }
       }
     }
 
-    if (isIOS()){
+    if (!saved && !isIOS()){
+      try {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        toast('success', 'Gambar tersimpan');
+        saved = true;
+      } catch(err){
+        console.warn('Download failed:', err);
+      }
+    }
+
+    if (!saved && isIOS()){
       const w = window.open('', '_blank');
       if (w){
         w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simpan Gambar</title>
@@ -812,21 +868,15 @@ async function saveCapturedImage(){
         <img src="${dataUrl}"><br><button class="btn" onclick="window.close()">Tutup</button></body></html>`);
         w.document.close();
         toast('info', 'Tekan lama gambar untuk simpan');
-        setTimeout(closeCapturePreview, 800);
-        return;
+        saved = true;
       }
     }
 
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-    toast('success', 'Gambar tersimpan');
-    setTimeout(closeCapturePreview, 800);
+    if (saved){
+      setTimeout(closeCapturePreview, 600);
+    } else {
+      toast('error', 'Gagal menyimpan. Tekan lama gambar untuk simpan manual.');
+    }
   } catch(err){
     toast('error', 'Gagal: ' + err.message);
   } finally {
@@ -1503,6 +1553,8 @@ async function absCapture(){
   const data = absGetDay(iso);
   if (!data.length){ toast('warning', 'Tidak ada data untuk diambil'); return; }
 
+  toast('info', 'Membuat gambar...');
+
   const wrap = document.createElement('div');
   wrap.style.cssText = 'position:fixed;left:-99999px;top:0;background:#ffffff;padding:28px;font-family:Inter,system-ui,sans-serif;width:900px;';
   const rows = data.map((d, i) => {
@@ -1548,7 +1600,7 @@ async function absCapture(){
       if (!blob){ toast('error', 'Gagal membuat gambar'); return; }
       const reader = new FileReader();
       reader.onload = () => {
-        showCapturePreview(reader.result, blob, `schedule-${iso}.png`, 'Schedule');
+        autoSaveImage(reader.result, blob, `schedule-${iso}.png`);
       };
       reader.readAsDataURL(blob);
     }, 'image/png', 0.95);
@@ -2053,6 +2105,7 @@ async function downloadReport(){
   const orig = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Memproses...';
+
   try {
     const canvas = await html2canvas(node, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
     canvas.toBlob(blob => {
@@ -2060,7 +2113,11 @@ async function downloadReport(){
       const reader = new FileReader();
       reader.onload = () => {
         const { year, month } = state.rekapCurrent;
-        showCapturePreview(reader.result, blob, `laporan-${year}-${pad2(month+1)}.png`, 'Laporan');
+        const wasIOS = isIOS();
+        if (!wasIOS){
+          closeReport();
+        }
+        autoSaveImage(reader.result, blob, `laporan-${year}-${pad2(month+1)}.png`);
       };
       reader.readAsDataURL(blob);
     }, 'image/png', 0.95);
