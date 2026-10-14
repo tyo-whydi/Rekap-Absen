@@ -1936,7 +1936,7 @@ function rkOpenReport(){
         <div style="position:absolute;top:0;left:12px;right:12px;height:3px;border-radius:0 0 3px 3px;background:${inP && st ? style.bar : 'transparent'};"></div>
         <div style="font-size:17px;font-weight:800;color:#141a20;line-height:1.05;letter-spacing:-.02em;">${d}</div>
         <div style="font-size:10px;font-weight:600;color:${inP && st ? style.text : '#94a3b8'};margin-top:4px;letter-spacing:.01em;">${esc(statusLabel)}</div>
-        ${otDay > 0 ? `<div style="font-size:9.5px;font-weight:700;color:#b45309;margin-top:2px;">+${round1(otDay)}j</div>` : ''}
+        ${otDay > 0 ? `<div style="display:inline-block;margin-top:4px;padding:2px 8px;background:#fef3c7;border:1px solid #fcd34d;border-radius:99px;font-size:9.5px;font-weight:800;color:#92400e;letter-spacing:.02em;">Overtime ${round1(otDay)}j</div>` : ''}
       </div>`;
   }
 
