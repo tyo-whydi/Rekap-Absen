@@ -118,7 +118,6 @@ tailwind.config = { theme: { extend: {
   .status-pill.active[data-status="Sakit"] { background: #be123c; color: #fff; border-color: #be123c; }
   .status-pill.active[data-status="Off"] { background: #475569; color: #fff; border-color: #475569; }
 
-  /* Report scaling wrapper */
   #reportScaleWrap { position: relative; margin: 0 auto; }
   #reportPreview { width: 1100px; background: #fff; transform-origin: top left; }
 
@@ -415,7 +414,6 @@ tailwind.config = { theme: { extend: {
   </div>
 </nav>
 
-<!-- MASTER MODAL -->
 <div id="masterModal" class="hidden fixed inset-0 z-50">
   <div class="absolute inset-0 bg-ink-900/60 backdrop-blur-sm" onclick="absCloseMaster()"></div>
   <div class="relative h-full flex items-end md:items-center justify-center p-0 md:p-4">
@@ -459,7 +457,6 @@ tailwind.config = { theme: { extend: {
   </div>
 </div>
 
-<!-- REPORT MODAL -->
 <div id="reportModal" class="hidden fixed inset-0 z-50">
   <div class="absolute inset-0 bg-ink-900/70 backdrop-blur-sm" onclick="closeReport()"></div>
   <div class="relative h-full flex items-end md:items-center justify-center p-0 md:p-4">
@@ -481,7 +478,6 @@ tailwind.config = { theme: { extend: {
   </div>
 </div>
 
-<!-- CAPTURE PREVIEW MODAL -->
 <div id="capturePreview" class="hidden fixed inset-0 z-[55]">
   <div class="absolute inset-0 bg-ink-900/80 backdrop-blur-sm" onclick="closeCapturePreview()"></div>
   <div class="relative h-full flex items-end md:items-center justify-center p-0 md:p-4">
@@ -547,11 +543,13 @@ function autoShortName(nama){
 const SHIFT_SHORT_MAP = {
   '05:00-13:00': 'PAGI', '06:00-14:00': 'PAGI', '07:00-15:00': 'PAGI',
   '07:00-16:00': 'PAGI', '08:00-16:00': 'PAGI', '08:00-17:00': 'PAGI',
-  '09:00-17:00': 'SIANG', '10:00-18:00': 'SIANG', '11:00-19:00': 'SIANG',
+  '09:00-17:00': 'SIANG', '09:00-18:00': 'SIANG',
+  '10:00-18:00': 'SIANG', '10:00-19:00': 'SIANG',
+  '11:00-19:00': 'SIANG', '11:00-20:00': 'SIANG',
   '12:00-20:00': 'SIANG', '12:00-21:00': 'SIANG',
   '13:00-21:00': 'SORE', '14:00-22:00': 'SORE', '15:00-23:00': 'SORE',
-  '16:00-00:00': 'MALAM', '17:00-01:00': 'MALAM', '19:00-03:00': 'MALAM',
-  '21:00-05:00': 'MALAM', 'OFF': 'OFF'
+  '16:00-00:00': 'MALAM', '17:00-01:00': 'MALAM', '18:00-02:00': 'MALAM',
+  '19:00-03:00': 'MALAM', '20:00-04:00': 'MALAM', '21:00-05:00': 'MALAM', 'OFF': 'OFF'
 };
 
 function autoShortShift(shift){
@@ -620,30 +618,24 @@ function fitReportPreview(){
   const inner = $('reportPreview');
   const wrap = $('reportScaleWrap');
   if (!inner || !wrap) return;
-
   inner.style.transform = '';
   inner.style.position = '';
   inner.style.width = '1100px';
   wrap.style.width = '';
   wrap.style.height = '';
   wrap.style.position = '';
-
   if (!inner.innerHTML.trim()) return;
   if (window.innerWidth >= 1180) return;
-
   const scrollBox = wrap.parentElement;
   const avail = scrollBox.clientWidth - 32;
   const natural = 1100;
   if (avail >= natural) return;
-
   const scale = avail / natural;
   const naturalH = inner.offsetHeight || 1200;
-
   wrap.style.position = 'relative';
   wrap.style.width = (natural * scale) + 'px';
   wrap.style.height = (naturalH * scale) + 'px';
   wrap.style.overflow = 'hidden';
-
   inner.style.position = 'absolute';
   inner.style.top = '0';
   inner.style.left = '0';
@@ -676,7 +668,7 @@ async function autoSaveImage(dataUrl, blob, filename){
   }
 }
 
-/* ========== CAPTURE PREVIEW (untuk iOS) ========== */
+/* ========== CAPTURE PREVIEW ========== */
 let _capturedImage = null;
 
 function showCapturePreview(dataUrl, blob, filename, title){
@@ -685,7 +677,6 @@ function showCapturePreview(dataUrl, blob, filename, title){
   const sizeKB = Math.round(blob.size / 1024);
   const sizeMB = (sizeKB / 1024).toFixed(2);
   $('capMeta').textContent = `${filename} · ${sizeKB > 1024 ? sizeMB + ' MB' : sizeKB + ' KB'}`;
-
   const saveLabel = $('capSaveLabel');
   const hint = $('capHint');
   if (isIOS()){
@@ -696,7 +687,6 @@ function showCapturePreview(dataUrl, blob, filename, title){
     saveLabel.textContent = 'Simpan Gambar';
     hint.classList.add('hidden');
   }
-
   $('capturePreview').classList.remove('hidden');
   document.body.classList.add('sheet-open');
 }
@@ -714,9 +704,7 @@ async function saveCapturedImage(){
   const orig = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
-
   let saved = false;
-
   try {
     if (isIOS() && navigator.canShare && navigator.share){
       try {
@@ -730,7 +718,6 @@ async function saveCapturedImage(){
         if (err.name === 'AbortError'){ saved = true; }
       }
     }
-
     if (!saved && !isIOS()){
       try {
         const url = URL.createObjectURL(blob);
@@ -742,7 +729,6 @@ async function saveCapturedImage(){
         saved = true;
       } catch(err){}
     }
-
     if (!saved && isIOS()){
       const w = window.open('', '_blank');
       if (w){
@@ -755,7 +741,6 @@ async function saveCapturedImage(){
         saved = true;
       }
     }
-
     if (saved){ setTimeout(closeCapturePreview, 600); }
     else { toast('error', 'Gagal menyimpan.'); }
   } catch(err){
@@ -870,7 +855,27 @@ const DEFAULT_MASTER = {
   tasks: ['PRINT PICKLIST','SUPPLY PICKLIST','SAMEDAY&INSTAN','TIM SWEEPING','SWEEPING','SWEEPING & ONHOLD','HELPER CCTV','LEADER ADMIN','PERBANTUAN SOBEK','RECONCILE','SPV','SPV BRANCHES','KOORDINATOR'],
   groups: ['Helper Admin','SWEEPING','ONHOLD','LEADER','JR LEADER ADMIN','Admin B2C','SPV','SPV BRANCHES','KOORDINATOR','PKL','NON PKL'],
   subs: ['B2C','PKL','NON PKL','OUTBOUND'],
-  shifts: ['05:00-13:00','06:00-14:00','07:00-15:00','07:00-16:00','08:00-16:00','08:00-17:00','09:00-17:00','10:00-18:00','11:00-19:00','12:00-20:00','12:00-21:00','13:00-21:00','14:00-22:00','15:00-23:00','16:00-00:00','17:00-01:00','19:00-03:00','21:00-05:00','OFF'],
+  // ===== SHIFT LIST: 05:00 s/d 21:00 (8-jam + 9-jam) =====
+  shifts: [
+    '05:00-13:00',
+    '06:00-14:00',
+    '07:00-15:00', '07:00-16:00',
+    '08:00-16:00', '08:00-17:00',
+    '09:00-17:00', '09:00-18:00',
+    '10:00-18:00', '10:00-19:00',
+    '11:00-19:00', '11:00-20:00',
+    '12:00-20:00', '12:00-21:00',
+    '13:00-21:00', '13:00-22:00',
+    '14:00-22:00', '14:00-23:00',
+    '15:00-23:00', '15:00-00:00',
+    '16:00-00:00', '16:00-01:00',
+    '17:00-01:00', '17:00-02:00',
+    '18:00-02:00', '18:00-03:00',
+    '19:00-03:00', '19:00-04:00',
+    '20:00-04:00', '20:00-05:00',
+    '21:00-05:00',
+    'OFF'
+  ],
   breaks: ['10:00-11:00','12:00-13:00','16:00-00:00','18:00-19:00','00:00-01:00','-']
 };
 
@@ -1190,6 +1195,8 @@ function absBindTable(){
     }
     persist();
   });
+
+  // ==== FIX BUG MOBILE: live update visual kartu ====
   $('absCardList').addEventListener('input', e => {
     const t = e.target;
     if (!t.matches('input[data-field]')) return;
@@ -1198,6 +1205,37 @@ function absBindTable(){
     const item = state.schedule[absCurrentDate()][idx];
     if (!item) return;
     item[field] = t.value;
+
+    if (field === 'shift' || field === 'nama'){
+      const card = document.querySelector('.att-card[data-idx="' + idx + '"]');
+      if (card){
+        const off = isOff(item.shift);
+        card.classList.toggle('is-off', off);
+
+        const av = card.querySelector('div.w-9.h-9');
+        if (av){
+          av.classList.toggle('bg-rose-200', off);
+          av.classList.toggle('text-rose-800', off);
+          av.classList.toggle('bg-ink-900', !off);
+          av.classList.toggle('text-white', !off);
+        }
+
+        const shiftBadge = card.querySelector('span.rounded-full.shrink-0');
+        if (shiftBadge){
+          shiftBadge.textContent = getDisplayShift(item);
+          shiftBadge.classList.toggle('bg-rose-100', off);
+          shiftBadge.classList.toggle('text-rose-700', off);
+          shiftBadge.classList.toggle('bg-sky-100', !off);
+          shiftBadge.classList.toggle('text-sky-700', !off);
+        }
+
+        if (field === 'nama'){
+          const nameEl = card.querySelector('p.text-\\[13px\\]');
+          if (nameEl) nameEl.textContent = getDisplayName(item);
+        }
+      }
+    }
+
     persist();
   });
 }
@@ -1644,7 +1682,7 @@ function rkBindSelectors(){
   });
 }
 
-/* ========== REPORT (Calendar Style) ========== */
+/* ========== REPORT ========== */
 function buildReportHTML(){
   const { year, month } = state.rekapCurrent;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
