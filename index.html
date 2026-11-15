@@ -27,21 +27,17 @@ tailwind.config = { theme: { extend: {
   body { padding-bottom: env(safe-area-inset-bottom); }
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   input[type=number] { -moz-appearance: textfield; }
 
   .cell-input { width: 100%; background: transparent; border: none; outline: none; padding: 5px 7px; font-size: 12px; color: #1e293b; border-radius: 6px; transition: background .12s, box-shadow .12s; }
   .cell-input:hover { background: #f8fafc; }
   .cell-input:focus { background: #eff6ff; box-shadow: inset 0 0 0 2px #1c3d7d; }
-  .cell-input.is-off { background: #fef2f2 !important; color: #dc2626; font-weight: 700; }
-  tr.row-off { background: #fef2f2 !important; }
 
   .emp-card { position: relative; padding: 8px 10px; border-radius: 8px; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; transition: all .12s; }
-  .emp-card:hover { border-color: #1c3d7d; background: #f0f9ff; transform: translateY(-1px); box-shadow: 0 2px 6px rgba(14,165,233,.15); }
-  .emp-card:active { transform: scale(.97); }
+  .emp-card:hover { border-color: #1c3d7d; background: #f0f9ff; transform: translateY(-1px); }
   .emp-card.added { border-color: #10b981; background: #ecfdf5; }
-  .emp-card.added::after { content: '✓'; position: absolute; top: 4px; right: 6px; width: 16px; height: 16px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+  .emp-card.added::after { content: '✓'; position: absolute; top: 4px; right: 6px; width: 16px; height: 16px; background: #10b981; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
   .emp-card.pkl { border-left: 3px solid #f59e0b; }
   .emp-card.nonpkl { border-left: 3px solid #8b5cf6; }
 
@@ -49,64 +45,27 @@ tailwind.config = { theme: { extend: {
   .tab-btn.active { color: #12275a; }
   .tab-btn.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: #fa6401; border-radius: 2px; }
 
-  .ring-track { stroke: #eceef1; }
-  .ring-bar { transition: stroke-dashoffset .6s ease; }
-
-  .bottom-nav {
-    position: fixed; left: 0; right: 0; bottom: 0;
-    background: rgba(255,255,255,.97); backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid #e2e8f0;
-    padding-bottom: env(safe-area-inset-bottom);
-    z-index: 40;
-  }
-  .bottom-nav-btn {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
-    justify-content: center; gap: 3px; padding: 8px 0 10px;
-    font-size: 10.5px; font-weight: 600; color: #8e96a1;
-    cursor: pointer; background: transparent; border: none; font-family: inherit;
-  }
+  .bottom-nav { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,.97); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid #e2e8f0; padding-bottom: env(safe-area-inset-bottom); z-index: 40; }
+  .bottom-nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 8px 0 10px; font-size: 10.5px; font-weight: 600; color: #8e96a1; cursor: pointer; background: transparent; border: none; font-family: inherit; }
   .bottom-nav-btn i { font-size: 18px; }
   .bottom-nav-btn.active { color: #fa6401; }
 
-  .att-card { background: #fff; border: 1px solid #eceef1; border-radius: 12px; padding: 12px; transition: all .15s; }
-  .att-card.is-off { background: #fef2f2; border-color: #fecaca; }
-
-  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-  @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
-  .toast { animation: slideIn .25s ease both; }
-
-  .cal-day {
-    position: relative;
-    border-radius: 12px;
-    border: 2px solid transparent;
-    background: #ffffff;
-    padding: 8px 6px 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: all .18s cubic-bezier(.2,.9,.3,1);
-    min-height: 68px;
-    display: flex; flex-direction: column; justify-content: flex-start;
-    box-shadow: 0 1px 2px rgba(15,23,42,.04);
-  }
+  .cal-day { position: relative; border-radius: 12px; border: 2px solid transparent; background: #fff; padding: 8px 6px 10px; text-align: center; cursor: pointer; transition: all .18s; min-height: 68px; display: flex; flex-direction: column; justify-content: flex-start; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
   .cal-day:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(15,23,42,.08); border-color: #cbd5e1; }
   .cal-day.selected { border-color: #0f172a; box-shadow: 0 6px 20px rgba(15,23,42,.15); transform: translateY(-2px); }
   .cal-day .day-num { font-size: 18px; font-weight: 700; color: #141a20; line-height: 1.1; letter-spacing: -.02em; }
-  .cal-day .day-status { font-size: 10.5px; font-weight: 600; color: #64748b; margin-top: 4px; letter-spacing: .01em; }
-
+  .cal-day .day-status { font-size: 10.5px; font-weight: 600; color: #64748b; margin-top: 4px; }
   .cal-day::before { content: ''; position: absolute; top: 0; left: 12px; right: 12px; height: 3px; border-radius: 0 0 3px 3px; background: transparent; transition: background .15s; }
   .cal-day[data-status="Masuk"]::before { background: #10b981; }
   .cal-day[data-status="Off"]::before { background: #cbd5e1; }
   .cal-day[data-status="Sakit"]::before { background: #fb7185; }
   .cal-day[data-status="Cuti"]::before { background: #a78bfa; }
   .cal-day[data-status="Absen"]::before { background: #e11d48; }
-
   .cal-day[data-status="Masuk"] .day-status { color: #047857; }
   .cal-day[data-status="Off"] .day-status { color: #94a3b8; }
   .cal-day[data-status="Sakit"] .day-status { color: #e11d48; }
   .cal-day[data-status="Cuti"] .day-status { color: #7c3aed; }
   .cal-day[data-status="Absen"] .day-status { color: #be123c; }
-
   .cal-day.is-weekend { background: #f8fafc; }
   .cal-day.outside-period { opacity: .3; pointer-events: none; }
   .cal-day.empty { visibility: hidden; }
@@ -119,8 +78,15 @@ tailwind.config = { theme: { extend: {
   .status-pill.active[data-status="Sakit"] { background: #be123c; color: #fff; border-color: #be123c; }
   .status-pill.active[data-status="Off"] { background: #475569; color: #fff; border-color: #475569; }
 
+  .ring-track { stroke: #eceef1; }
+  .ring-bar { transition: stroke-dashoffset .6s ease; }
+
   #reportScaleWrap { position: relative; margin: 0 auto; }
   #reportPreview { width: 1100px; background: #fff; transform-origin: top left; }
+
+  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+  .toast { animation: slideIn .25s ease both; }
 
   @media (max-width: 767px) {
     .desktop-view { display: none !important; }
@@ -139,43 +105,47 @@ tailwind.config = { theme: { extend: {
   body.sheet-open { overflow: hidden; }
   @media print { .no-print { display: none !important; } body { background: #fff !important; } }
 
-  /* ===== FLEXOFLOW BRAND ===== */
   body { background: #f3f6fb; }
   header.sticky { border-top: 3px solid #fa6401; box-shadow: 0 2px 12px rgba(18,39,90,.06); }
   .brand-logo { height: 30px; width: auto; display: block; }
   @media (min-width: 768px) { .brand-logo { height: 34px; } }
-
 
   html { background: #12275a; }
   body { background: transparent !important; }
   #bgScene { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
   #bgScene .bg-img { position: absolute; inset: -30px; filter: blur(6px); transform: scale(1.05); }
   #bgScene .bg-img svg { width: 100%; height: 100%; display: block; }
-  #bgScene .bg-ov { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,39,90,.72), rgba(18,39,90,.86)); }
-  header.sticky { background: rgba(255,255,255,.93) !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  #bgScene .bg-ov { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,39,90,.50), rgba(18,39,90,.68)); }
+  header.sticky { background: rgba(255,255,255,.62) !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   footer { border-color: rgba(255,255,255,.15) !important; }
   footer p, footer p span { color: rgba(255,255,255,.75) !important; }
-  #bgScene .bg-ov { background: linear-gradient(180deg, rgba(18,39,90,.50), rgba(18,39,90,.68)) !important; }
 
-  /* ===== GLASS: semua putih jadi transparan ===== */
   .bg-white:not(#reportPreview):not(#reportPreview *),
-  .emp-card, .att-card, .cal-day, .status-pill {
+  .emp-card, .cal-day, .status-pill {
     background-color: rgba(255,255,255,.55) !important;
     backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
     border-color: rgba(255,255,255,.55) !important;
   }
   .cal-day.is-weekend { background-color: rgba(255,255,255,.38) !important; }
   .emp-card.added { background-color: rgba(209,250,229,.7) !important; border-color: #10b981 !important; }
-  .att-card.is-off, tr.row-off { background-color: rgba(254,226,226,.7) !important; }
-  header.sticky { background: rgba(255,255,255,.62) !important; }
   .bottom-nav { background: rgba(255,255,255,.62) !important; }
-  .bg-ink-50, .bg-ink-50\/40, .bg-ink-50\/60, .bg-ink-50\/70, .bg-slate-50 { background-color: rgba(255,255,255,.28) !important; }
+  .bg-ink-50, .bg-ink-50\/40, .bg-ink-50\/60, .bg-ink-50\/70 { background-color: rgba(255,255,255,.28) !important; }
   .fixed.inset-0 .bg-white:not(#reportPreview):not(#reportPreview *) { background-color: rgba(255,255,255,.88) !important; }
   input:not(.cell-input):not([type=checkbox]):not([type=radio]), select, textarea { background-color: rgba(255,255,255,.55); }
   .text-ink-400 { color: #465068 !important; }
   .text-ink-500 { color: #323b50 !important; }
   .cal-day .day-status { color: #3b4559; }
   footer, footer * { background: transparent !important; backdrop-filter: none !important; }
+
+  /* ============ FIX REPORT SOLID (html2canvas) ============ */
+  #reportPreview,
+  #reportPreview * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+  }
+  #reportPreview table { border-collapse: collapse !important; table-layout: fixed !important; }
+  #reportPreview td, #reportPreview th { vertical-align: middle !important; }
 </style>
 </head>
 
@@ -190,14 +160,12 @@ tailwind.config = { theme: { extend: {
   <rect y="520" width="1200" height="180" fill="url(#floor)"/>
   <rect x="620" y="40" width="14" height="520" fill="#2a56b0"/><rect x="900" y="40" width="14" height="520" fill="#2a56b0"/><rect x="1160" y="40" width="14" height="520" fill="#2a56b0"/>
   <rect x="60" y="40" width="14" height="520" fill="#2a56b0"/><rect x="340" y="40" width="14" height="520" fill="#2a56b0"/>
-  <g stroke="#2a56b0" stroke-width="5"><line x1="634" y1="60" x2="900" y2="200"/><line x1="900" y1="60" x2="634" y2="200"/><line x1="634" y1="260" x2="900" y2="400"/><line x1="900" y1="260" x2="634" y2="400"/><line x1="914" y1="60" x2="1160" y2="200"/><line x1="1160" y1="60" x2="914" y2="200"/><line x1="914" y1="260" x2="1160" y2="400"/><line x1="1160" y1="260" x2="914" y2="400"/><line x1="74" y1="60" x2="340" y2="200"/><line x1="340" y1="60" x2="74" y2="200"/><line x1="74" y1="260" x2="340" y2="400"/><line x1="340" y1="260" x2="74" y2="400"/></g>
+  <g stroke="#2a56b0" stroke-width="5"><line x1="634" y1="60" x2="900" y2="200"/><line x1="900" y1="60" x2="634" y2="200"/><line x1="634" y1="260" x2="900" y2="400"/><line x1="900" y1="260" x2="634" y2="400"/></g>
   <rect x="40" y="200" width="1180" height="16" fill="#d9322e"/><rect x="40" y="400" width="1180" height="16" fill="#d9322e"/><rect x="40" y="100" width="1180" height="14" fill="#d9322e"/>
   <g fill="url(#box)" stroke="#8d5f33" stroke-width="2">
-    <rect x="650" y="130" width="110" height="70"/><rect x="770" y="140" width="120" height="60"/><rect x="940" y="120" width="100" height="80"/><rect x="1050" y="135" width="105" height="65"/>
-    <rect x="640" y="320" width="130" height="80"/><rect x="790" y="330" width="100" height="70"/><rect x="930" y="310" width="120" height="90"/><rect x="1060" y="325" width="95" height="75"/>
-    <rect x="650" y="440" width="120" height="80"/><rect x="790" y="450" width="105" height="70"/><rect x="940" y="440" width="110" height="80"/><rect x="1070" y="455" width="90" height="65"/>
-    <rect x="90" y="130" width="110" height="70"/><rect x="215" y="140" width="110" height="60"/><rect x="100" y="320" width="130" height="80"/><rect x="250" y="330" width="80" height="70"/>
-    <rect x="90" y="440" width="120" height="80"/><rect x="230" y="450" width="100" height="70"/>
+    <rect x="650" y="130" width="110" height="70"/><rect x="770" y="140" width="120" height="60"/><rect x="940" y="120" width="100" height="80"/>
+    <rect x="640" y="320" width="130" height="80"/><rect x="790" y="330" width="100" height="70"/><rect x="930" y="310" width="120" height="90"/>
+    <rect x="650" y="440" width="120" height="80"/><rect x="790" y="450" width="105" height="70"/>
     <rect x="420" y="540" width="330" height="150"/><rect x="760" y="580" width="260" height="120"/>
   </g>
 </svg></div><div class="bg-ov"></div></div>
@@ -206,7 +174,7 @@ tailwind.config = { theme: { extend: {
   <div class="max-w-[1400px] mx-auto px-3 sm:px-6">
     <div class="h-14 md:h-16 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5 min-w-0">
-        <img src="data:image/png;base64,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" alt="Flexoflow" class="brand-logo shrink-0">
+        <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-ink-900 text-white flex items-center justify-center font-extrabold text-sm shrink-0">F</div>
         <div class="min-w-0">
           <h1 id="headerTitle" class="text-[13.5px] md:text-sm font-bold text-ink-900 leading-tight truncate">Dashboard Absensi & Rekap</h1>
           <p id="headerSub" class="text-[10.5px] text-ink-400 leading-tight truncate">PT Flexofast Solusi Indonesia · Sistem Terpadu</p>
@@ -227,13 +195,14 @@ tailwind.config = { theme: { extend: {
   </div>
 </header>
 
+<!-- ============ PAGE ABSENSI ============ -->
 <div id="pageAbsensi" class="flex-grow flex flex-col mobile-pad">
   <main class="flex-grow max-w-[1400px] w-full mx-auto px-3 sm:px-6 py-3 sm:py-5 space-y-3 md:space-y-4">
 
     <section class="bg-white rounded-2xl border border-ink-100 p-3 md:p-4 shadow-sm">
       <div class="flex flex-wrap items-center gap-2">
         <button onclick="absShiftDay(-1)" class="w-10 h-10 md:w-9 md:h-9 rounded-lg bg-ink-100 hover:bg-ink-200 text-ink-600 transition flex items-center justify-center shrink-0"><i class="fa-solid fa-chevron-left text-[12px]"></i></button>
-        <input id="absDateInput" type="date" class="flex-1 md:flex-none md:w-auto h-10 md:h-9 text-[13px] font-semibold text-ink-800 bg-white border border-ink-200 rounded-lg px-3 focus:border-ink-900 outline-none text-center md:text-left">
+        <input id="absDateInput" type="date" onchange="absChangeDate()" class="flex-1 md:flex-none md:w-auto h-10 md:h-9 text-[13px] font-semibold text-ink-800 bg-white border border-ink-200 rounded-lg px-3 focus:border-ink-900 outline-none text-center md:text-left">
         <button onclick="absShiftDay(1)" class="w-10 h-10 md:w-9 md:h-9 rounded-lg bg-ink-100 hover:bg-ink-200 text-ink-600 transition flex items-center justify-center shrink-0"><i class="fa-solid fa-chevron-right text-[12px]"></i></button>
         <div class="flex flex-wrap gap-1.5 w-full md:w-auto">
           <button onclick="absToday()" class="flex-1 md:flex-none h-10 md:h-9 px-3 rounded-lg bg-ink-100 hover:bg-ink-200 text-ink-700 text-xs font-medium transition">Hari Ini</button>
@@ -265,10 +234,10 @@ tailwind.config = { theme: { extend: {
         </div>
         <div class="flex-1"></div>
         <div class="relative">
-          <input id="absSearchDesk" type="text" placeholder="Cari nama / NIK..." class="h-9 w-56 pl-9 pr-3 text-[12.5px] border border-ink-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none">
+          <input id="absSearchDesk" type="text" oninput="absRenderQuickPanel()" placeholder="Cari nama / NIK..." class="h-9 w-56 pl-9 pr-3 text-[12.5px] border border-ink-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none">
           <i class="fa-solid fa-magnifying-glass text-ink-400 absolute left-3 top-1/2 -translate-y-1/2 text-[12px]"></i>
         </div>
-        <select id="absFilterCatDesk" class="h-9 text-[12px] font-medium text-ink-700 bg-white border border-ink-200 rounded-lg px-2.5 outline-none cursor-pointer">
+        <select id="absFilterCatDesk" onchange="absRenderQuickPanel()" class="h-9 text-[12px] font-medium text-ink-700 bg-white border border-ink-200 rounded-lg px-2.5 outline-none cursor-pointer">
           <option value="">Semua Kategori</option><option value="pkl">PKL</option><option value="nonpkl">Non-PKL</option><option value="regular">Karyawan</option>
         </select>
         <button onclick="absAddAll()" class="h-9 px-3.5 rounded-lg bg-brand-navy hover:bg-brand-navyDark text-white text-[12px] font-semibold transition flex items-center gap-1.5"><i class="fa-solid fa-plus text-[10px]"></i> Tambah Semua</button>
@@ -276,11 +245,11 @@ tailwind.config = { theme: { extend: {
       <div id="quickBody" class="hidden md:block">
         <div class="md:hidden p-3 space-y-2 bg-ink-50/40 border-t border-ink-100">
           <div class="relative">
-            <input id="absSearchMob" type="text" placeholder="Cari nama atau NIK..." class="w-full h-11 pl-10 pr-3 text-[14px] border border-ink-200 rounded-lg focus:border-ink-800 outline-none">
+            <input id="absSearchMob" type="text" oninput="absRenderQuickPanel()" placeholder="Cari nama atau NIK..." class="w-full h-11 pl-10 pr-3 text-[14px] border border-ink-200 rounded-lg focus:border-ink-800 outline-none">
             <i class="fa-solid fa-magnifying-glass text-ink-400 absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px]"></i>
           </div>
           <div class="flex gap-2">
-            <select id="absFilterCatMob" class="flex-1 h-11 text-[13.5px] font-medium text-ink-800 bg-white border border-ink-200 rounded-lg px-3 outline-none">
+            <select id="absFilterCatMob" onchange="absRenderQuickPanel()" class="flex-1 h-11 text-[13.5px] font-medium text-ink-800 bg-white border border-ink-200 rounded-lg px-3 outline-none">
               <option value="">Semua</option><option value="regular">Karyawan</option><option value="pkl">PKL</option><option value="nonpkl">Non-PKL</option>
             </select>
             <button onclick="absAddAll()" class="h-11 px-4 rounded-lg bg-emerald-600 text-white text-[13px] font-semibold">+ Semua</button>
@@ -330,6 +299,7 @@ tailwind.config = { theme: { extend: {
   </main>
 </div>
 
+<!-- ============ PAGE REKAP ============ -->
 <div id="pageRekap" class="hidden flex-grow flex flex-col mobile-pad">
   <main class="flex-grow max-w-[1400px] w-full mx-auto px-3 sm:px-6 py-4 md:py-6">
 
@@ -337,22 +307,22 @@ tailwind.config = { theme: { extend: {
       <div class="flex items-start gap-3">
         <div id="rkAvatar" class="w-11 h-11 shrink-0 rounded-full bg-gradient-to-br from-ink-800 to-ink-900 text-white flex items-center justify-center font-bold text-[14px] shadow">--</div>
         <div class="min-w-0 flex-1">
-          <input id="rkInpName" type="text" class="w-full text-[15px] font-bold text-ink-900 bg-transparent outline-none border-b border-dashed border-transparent hover:border-ink-200 focus:border-ink-800 pb-0.5 transition" placeholder="Nama Anda">
+          <input id="rkInpName" type="text" oninput="rkOnProfileChange()" class="w-full text-[15px] font-bold text-ink-900 bg-transparent outline-none border-b border-dashed border-transparent hover:border-ink-200 focus:border-ink-800 pb-0.5 transition" placeholder="Nama Anda">
           <p class="text-[10.5px] text-ink-400 mt-0.5"><span id="rkRoleLabel">Admin B2C</span> · NIP <span id="rkNipLabel">446002</span></p>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3 pt-3 border-t border-ink-100">
-        <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Perusahaan</label><input id="rkInpCompany" type="text" class="w-full mt-1 h-9 text-[12.5px] text-ink-700 bg-ink-50 border border-ink-200 rounded-lg px-3 outline-none focus:bg-white focus:border-ink-800 transition" placeholder="Perusahaan"></div>
-        <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Jabatan</label><input id="rkInpPosition" type="text" class="w-full mt-1 h-9 text-[12.5px] text-ink-700 bg-ink-50 border border-ink-200 rounded-lg px-3 outline-none focus:bg-white focus:border-ink-800 transition" placeholder="Jabatan"></div>
-        <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">NIP</label><input id="rkInpNip" type="text" class="w-full mt-1 h-9 text-[12.5px] text-ink-700 bg-ink-50 border border-ink-200 rounded-lg px-3 outline-none focus:bg-white focus:border-ink-800 transition" placeholder="NIP"></div>
+        <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Perusahaan</label><input id="rkInpCompany" type="text" oninput="rkOnProfileChange()" class="w-full mt-1 h-9 text-[12.5px] text-ink-700 bg-ink-50 border border-ink-200 rounded-lg px-3 outline-none focus:bg-white focus:border-ink-800 transition" placeholder="Perusahaan"></div>
+        <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Jabatan</label><input id="rkInpPosition" type="text" oninput="rkOnProfileChange()" class="w-full mt-1 h-9 text-[12.5px] text-ink-700 bg-ink-50 border border-ink-200 rounded-lg px-3 outline-none focus:bg-white focus:border-ink-800 transition" placeholder="Jabatan"></div>
+        <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">NIP</label><input id="rkInpNip" type="text" oninput="rkOnProfileChange()" class="w-full mt-1 h-9 text-[12.5px] text-ink-700 bg-ink-50 border border-ink-200 rounded-lg px-3 outline-none focus:bg-white focus:border-ink-800 transition" placeholder="NIP"></div>
       </div>
     </section>
 
     <section class="bg-white rounded-2xl border border-ink-100 p-4 md:p-5 shadow-sm mb-4">
       <div class="flex flex-wrap items-center gap-3">
         <button onclick="rkShiftMonth(-1)" class="w-10 h-10 rounded-xl bg-ink-100 hover:bg-ink-200 text-ink-600 transition flex items-center justify-center shrink-0"><i class="fa-solid fa-chevron-left text-[13px]"></i></button>
-        <select id="rkSelMonth" class="h-10 text-[14px] font-bold text-ink-800 bg-white border border-ink-200 rounded-lg px-3 focus:border-ink-900 outline-none cursor-pointer"></select>
-        <select id="rkSelYear" class="h-10 text-[14px] font-bold text-ink-800 bg-white border border-ink-200 rounded-lg px-3 focus:border-ink-900 outline-none cursor-pointer"></select>
+        <select id="rkSelMonth" onchange="rkOnPeriodChange()" class="h-10 text-[14px] font-bold text-ink-800 bg-white border border-ink-200 rounded-lg px-3 focus:border-ink-900 outline-none cursor-pointer"></select>
+        <select id="rkSelYear" onchange="rkOnPeriodChange()" class="h-10 text-[14px] font-bold text-ink-800 bg-white border border-ink-200 rounded-lg px-3 focus:border-ink-900 outline-none cursor-pointer"></select>
         <button onclick="rkShiftMonth(1)" class="w-10 h-10 rounded-xl bg-ink-100 hover:bg-ink-200 text-ink-600 transition flex items-center justify-center shrink-0"><i class="fa-solid fa-chevron-right text-[13px]"></i></button>
         <div class="flex-1"></div>
         <div class="flex items-center gap-1.5 p-1 bg-ink-50 rounded-xl border border-ink-100">
@@ -365,7 +335,6 @@ tailwind.config = { theme: { extend: {
     </section>
 
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-4 md:gap-5">
-
       <section class="bg-white rounded-2xl border border-ink-100 p-4 md:p-6 shadow-sm">
         <div class="flex items-center justify-between mb-4 md:mb-5">
           <div>
@@ -405,19 +374,19 @@ tailwind.config = { theme: { extend: {
             <div id="rkStatusButtons" class="flex flex-wrap gap-2"></div>
           </div>
           <div class="mb-5">
-            <p class="text-[11px] font-bold text-ink-400 uppercase tracking-wider mb-2.5">Lembur</p>
+            <p class="text-[11px] font-bold text-ink-400 uppercase tracking-wider mb-2.5">Lembur (jam)</p>
             <div class="flex items-center justify-between bg-ink-50 rounded-xl border border-ink-100 px-3 py-2.5">
-              <button onclick="rkAdjustOT(-0.5)" class="w-9 h-9 rounded-lg bg-white hover:bg-rose-50 text-ink-600 hover:text-rose-600 border border-ink-200 transition flex items-center justify-center"><i class="fa-solid fa-minus text-[12px]"></i></button>
+              <button onclick="rkAdjustOT(-1)" class="w-9 h-9 rounded-lg bg-white hover:bg-rose-50 text-ink-600 hover:text-rose-600 border border-ink-200 transition flex items-center justify-center"><i class="fa-solid fa-minus text-[12px]"></i></button>
               <div class="text-center min-w-[80px]">
                 <p id="rkOTDisplay" class="text-[20px] font-extrabold text-ink-900 leading-none tabular-nums">0</p>
                 <p class="text-[10px] text-ink-400 font-semibold uppercase tracking-wider mt-0.5">jam</p>
               </div>
-              <button onclick="rkAdjustOT(0.5)" class="w-9 h-9 rounded-lg bg-white hover:bg-emerald-50 text-ink-600 hover:text-emerald-600 border border-ink-200 transition flex items-center justify-center"><i class="fa-solid fa-plus text-[12px]"></i></button>
+              <button onclick="rkAdjustOT(1)" class="w-9 h-9 rounded-lg bg-white hover:bg-emerald-50 text-ink-600 hover:text-emerald-600 border border-ink-200 transition flex items-center justify-center"><i class="fa-solid fa-plus text-[12px]"></i></button>
             </div>
           </div>
           <div>
             <p class="text-[11px] font-bold text-ink-400 uppercase tracking-wider mb-2.5">Keterangan</p>
-            <textarea id="rkDetailNote" rows="3" placeholder="Keterangan, misalnya shift pagi" class="w-full px-3.5 py-2.5 text-[13px] text-ink-700 bg-ink-50 border border-ink-100 rounded-xl outline-none focus:bg-white focus:border-ink-900 focus:ring-2 focus:ring-ink-900/5 transition resize-none placeholder:text-ink-300"></textarea>
+            <textarea id="rkDetailNote" rows="3" oninput="rkSetNote(this.value)" placeholder="Keterangan, misalnya shift pagi" class="w-full px-3.5 py-2.5 text-[13px] text-ink-700 bg-ink-50 border border-ink-100 rounded-xl outline-none focus:bg-white focus:border-ink-900 transition resize-none placeholder:text-ink-300"></textarea>
           </div>
         </section>
 
@@ -450,11 +419,6 @@ tailwind.config = { theme: { extend: {
         </section>
       </aside>
     </div>
-
-    <div class="hidden">
-      <table class="hidden"><tbody id="rkTbody"></tbody></table>
-      <span id="rkStatTotal"></span><span id="rkSlipHadir"></span><span id="rkSlipAbsen"></span><span id="rkSlipOt"></span><span id="rkSlipEfektif"></span><span id="rkStatEfektif"></span>
-    </div>
   </main>
 </div>
 
@@ -472,6 +436,7 @@ tailwind.config = { theme: { extend: {
   </div>
 </nav>
 
+<!-- MASTER MODAL -->
 <div id="masterModal" class="hidden fixed inset-0 z-50">
   <div class="absolute inset-0 bg-ink-900/60 backdrop-blur-sm" onclick="absCloseMaster()"></div>
   <div class="relative h-full flex items-end md:items-center justify-center p-0 md:p-4">
@@ -486,12 +451,12 @@ tailwind.config = { theme: { extend: {
           <input id="empNIK" type="text" placeholder="NIK" class="h-10 md:h-9 w-full sm:w-28 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empNama" type="text" placeholder="Nama lengkap" class="h-10 md:h-9 flex-1 min-w-[180px] px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empNameShort" type="text" placeholder="Nama Pendek" class="h-10 md:h-9 w-full sm:w-36 px-3 text-[13px] md:text-[12.5px] border border-sky-200 bg-sky-50/50 rounded-lg outline-none">
-          <input id="empTask" type="text" list="dlTask" placeholder="Task" class="h-10 md:h-9 w-full sm:w-40 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empSub" type="text" list="dlSub" placeholder="Sub" class="h-10 md:h-9 w-full sm:w-24 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empGroup" type="text" list="dlGroup" placeholder="Group" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empShift" type="text" list="dlShift" placeholder="Shift" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empTask" type="text" placeholder="Task" class="h-10 md:h-9 w-full sm:w-40 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empSub" type="text" placeholder="Sub" class="h-10 md:h-9 w-full sm:w-24 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empGroup" type="text" placeholder="Group" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empShift" type="text" placeholder="Shift" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empShiftShort" type="text" placeholder="Shift Pendek" class="h-10 md:h-9 w-full sm:w-28 px-3 text-[13px] md:text-[12.5px] border border-sky-200 bg-sky-50/50 rounded-lg outline-none">
-          <input id="empBreak" type="text" list="dlBreak" placeholder="Break" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empBreak" type="text" placeholder="Break" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <button onclick="absAddEmployee()" class="h-10 md:h-9 w-full sm:w-auto px-4 rounded-lg bg-ink-900 text-white text-[13px] md:text-[12px] font-medium">Tambah</button>
         </div>
         <div class="desktop-view border border-ink-200 rounded-lg overflow-x-auto">
@@ -515,6 +480,7 @@ tailwind.config = { theme: { extend: {
   </div>
 </div>
 
+<!-- REPORT MODAL -->
 <div id="reportModal" class="hidden fixed inset-0 z-50">
   <div class="absolute inset-0 bg-ink-900/70 backdrop-blur-sm" onclick="closeReport()"></div>
   <div class="relative h-full flex items-end md:items-center justify-center p-0 md:p-4">
@@ -528,23 +494,19 @@ tailwind.config = { theme: { extend: {
         </div>
       </div>
       <div class="flex-1 overflow-auto p-3 md:p-5 bg-ink-100/60 min-h-0">
-        <div id="reportScaleWrap">
-          <div id="reportPreview"></div>
-        </div>
+        <div id="reportScaleWrap"><div id="reportPreview"></div></div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- CAPTURE PREVIEW -->
 <div id="capturePreview" class="hidden fixed inset-0 z-[55]">
   <div class="absolute inset-0 bg-ink-900/80 backdrop-blur-sm" onclick="closeCapturePreview()"></div>
   <div class="relative h-full flex items-end md:items-center justify-center p-0 md:p-4">
     <div class="bg-white rounded-t-3xl md:rounded-2xl shadow-2xl w-full md:max-w-2xl h-full md:h-auto md:max-h-[94vh] flex flex-col overflow-hidden">
       <div class="flex items-center justify-between px-4 md:px-5 py-3 md:py-4 border-b border-ink-200 shrink-0">
-        <div>
-          <h3 class="text-[15px] font-bold text-ink-900">Gambar Siap Disimpan</h3>
-          <p id="capMeta" class="text-[11px] text-ink-500">—</p>
-        </div>
+        <div><h3 class="text-[15px] font-bold text-ink-900">Gambar Siap Disimpan</h3><p id="capMeta" class="text-[11px] text-ink-500">—</p></div>
         <button onclick="closeCapturePreview()" class="w-10 h-10 md:w-9 md:h-9 rounded-lg hover:bg-ink-100 text-ink-400 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="flex-1 overflow-auto bg-ink-100/60 p-3 md:p-5 flex items-center justify-center min-h-0">
@@ -561,21 +523,13 @@ tailwind.config = { theme: { extend: {
 
 <div id="toastWrap" class="fixed top-16 md:top-20 right-3 left-3 md:left-auto md:right-5 z-[60] space-y-2 no-print pointer-events-none"></div>
 
-<datalist id="dlTask"></datalist>
-<datalist id="dlSub"></datalist>
-<datalist id="dlGroup"></datalist>
-<datalist id="dlShift"></datalist>
-<datalist id="dlBreak"></datalist>
-
 <script>
-/* ========== UTIL ========== */
+/* =================== UTIL =================== */
 const $ = id => document.getElementById(id);
 function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function todayISO(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function shiftDate(iso, d){ const [y,m,dd] = iso.split('-').map(Number); const dt = new Date(y, m-1, dd); dt.setDate(dt.getDate() + d); return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`; }
 function pad2(n){ return String(n).padStart(2,'0'); }
-function monthKey(y,m){ return `${y}-${pad2(m+1)}`; }
-function isOff(v){ return String(v||'').trim().toUpperCase() === 'OFF'; }
 function round1(n){ return Math.round(n*10)/10; }
 function formatDateID(iso){ const [y,m,d] = iso.split('-').map(Number); const DAY = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']; const MON = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']; const dt = new Date(y, m-1, d); return `${DAY[dt.getDay()]}, ${d} ${MON[m-1]} ${y}`; }
 const MONTH_NAMES = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -583,11 +537,9 @@ const DAY_NAMES = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 
 function isMobile(){ return window.innerWidth < 768; }
 function isIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
-function isAndroid(){ return /Android/i.test(navigator.userAgent); }
 
-/* ========== SHORT NAME & SHIFT ========== */
+/* =================== SHORT NAME / SHIFT =================== */
 let displayMode = 'short';
-
 function autoShortName(nama){
   if (!nama) return '';
   const parts = String(nama).trim().split(/\s+/);
@@ -597,26 +549,13 @@ function autoShortName(nama){
   const initials = parts.slice(1).map(w => w[0] + '.').join(' ');
   return `${first} ${initials}`;
 }
-
 const SHIFT_SHORT_MAP = {
-  '05:00-13:00': 'PAGI', '06:00-14:00': 'PAGI', '07:00-15:00': 'PAGI',
-  '07:00-16:00': 'PAGI', '08:00-16:00': 'PAGI', '08:00-17:00': 'PAGI',
-  '09:00-17:00': 'SIANG', '09:00-18:00': 'SIANG',
-  '10:00-18:00': 'SIANG', '10:00-19:00': 'SIANG',
-  '11:00-19:00': 'SIANG', '11:00-20:00': 'SIANG',
-  '12:00-20:00': 'SIANG', '12:00-21:00': 'SIANG',
-  '13:00-21:00': 'SORE', '14:00-22:00': 'SORE', '15:00-23:00': 'SORE',
-  '16:00-00:00': 'MALAM', '17:00-01:00': 'MALAM', '18:00-02:00': 'MALAM',
-  '19:00-03:00': 'MALAM', '20:00-04:00': 'MALAM', '21:00-05:00': 'MALAM', 'OFF': 'OFF'
+  '05:00-13:00':'PAGI','06:00-14:00':'PAGI','07:00-15:00':'PAGI','08:00-16:00':'PAGI',
+  '09:00-17:00':'SIANG','10:00-18:00':'SIANG','11:00-19:00':'SIANG','12:00-20:00':'SIANG',
+  '13:00-21:00':'SORE','14:00-22:00':'SORE','15:00-23:00':'SORE',
+  '16:00-00:00':'MALAM','17:00-01:00':'MALAM','18:00-02:00':'MALAM','19:00-03:00':'MALAM','20:00-04:00':'MALAM','21:00-05:00':'MALAM','OFF':'OFF'
 };
-
-function autoShortShift(shift){
-  if (!shift) return '—';
-  if (shift === 'OFF') return 'OFF';
-  if (SHIFT_SHORT_MAP[shift]) return SHIFT_SHORT_MAP[shift];
-  return String(shift).replace(/:/g,'').replace(/-/g,'–');
-}
-
+function autoShortShift(shift){ if (!shift) return '—'; if (shift === 'OFF') return 'OFF'; return SHIFT_SHORT_MAP[shift] || String(shift); }
 function shiftStartMin(shift){
   if (!shift) return 99998;
   if (shift === 'OFF') return 99999;
@@ -625,41 +564,53 @@ function shiftStartMin(shift){
   return parseInt(m[1]) * 60 + parseInt(m[2]);
 }
 
-function getDisplayName(item){
-  if (displayMode === 'long') return item.nama || '';
-  const master = state.master.employees.find(e => e.nama === item.nama);
-  if (master && master.namaShort) return master.namaShort;
-  return autoShortName(item.nama);
+/* =================== STATE =================== */
+const STORAGE_KEY = 'dashboard_hybrid_v4';
+const SEED_EMPLOYEES = [
+  { nik:'446001', nama:'NADIA ALIEFIA CHANDRA', namaShort:'NADIA A.C.', task:'Admin', sub:'B2C', group:'G1', shift:'06:00-14:00', shiftShort:'PAGI', break:'12:00-12:30' },
+  { nik:'446002', nama:'MUHAMMAD FAREL ADRIYANA', namaShort:'MUHAMMAD F.A.', task:'Admin', sub:'B2C', group:'G1', shift:'14:00-22:00', shiftShort:'SORE', break:'17:00-17:30' },
+  { nik:'446003', nama:'BUDI SANTOSO', namaShort:'BUDI S.', task:'Staff', sub:'B2C', group:'G1', shift:'08:00-16:00', shiftShort:'PAGI', break:'12:00-12:30' },
+  { nik:'446004', nama:'SITI RAHMAWATI', namaShort:'SITI R.', task:'Magang', sub:'PKL', group:'G1', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-12:30' },
+  { nik:'446005', nama:'ANDI PRATAMA', namaShort:'ANDI P.', task:'Freelance', sub:'Non-PKL', group:'G1', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-16:30' },
+];
+
+let state = {
+  master: { employees: [] },
+  schedule: {},
+  rekap: {},
+  profile: { nama:'', nip:'', company:'PT Flexofast Solusi Indonesia', position:'' },
+  ui: {
+    activeTab: 'absensi',
+    selectedDay: todayISO(),
+    rkSelectedDay: todayISO(),
+    rkPeriod: 'bulanan',
+    rkMonth: new Date().getMonth(),
+    rkYear: new Date().getFullYear(),
+    displayMode: 'short'
+  }
+};
+
+function persist(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){} }
+function load(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw){
+      const d = JSON.parse(raw);
+      if (d.master) state.master = d.master;
+      if (d.schedule) state.schedule = d.schedule;
+      if (d.rekap) state.rekap = d.rekap;
+      if (d.profile) state.profile = Object.assign(state.profile, d.profile);
+      if (d.ui) state.ui = Object.assign(state.ui, d.ui);
+    } else {
+      state.master.employees = SEED_EMPLOYEES.map(e => ({...e}));
+      state.profile = { nama:'Admin B2C', nip:'446002', company:'PT Flexofast Solusi Indonesia', position:'Admin B2C' };
+      persist();
+    }
+    displayMode = state.ui.displayMode || 'short';
+  } catch(e){ console.error(e); }
 }
 
-function getDisplayShift(item){
-  if (displayMode === 'long') return item.shift || '—';
-  const master = state.master.employees.find(e => e.nama === item.nama);
-  if (master && master.shiftShort) return master.shiftShort;
-  return autoShortShift(item.shift);
-}
-
-function toggleDisplayMode(){
-  displayMode = displayMode === 'short' ? 'long' : 'short';
-  try { localStorage.setItem('display_mode', displayMode); } catch(e){}
-  renderHeaderActions();
-  absRenderTable();
-  toast('info', `Tampilan: ${displayMode === 'short' ? 'Pendek' : 'Panjang'}`);
-}
-
-function absApplySort(mode){
-  const iso = absCurrentDate();
-  const day = state.schedule[iso];
-  if (!day || !day.length){ toast('warning', 'Tidak ada data untuk diurutkan'); return; }
-  if (mode === 'name-asc') day.sort((a,b) => String(a.nama||'').localeCompare(String(b.nama||''), 'id', { sensitivity: 'base' }));
-  else if (mode === 'name-desc') day.sort((a,b) => String(b.nama||'').localeCompare(String(a.nama||''), 'id', { sensitivity: 'base' }));
-  else if (mode === 'shift-asc') day.sort((a,b) => shiftStartMin(a.shift) - shiftStartMin(b.shift));
-  else if (mode === 'shift-desc') day.sort((a,b) => shiftStartMin(b.shift) - shiftStartMin(a.shift));
-  persist();
-  absRenderTable();
-  if (mode !== 'default') toast('success', 'Data diurutkan');
-}
-
+/* =================== TOAST =================== */
 function toast(type, msg){
   const wrap = $('toastWrap');
   const icons = { success:'fa-circle-check', error:'fa-circle-exclamation', info:'fa-circle-info', warning:'fa-triangle-exclamation' };
@@ -671,7 +622,633 @@ function toast(type, msg){
   setTimeout(() => el.remove(), 3000);
 }
 
-/* ========== REPORT PREVIEW SCALING ========== */
+/* =================== TAB SWITCH =================== */
+function switchTab(tab){
+  state.ui.activeTab = tab; persist();
+  $('pageAbsensi').classList.toggle('hidden', tab !== 'absensi');
+  $('pageRekap').classList.toggle('hidden', tab !== 'rekap');
+  $('tabAbsensi').classList.toggle('active', tab === 'absensi');
+  $('tabRekap').classList.toggle('active', tab === 'rekap');
+  $('navAbsensi').classList.toggle('active', tab === 'absensi');
+  $('navRekap').classList.toggle('active', tab === 'rekap');
+  $('headerTitle').textContent = tab === 'absensi' ? 'Dashboard Absensi & Rekap' : 'Rekap Pribadi';
+  $('headerSub').textContent = tab === 'absensi' ? 'PT Flexofast Solusi Indonesia · Sistem Terpadu' : 'Isi kehadiran dan lembur bulanan';
+  renderHeaderActions();
+  if (tab === 'rekap') rkRenderAll();
+}
+
+function renderHeaderActions(){
+  const el = $('headerActions');
+  if (state.ui.activeTab === 'absensi'){
+    el.innerHTML = `
+      <button onclick="toggleDisplayMode()" class="h-9 px-3 rounded-lg bg-ink-100 hover:bg-ink-200 text-[11.5px] font-semibold text-ink-700 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-text-width text-[10px]"></i>
+        <span class="hidden sm:inline">${displayMode === 'short' ? 'Pendek' : 'Panjang'}</span>
+      </button>
+      <button onclick="absOpenMaster()" class="h-9 px-3 rounded-lg bg-brand-navy hover:bg-brand-navyDark text-white text-[11.5px] font-semibold transition flex items-center gap-1.5">
+        <i class="fa-solid fa-users text-[10px]"></i>
+        <span class="hidden sm:inline">Master</span>
+      </button>`;
+  } else {
+    el.innerHTML = `
+      <button onclick="openReport()" class="h-9 px-3 rounded-lg bg-brand-navy hover:bg-brand-navyDark text-white text-[11.5px] font-semibold transition flex items-center gap-1.5">
+        <i class="fa-solid fa-image text-[10px]"></i>
+        <span class="hidden sm:inline">Laporan</span>
+      </button>`;
+  }
+}
+
+/* =================== ABSENSI =================== */
+function absCurrentDate(){ return $('absDateInput').value || todayISO(); }
+function absChangeDate(){ state.ui.selectedDay = absCurrentDate(); persist(); absRenderAll(); }
+function absShiftDay(d){ const iso = shiftDate(absCurrentDate(), d); $('absDateInput').value = iso; absChangeDate(); }
+function absToday(){ $('absDateInput').value = todayISO(); absChangeDate(); }
+function absGoOct1(){ $('absDateInput').value = '2026-10-01'; absChangeDate(); }
+
+function getDisplayName(item){
+  if (displayMode === 'long') return item.nama || '';
+  const m = state.master.employees.find(e => e.nama === item.nama);
+  if (m && m.namaShort) return m.namaShort;
+  return autoShortName(item.nama);
+}
+function getDisplayShift(item){
+  if (displayMode === 'long') return item.shift || '—';
+  const m = state.master.employees.find(e => e.nama === item.nama);
+  if (m && m.shiftShort) return m.shiftShort;
+  return autoShortShift(item.shift);
+}
+
+function toggleDisplayMode(){
+  displayMode = displayMode === 'short' ? 'long' : 'short';
+  state.ui.displayMode = displayMode; persist();
+  renderHeaderActions();
+  absRenderTable(); absRenderCards();
+  toast('info', `Tampilan: ${displayMode === 'short' ? 'Pendek' : 'Panjang'}`);
+}
+
+function absApplySort(mode){
+  const iso = absCurrentDate();
+  const day = state.schedule[iso];
+  if (!day || !day.length){ toast('warning', 'Tidak ada data untuk diurutkan'); return; }
+  if (mode === 'name-asc') day.sort((a,b) => String(a.nama||'').localeCompare(String(b.nama||''), 'id', { sensitivity: 'base' }));
+  else if (mode === 'name-desc') day.sort((a,b) => String(b.nama||'').localeCompare(String(a.nama||''), 'id', { sensitivity: 'base' }));
+  else if (mode === 'shift-asc') day.sort((a,b) => shiftStartMin(a.shift) - shiftStartMin(b.shift));
+  else if (mode === 'shift-desc') day.sort((a,b) => shiftStartMin(b.shift) - shiftStartMin(a.shift));
+  persist(); absRenderTable(); absRenderCards();
+  if (mode !== 'default') toast('success', 'Data diurutkan');
+}
+
+function absCopyPrev(){
+  const iso = absCurrentDate();
+  const prev = shiftDate(iso, -1);
+  const prevDay = state.schedule[prev];
+  if (!prevDay || !prevDay.length){ toast('warning', 'Hari sebelumnya belum ada data'); return; }
+  if (state.schedule[iso] && state.schedule[iso].length){
+    if (!confirm('Tanggal ini sudah ada data. Timpa?')) return;
+  }
+  state.schedule[iso] = prevDay.map(e => ({...e}));
+  persist(); absRenderAll();
+  toast('success', 'Jadwal hari sebelumnya disalin');
+}
+
+function absAutofill(){
+  const iso = absCurrentDate();
+  const day = state.schedule[iso] || [];
+  let filled = 0;
+  day.forEach(item => {
+    const m = state.master.employees.find(e => e.nama === item.nama || e.nik === item.nik);
+    if (!m) return;
+    ['nik','task','sub','group','shift','break'].forEach(f => {
+      if (!item[f] && m[f]){ item[f] = m[f]; filled++; }
+    });
+  });
+  state.schedule[iso] = day; persist(); absRenderAll();
+  toast('success', filled > 0 ? `${filled} kolom terisi otomatis` : 'Tidak ada kolom kosong');
+}
+
+function absClearDay(){
+  const iso = absCurrentDate();
+  if (!state.schedule[iso] || !state.schedule[iso].length){ toast('warning', 'Tanggal ini sudah kosong'); return; }
+  if (!confirm('Kosongkan semua karyawan di tanggal ini?')) return;
+  delete state.schedule[iso]; persist(); absRenderAll();
+  toast('success', 'Jadwal dikosongkan');
+}
+
+function absAddAll(){
+  const iso = absCurrentDate();
+  if (!state.schedule[iso]) state.schedule[iso] = [];
+  let added = 0;
+  state.master.employees.forEach(m => {
+    if (!state.schedule[iso].some(e => e.nama === m.nama)){
+      state.schedule[iso].push({ nik:m.nik||'', nama:m.nama, task:m.task||'', sub:m.sub||'', group:m.group||'', shift:m.shift||'', break:m.break||'' });
+      added++;
+    }
+  });
+  persist(); absRenderAll();
+  toast('success', added > 0 ? `${added} karyawan ditambahkan` : 'Semua karyawan sudah ditambahkan');
+}
+
+function absToggleEmp(nama){
+  const iso = absCurrentDate();
+  if (!state.schedule[iso]) state.schedule[iso] = [];
+  const idx = state.schedule[iso].findIndex(e => e.nama === nama);
+  if (idx >= 0){
+    state.schedule[iso].splice(idx, 1);
+  } else {
+    const m = state.master.employees.find(e => e.nama === nama);
+    if (!m) return;
+    state.schedule[iso].push({ nik:m.nik||'', nama:m.nama, task:m.task||'', sub:m.sub||'', group:m.group||'', shift:m.shift||'', break:m.break||'' });
+  }
+  persist(); absRenderAll();
+}
+
+function absUpdateCell(idx, field, value){
+  const iso = absCurrentDate();
+  if (!state.schedule[iso] || !state.schedule[iso][idx]) return;
+  state.schedule[iso][idx][field] = value;
+  persist();
+}
+
+function absResetRowFromMaster(idx){
+  const iso = absCurrentDate();
+  const row = state.schedule[iso] && state.schedule[iso][idx];
+  if (!row) return;
+  const m = state.master.employees.find(e => e.nama === row.nama || e.nik === row.nik);
+  if (!m){ toast('warning', 'Profil tidak ditemukan di Master'); return; }
+  Object.assign(row, { nik:m.nik||'', task:m.task||'', sub:m.sub||'', group:m.group||'', shift:m.shift||'', break:m.break||'' });
+  persist(); absRenderAll(); toast('success', 'Baris direset dari profil');
+}
+
+function absDeleteRow(idx){
+  const iso = absCurrentDate();
+  if (!state.schedule[iso]) return;
+  state.schedule[iso].splice(idx, 1);
+  persist(); absRenderAll();
+}
+
+function toggleQuickAdd(){
+  const body = $('quickBody');
+  const chev = $('quickChevron');
+  const isHidden = body.classList.contains('hidden');
+  body.classList.toggle('hidden', !isHidden);
+  chev.style.transform = isHidden ? 'rotate(180deg)' : '';
+}
+
+function absRenderAll(){
+  absRenderDateLabel();
+  absRenderQuickPanel();
+  absRenderStats();
+  absRenderTable();
+  absRenderCards();
+}
+
+function absRenderDateLabel(){
+  $('absDateLabel').textContent = formatDateID(absCurrentDate());
+  $('absTableTitle').textContent = 'Schedule — ' + formatDateID(absCurrentDate());
+}
+
+function absRenderQuickPanel(){
+  const iso = absCurrentDate();
+  const day = state.schedule[iso] || [];
+  const searchDesk = ($('absSearchDesk')?.value || '').toLowerCase().trim();
+  const searchMob = ($('absSearchMob')?.value || '').toLowerCase().trim();
+  const search = searchDesk || searchMob;
+  const catDesk = $('absFilterCatDesk')?.value || '';
+  const catMob = $('absFilterCatMob')?.value || '';
+  const cat = catDesk || catMob;
+
+  const filtered = state.master.employees.filter(m => {
+    if (search && !String(m.nama||'').toLowerCase().includes(search) && !String(m.nik||'').toLowerCase().includes(search)) return false;
+    if (cat){
+      const sub = String(m.sub||'').toLowerCase();
+      const grp = String(m.group||'').toLowerCase();
+      if (cat === 'pkl' && !sub.includes('pkl')) return false;
+      if (cat === 'nonpkl' && !sub.includes('non-pkl') && !sub.includes('nonpkl')) return false;
+      if (cat === 'regular' && (sub.includes('pkl'))) return false;
+    }
+    return true;
+  });
+
+  const html = filtered.map(m => {
+    const isAdded = day.some(e => e.nama === m.nama);
+    const sub = String(m.sub||'').toLowerCase();
+    let cls = 'emp-card';
+    if (sub.includes('pkl') && !sub.includes('non-pkl')) cls += ' pkl';
+    else if (sub.includes('non-pkl') || sub.includes('nonpkl')) cls += ' nonpkl';
+    if (isAdded) cls += ' added';
+    return `<div class="${cls}" onclick="absToggleEmp('${esc(m.nama).replace(/'/g,"\\'")}')">
+      <div class="text-[12px] font-bold text-ink-800 leading-tight truncate">${esc(getDisplayName({nama:m.nama}))}</div>
+      <div class="text-[10.5px] text-ink-500 mt-0.5 truncate">${esc(m.nik||'—')} · ${esc(getDisplayShift({nama:m.nama,shift:m.shift}))}</div>
+    </div>`;
+  }).join('') || `<div class="col-span-full text-center py-4 text-[12px] text-ink-400">Tidak ada karyawan di Master. <button onclick="absOpenMaster()" class="text-brand-navy font-semibold underline">Tambah</button></div>`;
+
+  $('absQuickPanel').innerHTML = html;
+  const addedCount = day.length;
+  const total = state.master.employees.length;
+  const statTxt = `${addedCount} dari ${total} karyawan ditambahkan hari ini`;
+  if ($('absQuickStats')) $('absQuickStats').textContent = statTxt;
+  if ($('absQuickStatsMobile')) $('absQuickStatsMobile').textContent = statTxt;
+}
+
+function absRenderStats(){
+  const iso = absCurrentDate();
+  const day = state.schedule[iso] || [];
+  const total = day.length;
+  const masuk = day.filter(e => !String(e.shift||'').toUpperCase().includes('OFF')).length;
+  const off = day.filter(e => String(e.shift||'').toUpperCase().includes('OFF')).length;
+  const malam = day.filter(e => String(e.shift||'').includes('16:00') || String(e.shift||'').includes('17:00') || String(e.shift||'').includes('18:00') || String(e.shift||'').includes('19:00') || String(e.shift||'').includes('20:00') || String(e.shift||'').includes('21:00')).length;
+  const pklCount = day.filter(e => {
+    const m = state.master.employees.find(x => x.nama === e.nama);
+    const sub = String(m?.sub||'').toLowerCase();
+    return sub.includes('pkl') || sub.includes('non-pkl') || sub.includes('nonpkl');
+  }).length;
+  $('absStatTotal').textContent = total;
+  $('absStatMasuk').textContent = masuk;
+  $('absStatOff').textContent = off;
+  if ($('absStatMalam')) $('absStatMalam').textContent = malam;
+  if ($('absStatPkl')) $('absStatPkl').textContent = pklCount;
+  $('absResultCount').textContent = total;
+  $('absEmpty').classList.toggle('hidden', total > 0);
+  $('absTableSub').textContent = `${total} karyawan · ${formatDateID(iso)}`;
+}
+
+function absRenderTable(){
+  const iso = absCurrentDate();
+  const day = state.schedule[iso] || [];
+  if (!day.length){ $('absTbody').innerHTML = ''; return; }
+  $('absTbody').innerHTML = day.map((e, i) => {
+    const isOffRow = String(e.shift||'').toUpperCase().includes('OFF');
+    return `<tr class="${isOffRow ? 'bg-rose-50/40' : 'hover:bg-sky-50/30'}">
+      <td class="py-2 px-2 text-center text-[11px] text-ink-500">${i+1}</td>
+      <td class="py-1 px-2"><input class="cell-input" value="${esc(e.nik)}" oninput="absUpdateCell(${i},'nik',this.value)"></td>
+      <td class="py-1 px-2"><input class="cell-input font-semibold" value="${esc(e.nama)}" oninput="absUpdateCell(${i},'nama',this.value)"></td>
+      <td class="py-1 px-2"><input class="cell-input" value="${esc(e.task)}" oninput="absUpdateCell(${i},'task',this.value)"></td>
+      <td class="py-1 px-2"><input class="cell-input" value="${esc(e.sub)}" oninput="absUpdateCell(${i},'sub',this.value)"></td>
+      <td class="py-1 px-2"><input class="cell-input" value="${esc(e.group)}" oninput="absUpdateCell(${i},'group',this.value)"></td>
+      <td class="py-1 px-2"><input class="cell-input font-medium" value="${esc(e.shift)}" oninput="absUpdateCell(${i},'shift',this.value)"></td>
+      <td class="py-1 px-2"><input class="cell-input" value="${esc(e.break)}" oninput="absUpdateCell(${i},'break',this.value)"></td>
+      <td class="py-1 px-2 text-center whitespace-nowrap">
+        <button onclick="absResetRowFromMaster(${i})" class="w-7 h-7 rounded hover:bg-sky-100 text-sky-600 text-[11px]" title="Reset dari profil"><i class="fa-solid fa-rotate"></i></button>
+        <button onclick="absDeleteRow(${i})" class="w-7 h-7 rounded hover:bg-rose-100 text-rose-600 text-[11px]" title="Hapus"><i class="fa-solid fa-times"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function absRenderCards(){
+  const iso = absCurrentDate();
+  const day = state.schedule[iso] || [];
+  if (!day.length){ $('absCardList').innerHTML = ''; return; }
+  $('absCardList').innerHTML = day.map((e, i) => {
+    const isOffRow = String(e.shift||'').toUpperCase().includes('OFF');
+    return `<div class="bg-white border ${isOffRow ? 'border-rose-200 bg-rose-50/40' : 'border-ink-100'} rounded-xl p-3">
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0 flex-1">
+          <div class="text-[13px] font-bold text-ink-900 truncate">${esc(getDisplayName(e))}</div>
+          <div class="text-[11px] text-ink-500 mt-0.5">${esc(e.nik||'—')} · ${esc(e.task||'—')}</div>
+          <div class="flex flex-wrap gap-1.5 mt-1.5">
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">${esc(getDisplayShift(e))}</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-ink-100 text-ink-600">${esc(e.sub||'—')}</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-ink-100 text-ink-600">Break: ${esc(e.break||'—')}</span>
+          </div>
+        </div>
+        <button onclick="absDeleteRow(${i})" class="w-8 h-8 rounded-lg hover:bg-rose-100 text-rose-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark text-[12px]"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* =================== MASTER =================== */
+function absOpenMaster(){ $('masterModal').classList.remove('hidden'); document.body.classList.add('sheet-open'); absRenderMasterList(); }
+function absCloseMaster(){ $('masterModal').classList.add('hidden'); document.body.classList.remove('sheet-open'); }
+
+function absRenderMasterList(){
+  const list = state.master.employees;
+  const pkl = list.filter(e => String(e.sub||'').toLowerCase().includes('pkl') && !String(e.sub||'').toLowerCase().includes('non')).length;
+  const nonPkl = list.filter(e => String(e.sub||'').toLowerCase().includes('non-pkl') || String(e.sub||'').toLowerCase().includes('nonpkl')).length;
+  const reg = list.length - pkl - nonPkl;
+  $('totalEmp').textContent = list.length;
+  $('totalPkl').textContent = pkl;
+  $('totalNonPkl').textContent = nonPkl;
+  $('totalReg').textContent = reg;
+
+  // Desktop table
+  $('empTableBody').innerHTML = list.map((e, i) => `
+    <tr class="hover:bg-sky-50/30">
+      <td class="px-3 py-1.5"><input class="cell-input" value="${esc(e.nik)}" oninput="absUpdateMaster(${i},'nik',this.value)"></td>
+      <td class="px-3 py-1.5"><input class="cell-input font-semibold" value="${esc(e.nama)}" oninput="absUpdateMaster(${i},'nama',this.value)"></td>
+      <td class="px-3 py-1.5 bg-sky-50/30"><input class="cell-input" value="${esc(e.namaShort||'')}" placeholder="${esc(autoShortName(e.nama))}" oninput="absUpdateMaster(${i},'namaShort',this.value)"></td>
+      <td class="px-3 py-1.5"><input class="cell-input" value="${esc(e.task)}" oninput="absUpdateMaster(${i},'task',this.value)"></td>
+      <td class="px-3 py-1.5"><input class="cell-input" value="${esc(e.sub)}" oninput="absUpdateMaster(${i},'sub',this.value)"></td>
+      <td class="px-3 py-1.5"><input class="cell-input" value="${esc(e.group)}" oninput="absUpdateMaster(${i},'group',this.value)"></td>
+      <td class="px-3 py-1.5"><input class="cell-input" value="${esc(e.shift)}" oninput="absUpdateMaster(${i},'shift',this.value)"></td>
+      <td class="px-3 py-1.5 bg-sky-50/30"><input class="cell-input" value="${esc(e.shiftShort||'')}" placeholder="${esc(autoShortShift(e.shift))}" oninput="absUpdateMaster(${i},'shiftShort',this.value)"></td>
+      <td class="px-3 py-1.5"><input class="cell-input" value="${esc(e.break)}" oninput="absUpdateMaster(${i},'break',this.value)"></td>
+      <td class="px-3 py-1.5 text-center"><button onclick="absDeleteMasterEmp(${i})" class="text-rose-500 hover:bg-rose-100 w-7 h-7 rounded"><i class="fa-solid fa-trash text-[11px]"></i></button></td>
+    </tr>`).join('');
+
+  // Mobile list
+  $('empMobileList').innerHTML = list.map((e, i) => `
+    <div class="bg-white border border-ink-100 rounded-lg p-3">
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0 flex-1">
+          <div class="text-[12.5px] font-bold text-ink-900 truncate">${esc(e.nama)}</div>
+          <div class="text-[11px] text-ink-500 mt-0.5">${esc(e.nik||'—')} · ${esc(e.task||'—')} · ${esc(e.shift||'—')}</div>
+        </div>
+        <button onclick="absDeleteMasterEmp(${i})" class="w-8 h-8 rounded hover:bg-rose-100 text-rose-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-trash text-[11px]"></i></button>
+      </div>
+    </div>`).join('') || '<div class="text-center text-[12px] text-ink-400 py-4">Belum ada karyawan di Master</div>';
+}
+
+function absAddEmployee(){
+  const nama = $('empNama').value.trim();
+  if (!nama){ toast('error', 'Nama wajib diisi'); return; }
+  const emp = {
+    nik: $('empNIK').value.trim(),
+    nama,
+    namaShort: $('empNameShort').value.trim(),
+    task: $('empTask').value.trim(),
+    sub: $('empSub').value.trim(),
+    group: $('empGroup').value.trim(),
+    shift: $('empShift').value.trim(),
+    shiftShort: $('empShiftShort').value.trim(),
+    break: $('empBreak').value.trim()
+  };
+  state.master.employees.push(emp);
+  persist();
+  ['empNIK','empNama','empNameShort','empTask','empSub','empGroup','empShift','empShiftShort','empBreak'].forEach(id => $(id).value = '');
+  absRenderMasterList(); absRenderQuickPanel();
+  toast('success', 'Karyawan ditambahkan');
+}
+
+function absUpdateMaster(idx, field, value){
+  if (!state.master.employees[idx]) return;
+  state.master.employees[idx][field] = value;
+  persist();
+}
+
+function absDeleteMasterEmp(idx){
+  if (!confirm('Hapus karyawan dari Master?')) return;
+  state.master.employees.splice(idx, 1);
+  persist(); absRenderMasterList(); absRenderQuickPanel();
+  toast('success', 'Karyawan dihapus');
+}
+
+function absResetMaster(){
+  if (!confirm('Reset seluruh Master Data? Data jadwal tetap aman.')) return;
+  state.master.employees = SEED_EMPLOYEES.map(e => ({...e}));
+  persist(); absRenderMasterList(); absRenderQuickPanel();
+  toast('success', 'Master direset ke data awal');
+}
+
+/* =================== REKAP =================== */
+function rkInitSelects(){
+  const mSel = $('rkSelMonth'), ySel = $('rkSelYear');
+  if (!mSel.options.length){
+    mSel.innerHTML = MONTH_NAMES.map((m, i) => `<option value="${i}">${m}</option>`).join('');
+    const years = [];
+    for (let y = 2024; y <= 2030; y++) years.push(`<option value="${y}">${y}</option>`);
+    ySel.innerHTML = years.join('');
+  }
+  mSel.value = state.ui.rkMonth;
+  ySel.value = state.ui.rkYear;
+}
+
+function rkOnPeriodChange(){
+  state.ui.rkMonth = parseInt($('rkSelMonth').value);
+  state.ui.rkYear = parseInt($('rkSelYear').value);
+  persist(); rkRenderAll();
+}
+
+function rkShiftMonth(d){
+  let m = state.ui.rkMonth + d;
+  let y = state.ui.rkYear;
+  if (m < 0){ m = 11; y--; }
+  if (m > 11){ m = 0; y++; }
+  state.ui.rkMonth = m; state.ui.rkYear = y;
+  $('rkSelMonth').value = m; $('rkSelYear').value = y;
+  persist(); rkRenderAll();
+}
+
+function rkSetPeriod(p){
+  state.ui.rkPeriod = p; persist(); rkRenderAll();
+}
+
+function rkCurrentRange(){
+  const y = state.ui.rkYear, m = state.ui.rkMonth;
+  const lastDay = new Date(y, m+1, 0).getDate();
+  let startD = 1, endD = lastDay;
+  if (state.ui.rkPeriod === 'p1'){ startD = 1; endD = 15; }
+  else if (state.ui.rkPeriod === 'p2'){ startD = 16; endD = lastDay; }
+  return {
+    start: `${y}-${pad2(m+1)}-${pad2(startD)}`,
+    end: `${y}-${pad2(m+1)}-${pad2(endD)}`,
+    startD, endD, y, m, lastDay
+  };
+}
+
+function rkRenderAll(){
+  rkInitSelects();
+  rkRenderProfile();
+  rkRenderPeriodUI();
+  rkRenderCalendar();
+  rkRenderDetail();
+  rkRenderSummary();
+}
+
+function rkRenderProfile(){
+  const p = state.profile;
+  $('rkInpName').value = p.nama || '';
+  $('rkInpCompany').value = p.company || '';
+  $('rkInpPosition').value = p.position || '';
+  $('rkInpNip').value = p.nip || '';
+  $('rkAvatar').textContent = (p.nama || '--').trim().split(/\s+/).map(w => w[0]).slice(0,2).join('').toUpperCase() || '--';
+  $('rkRoleLabel').textContent = p.position || '—';
+  $('rkNipLabel').textContent = p.nip || '—';
+}
+
+function rkOnProfileChange(){
+  state.profile.nama = $('rkInpName').value;
+  state.profile.company = $('rkInpCompany').value;
+  state.profile.position = $('rkInpPosition').value;
+  state.profile.nip = $('rkInpNip').value;
+  $('rkAvatar').textContent = (state.profile.nama || '--').trim().split(/\s+/).map(w => w[0]).slice(0,2).join('').toUpperCase() || '--';
+  $('rkRoleLabel').textContent = state.profile.position || '—';
+  $('rkNipLabel').textContent = state.profile.nip || '—';
+  persist();
+}
+
+function rkRenderPeriodUI(){
+  const { start, end, startD, endD, y, m, lastDay } = rkCurrentRange();
+  const periodLabel = state.ui.rkPeriod === 'bulanan' ? 'Bulanan' : state.ui.rkPeriod === 'p1' ? 'Periode 1 (1–15)' : 'Periode 2 (16–Akhir)';
+  $('rkRangeLabel').textContent = `${periodLabel} · ${startD}–${endD} ${MONTH_NAMES[m]} ${y}`;
+  ['chipBulanan','chipP1','chipP2'].forEach(id => {
+    $(id).className = 'px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition ' + (state.ui.rkPeriod === id.replace('chip','').toLowerCase() ? 'bg-brand-navy text-white' : 'bg-white text-ink-500 hover:bg-ink-100');
+  });
+  // Fix chip classnames explicitly
+  $('chipBulanan').className = 'px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition ' + (state.ui.rkPeriod === 'bulanan' ? 'bg-brand-navy text-white' : 'bg-white text-ink-500 hover:bg-ink-100');
+  $('chipP1').className = 'px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition ' + (state.ui.rkPeriod === 'p1' ? 'bg-brand-navy text-white' : 'bg-white text-ink-500 hover:bg-ink-100');
+  $('chipP2').className = 'px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition ' + (state.ui.rkPeriod === 'p2' ? 'bg-brand-navy text-white' : 'bg-white text-ink-500 hover:bg-ink-100');
+}
+
+function rkRenderCalendar(){
+  const { startD, endD, y, m } = rkCurrentRange();
+  const firstDow = new Date(y, m, startD).getDay(); // 0=Sun
+  // Monday-first: convert Sun(0)->6, Mon(1)->0 ... Sat(6)->5
+  const offset = (firstDow + 6) % 7;
+  let html = '';
+  for (let i = 0; i < offset; i++) html += '<div class="cal-day empty"></div>';
+  for (let d = startD; d <= endD; d++){
+    const iso = `${y}-${pad2(m+1)}-${pad2(d)}`;
+    const day = state.rekap[iso] || {};
+    const status = day.status || '';
+    const dow = new Date(y, m, d).getDay();
+    const isWeekend = dow === 0;
+    const isSel = iso === state.ui.rkSelectedDay;
+    const cls = ['cal-day'];
+    if (isWeekend) cls.push('is-weekend');
+    if (isSel) cls.push('selected');
+    html += `<div class="${cls.join(' ')}" data-status="${status}" onclick="rkSelectDay('${iso}')">
+      <div class="day-num">${d}</div>
+      <div class="day-status">${status || '—'}</div>
+    </div>`;
+  }
+  $('rkCalendarGrid').innerHTML = html;
+}
+
+function rkSelectDay(iso){
+  state.ui.rkSelectedDay = iso;
+  persist(); rkRenderCalendar(); rkRenderDetail();
+}
+
+function rkRenderDetail(){
+  const iso = state.ui.rkSelectedDay;
+  const day = state.rekap[iso] || { status:'', ot:0, note:'' };
+  $('rkDetailDate').textContent = formatDateID(iso);
+  const statuses = ['Masuk','Absen','Cuti','Sakit','Off'];
+  $('rkStatusButtons').innerHTML = statuses.map(s => {
+    const active = day.status === s ? 'active' : '';
+    return `<button class="status-pill ${active}" data-status="${s}" onclick="rkSetStatus('${s}')">${s}</button>`;
+  }).join('');
+  $('rkOTDisplay').textContent = Number(day.ot) || 0;
+  $('rkDetailNote').value = day.note || '';
+}
+
+function rkSetStatus(status){
+  const iso = state.ui.rkSelectedDay;
+  if (!state.rekap[iso]) state.rekap[iso] = { status:'', ot:0, note:'' };
+  state.rekap[iso].status = state.rekap[iso].status === status ? '' : status;
+  persist(); rkRenderAll();
+}
+
+/* ============== OT PER 1 JAM (Math.round) ============== */
+function rkAdjustOT(delta){
+  const iso = state.ui.rkSelectedDay;
+  if (!state.rekap[iso]) state.rekap[iso] = { status:'', ot:0, note:'' };
+  const cur = Number(state.rekap[iso].ot) || 0;
+  state.rekap[iso].ot = Math.max(0, Math.round(cur + delta)); // bulat per jam
+  persist(); rkRenderDetail(); rkRenderSummary(); rkRenderCalendar();
+}
+
+function rkSetNote(v){
+  const iso = state.ui.rkSelectedDay;
+  if (!state.rekap[iso]) state.rekap[iso] = { status:'', ot:0, note:'' };
+  state.rekap[iso].note = v;
+  persist();
+}
+
+function rkFillWeekdays(status){
+  const { startD, endD, y, m } = rkCurrentRange();
+  for (let d = startD; d <= endD; d++){
+    const dow = new Date(y, m, d).getDay();
+    if (dow !== 0){
+      const iso = `${y}-${pad2(m+1)}-${pad2(d)}`;
+      if (!state.rekap[iso]) state.rekap[iso] = { status:'', ot:0, note:'' };
+      state.rekap[iso].status = status;
+    }
+  }
+  persist(); rkRenderAll();
+  toast('success', `Senin–Sabtu: ${status}`);
+}
+
+function rkFillWeekends(status){
+  const { startD, endD, y, m } = rkCurrentRange();
+  for (let d = startD; d <= endD; d++){
+    const dow = new Date(y, m, d).getDay();
+    if (dow === 0){
+      const iso = `${y}-${pad2(m+1)}-${pad2(d)}`;
+      if (!state.rekap[iso]) state.rekap[iso] = { status:'', ot:0, note:'' };
+      state.rekap[iso].status = status;
+    }
+  }
+  persist(); rkRenderAll();
+  toast('success', `Minggu: ${status}`);
+}
+
+function rkFillAllPeriod(status){
+  const { startD, endD, y, m } = rkCurrentRange();
+  for (let d = startD; d <= endD; d++){
+    const iso = `${y}-${pad2(m+1)}-${pad2(d)}`;
+    if (!state.rekap[iso]) state.rekap[iso] = { status:'', ot:0, note:'' };
+    state.rekap[iso].status = status;
+  }
+  persist(); rkRenderAll();
+  toast('success', `Semua hari: ${status}`);
+}
+
+function rkBulkClearPeriod(){
+  const { startD, endD, y, m } = rkCurrentRange();
+  if (!confirm('Reset semua lembur dalam periode ini?')) return;
+  for (let d = startD; d <= endD; d++){
+    const iso = `${y}-${pad2(m+1)}-${pad2(d)}`;
+    if (state.rekap[iso]) state.rekap[iso].ot = 0;
+  }
+  persist(); rkRenderAll();
+  toast('success', 'Lembur direset');
+}
+
+function rkResetMonth(){
+  if (!confirm('Reset seluruh data bulan ini?')) return;
+  const y = state.ui.rkYear, m = state.ui.rkMonth;
+  const lastDay = new Date(y, m+1, 0).getDate();
+  for (let d = 1; d <= lastDay; d++){
+    delete state.rekap[`${y}-${pad2(m+1)}-${pad2(d)}`];
+  }
+  persist(); rkRenderAll();
+  toast('success', 'Data bulan direset');
+}
+
+function rkRenderSummary(){
+  const { startD, endD, y, m, lastDay } = rkCurrentRange();
+  let hadir=0, off=0, absen=0, cuti=0, sakit=0, totalOt=0;
+  for (let d = startD; d <= endD; d++){
+    const iso = `${y}-${pad2(m+1)}-${pad2(d)}`;
+    const day = state.rekap[iso] || {};
+    const s = day.status || '';
+    if (s === 'Masuk') hadir++;
+    else if (s === 'Off') off++;
+    else if (s === 'Absen') absen++;
+    else if (s === 'Cuti') cuti++;
+    else if (s === 'Sakit') sakit++;
+    totalOt += Number(day.ot) || 0;
+  }
+  const totalDays = endD - startD + 1;
+  const pct = totalDays > 0 ? Math.round((hadir / totalDays) * 100) : 0;
+  $('rkRingHadir').textContent = hadir;
+  $('rkRingOff').textContent = off;
+  $('rkRingOt').textContent = totalOt;
+  $('rkRingPct').textContent = pct + '%';
+  $('rkStatHadir').textContent = hadir;
+  $('rkStatOff').textContent = off;
+  $('rkStatAbsen').textContent = absen + cuti + sakit;
+  $('rkStatOT').textContent = totalOt;
+  const circumference = 2 * Math.PI * 46;
+  const offset = circumference - (pct / 100) * circumference;
+  $('rkRingBar').setAttribute('stroke-dasharray', circumference);
+  $('rkRingBar').setAttribute('stroke-dashoffset', offset);
+}
+
+/* =================== REPORT =================== */
 function fitReportPreview(){
   const inner = $('reportPreview');
   const wrap = $('reportScaleWrap');
@@ -686,12 +1263,11 @@ function fitReportPreview(){
   if (window.innerWidth >= 1180) return;
   const scrollBox = wrap.parentElement;
   const avail = scrollBox.clientWidth - 32;
-  const natural = 1100;
-  if (avail >= natural) return;
-  const scale = avail / natural;
+  if (avail >= 1100) return;
+  const scale = avail / 1100;
   const naturalH = inner.offsetHeight || 1200;
   wrap.style.position = 'relative';
-  wrap.style.width = (natural * scale) + 'px';
+  wrap.style.width = (1100 * scale) + 'px';
   wrap.style.height = (naturalH * scale) + 'px';
   wrap.style.overflow = 'hidden';
   inner.style.position = 'absolute';
@@ -701,22 +1277,201 @@ function fitReportPreview(){
   inner.style.transform = `scale(${scale})`;
 }
 
-window.addEventListener('resize', () => {
-  if (!$('reportModal').classList.contains('hidden')) {
-    setTimeout(fitReportPreview, 50);
-  }
-});
+function buildReportHTML(){
+  const { startD, endD, y, m } = rkCurrentRange();
+  const p = state.profile;
+  const periodLabel = state.ui.rkPeriod === 'bulanan' ? `Bulanan — ${MONTH_NAMES[m]} ${y}` : state.ui.rkPeriod === 'p1' ? `Periode 1 (1–15) — ${MONTH_NAMES[m]} ${y}` : `Periode 2 (16–Akhir) — ${MONTH_NAMES[m]} ${y}`;
 
-/* ========== AUTO SAVE IMAGE ========== */
-async function autoSaveImage(dataUrl, blob, filename){
-  if (isIOS()){
-    showCapturePreview(dataUrl, blob, filename);
-    return;
+  let hadir=0, off=0, absen=0, totalOt=0;
+  const rows = [];
+  for (let d = startD; d <= endD; d++){
+    const iso = `${y}-${pad2(m+1)}-${pad2(d)}`;
+    const day = state.rekap[iso] || {};
+    const s = day.status || '';
+    const ot = Number(day.ot) || 0;
+    if (s === 'Masuk') hadir++;
+    else if (s === 'Off') off++;
+    else if (s === 'Absen' || s === 'Sakit' || s === 'Cuti') absen++;
+    totalOt += ot;
+    const dateObj = new Date(y, m, d);
+    rows.push({ d, dayName: DAY_NAMES[dateObj.getDay()], status: s || '—', ot, note: day.note || '' });
   }
+  const totalDays = endD - startD + 1;
+  const pct = totalDays > 0 ? Math.round((hadir/totalDays)*100) : 0;
+
+  const statBox = (label, value, color, bg) => `
+    <div style="flex:1;background:${bg};border:1px solid ${color}33;border-radius:10px;padding:12px;text-align:center;">
+      <div style="font-size:10px;font-weight:700;color:${color};text-transform:uppercase;letter-spacing:.5px;">${label}</div>
+      <div style="font-size:20px;font-weight:800;color:${color};margin-top:2px;">${value}</div>
+    </div>`;
+
+  const statusBadge = (s) => {
+    const map = { 'Masuk':'#059669','Off':'#475569','Absen':'#be123c','Cuti':'#7c3aed','Sakit':'#be123c' };
+    const c = map[s];
+    if (!c) return '<span style="color:#94a3b8;">—</span>';
+    return `<span style="background:${c}15;color:${c};padding:3px 8px;border-radius:6px;font-weight:700;font-size:10.5px;">${s}</span>`;
+  };
+
+  return `
+    <div style="background:#12275a;padding:28px 36px;color:#fff;">
+      <table style="width:100%;border-collapse:collapse;"><tr>
+        <td style="vertical-align:middle;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:2px;color:#fa6401;">FLEXOFLOW</div>
+          <div style="font-size:24px;font-weight:800;margin-top:4px;">Laporan Kehadiran</div>
+          <div style="font-size:11px;opacity:.75;margin-top:2px;">${esc(p.company || 'PT Flexofast Solusi Indonesia')}</div>
+        </td>
+        <td style="text-align:right;vertical-align:middle;font-size:11px;opacity:.85;">
+          <div>Periode: <b>${esc(periodLabel)}</b></div>
+          <div style="margin-top:4px;">Dibuat: ${formatDateID(todayISO())}</div>
+        </td>
+      </tr></table>
+    </div>
+    <div style="height:4px;background:#fa6401;"></div>
+
+    <div style="padding:24px 36px;background:#fff;">
+      <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px;">
+        <tr>
+          <td style="width:100px;padding:6px 0;color:#64748b;font-weight:600;">Nama</td>
+          <td style="padding:6px 0;color:#12275a;font-weight:700;">${esc(p.nama || '—')}</td>
+          <td style="width:100px;padding:6px 0;color:#64748b;font-weight:600;">NIP</td>
+          <td style="padding:6px 0;color:#12275a;font-weight:700;">${esc(p.nip || '—')}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;color:#64748b;font-weight:600;">Jabatan</td>
+          <td style="padding:6px 0;color:#12275a;font-weight:700;">${esc(p.position || '—')}</td>
+          <td style="padding:6px 0;color:#64748b;font-weight:600;">Perusahaan</td>
+          <td style="padding:6px 0;color:#12275a;font-weight:700;">${esc(p.company || '—')}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="padding:0 36px 20px;background:#fff;">
+      <table style="width:100%;border-collapse:separate;border-spacing:10px 0;"><tr>
+        <td>${statBox('Hadir', hadir, '#059669', '#ecfdf5')}</td>
+        <td>${statBox('Off', off, '#475569', '#f1f5f9')}</td>
+        <td>${statBox('Absen', absen, '#be123c', '#fff1f2')}</td>
+        <td>${statBox('Lembur', totalOt + ' j', '#d97706', '#fffbeb')}</td>
+        <td>${statBox('Kehadiran', pct + '%', '#1c3d7d', '#eff6ff')}</td>
+      </tr></table>
+    </div>
+
+    <div style="padding:0 36px 24px;background:#fff;">
+      <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;">
+        <thead>
+          <tr style="background:#12275a;color:#fff;">
+            <th style="padding:10px 8px;text-align:center;width:40px;font-weight:700;">#</th>
+            <th style="padding:10px 8px;text-align:left;width:90px;font-weight:700;">Hari</th>
+            <th style="padding:10px 8px;text-align:center;width:100px;font-weight:700;">Status</th>
+            <th style="padding:10px 8px;text-align:center;width:70px;font-weight:700;">OT</th>
+            <th style="padding:10px 8px;text-align:left;font-weight:700;">Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r => `
+            <tr style="border-bottom:1px solid #e5e7eb;">
+              <td style="padding:8px;text-align:center;color:#64748b;vertical-align:middle;font-weight:600;">${r.d}</td>
+              <td style="padding:8px;color:#334155;vertical-align:middle;">${r.dayName}</td>
+              <td style="padding:8px;text-align:center;vertical-align:middle;">${statusBadge(r.status)}</td>
+              <td style="padding:8px;text-align:center;color:#d97706;font-weight:700;vertical-align:middle;">${r.ot > 0 ? r.ot + ' j' : '—'}</td>
+              <td style="padding:8px;color:#475569;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(r.note || '—')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="padding:20px 36px;background:#f8fafc;border-top:2px solid #12275a;">
+      <table style="width:100%;border-collapse:collapse;font-size:10.5px;color:#64748b;">
+        <tr>
+          <td>Dibuat oleh <strong style="color:#12275a;">@tyowhydi</strong></td>
+          <td style="text-align:right;">Flexoflow v1.0 · ${esc(p.company || 'PT Flexofast Solusi Indonesia')}</td>
+        </tr>
+      </table>
+    </div>
+  `;
+}
+
+function openReport(){
+  $('reportPreview').innerHTML = buildReportHTML();
+  $('reportModal').classList.remove('hidden');
+  document.body.classList.add('sheet-open');
+  setTimeout(fitReportPreview, 80);
+}
+
+function closeReport(){
+  $('reportModal').classList.add('hidden');
+  document.body.classList.remove('sheet-open');
+}
+
+/* ============== DOWNLOAD REPORT (fix solid + no backlog) ============== */
+async function downloadReport(){
+  const el = $('reportPreview');
+  if (!el || !el.innerHTML.trim()){ toast('warning', 'Laporan belum siap'); return; }
+  const btn = $('btnDownload');
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Memproses...';
+  toast('info', 'Membuat gambar HD...');
+
+  const prevTransform = el.style.transform;
+  const prevPosition = el.style.position;
+  const prevTop = el.style.top;
+  const prevLeft = el.style.left;
+  el.style.transform = 'none';
+  el.style.position = 'static';
+  el.style.top = 'auto';
+  el.style.left = 'auto';
+
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 3,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: '#ffffff',
+      logging: false,
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      windowWidth: 1200,
+      windowHeight: el.scrollHeight,
+      onclone: (doc) => {
+        const clone = doc.getElementById('reportPreview');
+        if (!clone) return;
+        clone.querySelectorAll('*').forEach(n => {
+          n.style.backdropFilter = 'none';
+          n.style.webkitBackdropFilter = 'none';
+          n.style.filter = 'none';
+        });
+        clone.style.background = '#ffffff';
+        clone.style.transform = 'none';
+        clone.style.position = 'static';
+      }
+    });
+
+    canvas.toBlob((blob) => {
+      if (!blob){ toast('error', 'Gagal membuat gambar'); return; }
+      const filename = `Laporan_Kehadiran_${state.ui.rkYear}_${pad2(state.ui.rkMonth+1)}.png`;
+      const dataUrl = canvas.toDataURL('image/png');
+      autoSaveImage(dataUrl, blob, filename);
+    }, 'image/png', 1.0);
+  } catch (err) {
+    console.error(err);
+    toast('error', 'Gagal capture: ' + err.message);
+  } finally {
+    el.style.transform = prevTransform;
+    el.style.position = prevPosition;
+    el.style.top = prevTop;
+    el.style.left = prevLeft;
+    btn.disabled = false;
+    btn.innerHTML = orig;
+  }
+}
+
+async function autoSaveImage(dataUrl, blob, filename){
+  if (isIOS()){ showCapturePreview(dataUrl, blob, filename); return; }
   try {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = filename; a.rel = 'noopener'; a.style.display = 'none';
+    a.href = url; a.download = filename; a.style.display = 'none';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 5000);
     toast('success', 'Gambar berhasil diunduh');
@@ -726,24 +1481,19 @@ async function autoSaveImage(dataUrl, blob, filename){
   }
 }
 
-/* ========== CAPTURE PREVIEW ========== */
 let _capturedImage = null;
-
-function showCapturePreview(dataUrl, blob, filename, title){
-  _capturedImage = { dataUrl, blob, filename, title };
+function showCapturePreview(dataUrl, blob, filename){
+  _capturedImage = { dataUrl, blob, filename };
   $('capImg').src = dataUrl;
   const sizeKB = Math.round(blob.size / 1024);
-  const sizeMB = (sizeKB / 1024).toFixed(2);
-  $('capMeta').textContent = `${filename} · ${sizeKB > 1024 ? sizeMB + ' MB' : sizeKB + ' KB'}`;
-  const saveLabel = $('capSaveLabel');
-  const hint = $('capHint');
+  $('capMeta').textContent = `${filename} · ${sizeKB > 1024 ? (sizeKB/1024).toFixed(2) + ' MB' : sizeKB + ' KB'}`;
   if (isIOS()){
-    saveLabel.textContent = 'Simpan ke Foto';
-    hint.textContent = 'Akan muncul menu Share → pilih "Save Image"';
-    hint.classList.remove('hidden');
+    $('capSaveLabel').textContent = 'Simpan ke Foto';
+    $('capHint').textContent = 'Akan muncul menu Share → pilih "Save Image"';
+    $('capHint').classList.remove('hidden');
   } else {
-    saveLabel.textContent = 'Simpan Gambar';
-    hint.classList.add('hidden');
+    $('capSaveLabel').textContent = 'Simpan Gambar';
+    $('capHint').classList.add('hidden');
   }
   $('capturePreview').classList.remove('hidden');
   document.body.classList.add('sheet-open');
@@ -768,13 +1518,11 @@ async function saveCapturedImage(){
       try {
         const file = new File([blob], filename, { type: 'image/png' });
         if (navigator.canShare({ files: [file] })){
-          await navigator.share({ files: [file], title: 'Schedule Karyawan' });
+          await navigator.share({ files: [file], title: 'Laporan Kehadiran' });
           toast('success', 'Gambar berhasil disimpan');
           saved = true;
         }
-      } catch(err){
-        if (err.name === 'AbortError'){ saved = true; }
-      }
+      } catch(err){ if (err.name === 'AbortError') saved = true; }
     }
     if (!saved && !isIOS()){
       try {
@@ -791,16 +1539,22 @@ async function saveCapturedImage(){
       const w = window.open('', '_blank');
       if (w){
         w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simpan Gambar</title>
-        <style>body{margin:0;background:#0f172a;color:#fff;font-family:-apple-system,system-ui;padding:20px;text-align:center;min-height:100vh}.hint{background:#fbbf24;color:#0f172a;padding:14px 18px;border-radius:12px;font-weight:700;font-size:15px;line-height:1.4;margin-bottom:16px}img{max-width:100%;height:auto;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.5);margin-bottom:20px}.btn{background:#fff;color:#0f172a;border:none;padding:14px 28px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer}</style></head><body>
-        <div class="hint">Tekan lama gambar di bawah, lalu pilih <b>"Simpan ke Foto"</b></div>
-        <img src="${dataUrl}"><br><button class="btn" onclick="window.close()">Tutup</button></body></html>`);
+        <style>body{margin:0;background:#0f172a;color:#fff;font-family:-apple-system,system-ui;padding:20px;text-align:center;min-height:100vh}
+        .hint{background:#fbbf24;color:#0f172a;padding:12px 16px;border-radius:10px;font-weight:700;margin-bottom:16px;display:inline-block}
+        img{max-width:100%;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+        p{color:#cbd5e1;font-size:13px;margin-top:16px}</style></head>
+        <body>
+          <div class="hint">Tekan lama gambar → Simpan ke Foto</div>
+          <br>
+          <img src="${dataUrl}">
+          <p>Kalau tidak muncul menu, ketuk gambar lalu pilih "Save to Photos".</p>
+        </body></html>`);
         w.document.close();
-        toast('info', 'Tekan lama gambar untuk simpan');
         saved = true;
+        toast('info', 'Tekan lama gambar untuk menyimpan');
       }
     }
-    if (saved){ setTimeout(closeCapturePreview, 600); }
-    else { toast('error', 'Gagal menyimpan.'); }
+    if (saved) closeCapturePreview();
   } catch(err){
     toast('error', 'Gagal: ' + err.message);
   } finally {
@@ -809,1152 +1563,36 @@ async function saveCapturedImage(){
   }
 }
 
-/* ========== TAB SWITCH ========== */
-let currentTab = 'absensi';
-function switchTab(tab){
-  currentTab = tab;
-  $('pageAbsensi').classList.toggle('hidden', tab !== 'absensi');
-  $('pageRekap').classList.toggle('hidden', tab !== 'rekap');
-  $('tabAbsensi').classList.toggle('active', tab === 'absensi');
-  $('tabRekap').classList.toggle('active', tab === 'rekap');
-  $('navAbsensi').classList.toggle('active', tab === 'absensi');
-  $('navRekap').classList.toggle('active', tab === 'rekap');
-  $('headerTitle').textContent = tab === 'absensi' ? 'Dashboard Absensi & Rekap' : 'Rekap Pribadi';
-  $('headerSub').textContent = tab === 'absensi' ? 'PT Flexofast Solusi Indonesia · Sistem Terpadu' : 'Kalender kehadiran pribadi';
-  renderHeaderActions();
-  if (tab === 'absensi'){ absRenderTable(); absRenderQuickPanel(); }
-  if (tab === 'rekap'){ rkRenderCalendar(); }
-  window.scrollTo(0, 0);
-}
-
-function renderHeaderActions(){
-  const box = $('headerActions');
-  if (currentTab === 'absensi'){
-    box.innerHTML = `
-      <button onclick="toggleDisplayMode()" class="h-10 md:h-9 px-3 md:px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-medium transition flex items-center gap-1.5"><i class="fa-solid fa-text-width text-[11px]"></i><span class="hidden sm:inline">${displayMode === 'short' ? 'Pendek' : 'Panjang'}</span></button>
-      <button onclick="absOpenMaster()" class="hidden md:flex h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-medium transition items-center gap-1.5"><i class="fa-solid fa-users text-[11px]"></i><span>Master</span></button>
-      <button onclick="absOpenMaster()" class="md:hidden w-10 h-10 rounded-lg bg-white border border-ink-200 text-ink-700 flex items-center justify-center"><i class="fa-solid fa-users text-[13px]"></i></button>
-      <button onclick="absExportCSV()" class="hidden md:flex h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-medium transition items-center gap-1.5"><i class="fa-solid fa-file-csv text-[11px]"></i><span>CSV</span></button>
-      <button onclick="absExportCSV()" class="md:hidden w-10 h-10 rounded-lg bg-white border border-ink-200 text-ink-700 flex items-center justify-center"><i class="fa-solid fa-file-csv text-[13px]"></i></button>
-      <button onclick="absCapture()" class="h-10 md:h-9 px-3 md:px-3.5 rounded-lg bg-brand-orange hover:bg-brand-orangeDark text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm"><i class="fa-solid fa-camera text-[12px] md:text-[11px]"></i><span class="hidden md:inline">Ambil Gambar</span></button>`;
-  } else {
-    box.innerHTML = `
-      <button onclick="rkExportCSV()" class="hidden md:flex h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-medium transition items-center gap-1.5"><i class="fa-solid fa-file-csv text-[11px]"></i><span>CSV</span></button>
-      <button onclick="rkExportCSV()" class="md:hidden w-10 h-10 rounded-lg bg-white border border-ink-200 text-ink-700 flex items-center justify-center"><i class="fa-solid fa-file-csv text-[13px]"></i></button>
-      <button onclick="rkOpenReport()" class="h-10 md:h-9 px-3 md:px-3.5 rounded-lg bg-ink-900 hover:bg-ink-800 text-white text-xs font-medium transition flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-[12px] md:text-[11px]"></i><span>Laporan</span></button>`;
-  }
-}
-
-const DEFAULT_MASTER = {
-  employees: [
-    { nik:'44821', nama:'NADIA ALIEFIA CHANDRA', namaShort:'NADIA A.C.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
-    { nik:'448247', nama:'DEA RAHMADANI', namaShort:'DEA R.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
-    { nik:'447637', nama:'HENNI SAPUTRI', namaShort:'HENNI S.', task:'SAMEDAY&INSTAN', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'10:00-11:00', cat:'regular' },
-    { nik:'44809', nama:'RIDA FARIDA', namaShort:'RIDA F.', task:'SAMEDAY&INSTAN', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'10:00-11:00', cat:'regular' },
-    { nik:'448239', nama:'MURTI', namaShort:'MURTI', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
-    { nik:'451675', nama:'JAMES TANUARTHA', namaShort:'JAMES T.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'06:00-14:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
-    { nik:'448472', nama:'AGUSTINA AGUSLINA HALAWA', namaShort:'AGUSTINA A.H.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'07:00-16:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
-    { nik:'44715', nama:'AYU DIAH MASITOH', namaShort:'AYU D.M.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'07:00-16:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'regular' },
-    { nik:'44448', nama:'DIANA SAFITRI', namaShort:'DIANA S.', task:'SAMEDAY&INSTAN', sub:'B2C', group:'Helper Admin', shift:'09:00-17:00', shiftShort:'SIANG', break:'10:00-11:00', cat:'regular' },
-    { nik:'448198', nama:'BRENDI LEE', namaShort:'BRENDI L.', task:'HELPER CCTV', sub:'B2C', group:'Helper Admin', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
-    { nik:'447099', nama:'DIKI NUR HANIF', namaShort:'DIKI N.H.', task:'TIM SWEEPING', sub:'B2C', group:'SWEEPING', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
-    { nik:'452036', nama:'DINDA DESFIYANI', namaShort:'DINDA D.', task:'SWEEPING', sub:'B2C', group:'SWEEPING', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
-    { nik:'250081123', nama:'MUHAMAD IRVAN SAPUTRA', namaShort:'IRVAN S.', task:'LEADER ADMIN', sub:'B2C', group:'LEADER', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
-    { nik:'44122', nama:'CUCUN CUNAYAH', namaShort:'CUCUN C.', task:'LEADER ADMIN', sub:'B2C', group:'LEADER', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
-    { nik:'445084', nama:'LITA NURAENI', namaShort:'LITA N.', task:'PRINT PICKLIST', sub:'B2C', group:'JR LEADER ADMIN', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
-    { nik:'449550', nama:'UPILINA BUULOLO', namaShort:'UPILINA B.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'10:00-18:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
-    { nik:'240091093', nama:'INDRY ARDIYANI SUDIAR', namaShort:'INDRY A.S.', task:'SPV', sub:'B2C', group:'SPV', shift:'10:00-18:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
-    { nik:'449623', nama:'NADYA PASYA RAMADANI', namaShort:'NADYA P.R.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'10:00-18:00', shiftShort:'SIANG', break:'00:00-01:00', cat:'regular' },
-    { nik:'44800', nama:'CINTA NABILA', namaShort:'CINTA N.', task:'SAMEDAY&INSTAN', sub:'B2C', group:'SWEEPING', shift:'11:00-19:00', shiftShort:'SIANG', break:'16:00-00:00', cat:'regular' },
-    { nik:'43345', nama:'PUTRI WULANDARI', namaShort:'PUTRI W.', task:'SWEEPING & ONHOLD', sub:'B2C', group:'ONHOLD', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
-    { nik:'44381', nama:'NITA ANDINI', namaShort:'NITA A.', task:'SWEEPING', sub:'B2C', group:'ONHOLD', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
-    { nik:'447085', nama:'SINTA PRASETYA', namaShort:'SINTA P.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
-    { nik:'449440', nama:'ANGKASA MANGGALA MUKTI', namaShort:'ANGKASA M.M.', task:'TIM SWEEPING', sub:'B2C', group:'SWEEPING', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
-    { nik:'447216', nama:'MARIA OCTAVIANI', namaShort:'MARIA O.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'13:00-21:00', shiftShort:'SORE', break:'16:00-00:00', cat:'regular' },
-    { nik:'446002', nama:'TIYO WAHYUDI', namaShort:'TIYO W.', task:'RECONCILE', sub:'B2C', group:'Admin B2C', shift:'15:00-23:00', shiftShort:'SORE', break:'18:00-19:00', cat:'regular' },
-    { nik:'44515', nama:'UNIK GANDA REZEKI', namaShort:'UNIK G.R.', task:'PRINT PICKLIST', sub:'B2C', group:'JR LEADER ADMIN', shift:'16:00-00:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
-    { nik:'449594', nama:'MUHAMMAD FAREL ADRIYANA', namaShort:'FAREL A.', task:'HELPER CCTV', sub:'B2C', group:'Helper Admin', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
-    { nik:'450282', nama:'SUGIARTO', namaShort:'SUGIARTO', task:'TIM SWEEPING', sub:'B2C', group:'SWEEPING', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
-    { nik:'449151', nama:'NADIA NUR RAMADHANI', namaShort:'NADIA N.R.', task:'SWEEPING', sub:'B2C', group:'SWEEPING', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
-    { nik:'44901', nama:'FAIRUZ', namaShort:'FAIRUZ', task:'SWEEPING', sub:'B2C', group:'SWEEPING', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
-    { nik:'448991', nama:'NAZWA TEGAR JANUARI', namaShort:'NAZWA T.J.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
-    { nik:'2607099', nama:'HAMELIA WULANDARI', namaShort:'HAMELIA W.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'16:00-00:00', shiftShort:'MALAM', break:'18:00-19:00', cat:'regular' },
-    { nik:'453057', nama:'SYIFA SYAHIRA', namaShort:'SYIFA S.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
-    { nik:'452992', nama:'ADAM RIZA NOVALDI', namaShort:'ADAM R.N.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
-    { nik:'24051069', nama:'SALSABILA', namaShort:'SALSABILA', task:'KOORDINATOR', sub:'B2C', group:'KOORDINATOR', shift:'21:00-05:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
-    { nik:'452425', nama:'AYU NOVITASARI', namaShort:'AYU N.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'21:00-05:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
-    { nik:'44441', nama:'HULFANA HUSNA', namaShort:'HULFANA H.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'21:00-05:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
-    { nik:'448128', nama:'NURUL HASANAH', namaShort:'NURUL H.', task:'SWEEPING & ONHOLD', sub:'B2C', group:'SWEEPING', shift:'21:00-05:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'regular' },
-    { nik:'449762', nama:'TUANI SETIO IRAWAN PANDIANGAN', namaShort:'TUANI S.I.P.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', shiftShort:'OFF', break:'-', cat:'regular' },
-    { nik:'452766', nama:'NADIA SHAKILA HERDIANA', namaShort:'NADIA S.H.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', shiftShort:'OFF', break:'-', cat:'regular' },
-    { nik:'447794', nama:'DESITILA WARUWU', namaShort:'DESITILA W.', task:'PRINT PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', shiftShort:'OFF', break:'-', cat:'regular' },
-    { nik:'447071', nama:'ABDUL MUHOLIK', namaShort:'ABDUL M.', task:'SUPPLY PICKLIST', sub:'B2C', group:'Helper Admin', shift:'OFF', shiftShort:'OFF', break:'-', cat:'regular' },
-    { nik:'240041052', nama:'TULUS OCTAFIAYUB', namaShort:'TULUS O.', task:'SPV BRANCHES', sub:'OUTBOUND', group:'SPV BRANCHES', shift:'10:00-18:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'regular' },
-    { nik:'-', nama:'ZAHROTU SYITA', namaShort:'ZAHROTU S.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'AURA RAHAYU', namaShort:'AURA R.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'GRACE KARTIKA ANATASYA MANULLANG', namaShort:'GRACE K.A.M.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'LUTFI ZULFIAH', namaShort:'LUTFI Z.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'REVA AULIA', namaShort:'REVA A.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'ALISHA', namaShort:'ALISHA', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'FITRI', namaShort:'FITRI', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'AMANDA NOPIANTI', namaShort:'AMANDA N.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'CLAURA WIDYA PREYANSYAH', namaShort:'CLAURA W.P.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'09:00-17:00', shiftShort:'SIANG', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'ZULFIAH MANSURIA PRADITA', namaShort:'ZULFIAH M.P.', task:'PERBANTUAN SOBEK', sub:'PKL', group:'PKL', shift:'07:00-15:00', shiftShort:'PAGI', break:'12:00-13:00', cat:'pkl' },
-    { nik:'-', nama:'Viana Auri', namaShort:'Viana A.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Annisa Chikal Rahmadani', namaShort:'Annisa C.R.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Ratu Nadya Hidayat', namaShort:'Ratu N.H.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Nabillah Safitri', namaShort:'Nabillah S.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Siska Nurmala', namaShort:'Siska N.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Novi Kusumawati', namaShort:'Novi K.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Lutfiah Aini', namaShort:'Lutfiah A.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Sesilia Ardiani', namaShort:'Sesilia A.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' },
-    { nik:'-', nama:'Indah Pemba Rezki', namaShort:'Indah P.R.', task:'PERBANTUAN SOBEK', sub:'NON PKL', group:'NON PKL', shift:'19:00-03:00', shiftShort:'MALAM', break:'00:00-01:00', cat:'nonpkl' }
-  ],
-  tasks: ['PRINT PICKLIST','SUPPLY PICKLIST','SAMEDAY&INSTAN','TIM SWEEPING','SWEEPING','SWEEPING & ONHOLD','HELPER CCTV','LEADER ADMIN','PERBANTUAN SOBEK','RECONCILE','SPV','SPV BRANCHES','KOORDINATOR'],
-  groups: ['Helper Admin','SWEEPING','ONHOLD','LEADER','JR LEADER ADMIN','Admin B2C','SPV','SPV BRANCHES','KOORDINATOR','PKL','NON PKL'],
-  subs: ['B2C','PKL','NON PKL','OUTBOUND'],
-  // ===== SHIFT LIST: 05:00 s/d 21:00 (8-jam + 9-jam) =====
-  shifts: [
-    '05:00-13:00',
-    '06:00-14:00',
-    '07:00-15:00', '07:00-16:00',
-    '08:00-16:00', '08:00-17:00',
-    '09:00-17:00', '09:00-18:00',
-    '10:00-18:00', '10:00-19:00',
-    '11:00-19:00', '11:00-20:00',
-    '12:00-20:00', '12:00-21:00',
-    '13:00-21:00', '13:00-22:00',
-    '14:00-22:00', '14:00-23:00',
-    '15:00-23:00', '15:00-00:00',
-    '16:00-00:00', '16:00-01:00',
-    '17:00-01:00', '17:00-02:00',
-    '18:00-02:00', '18:00-03:00',
-    '19:00-03:00', '19:00-04:00',
-    '20:00-04:00', '20:00-05:00',
-    '21:00-05:00',
-    'OFF'
-  ],
-  breaks: ['10:00-11:00','12:00-13:00','16:00-00:00','18:00-19:00','00:00-01:00','-']
-};
-
-const SEED_OCT_1 = [
-  ['44821','NADIA ALIEFIA CHANDRA','PRINT PICKLIST','B2C','Helper Admin','06:00-14:00','12:00-13:00'],
-  ['448247','DEA RAHMADANI','SUPPLY PICKLIST','B2C','Helper Admin','06:00-14:00','12:00-13:00'],
-  ['447637','HENNI SAPUTRI','SAMEDAY&INSTAN','B2C','Helper Admin','06:00-14:00','10:00-11:00'],
-  ['44809','RIDA FARIDA','SAMEDAY&INSTAN','B2C','Helper Admin','06:00-14:00','10:00-11:00'],
-  ['448239','MURTI','SUPPLY PICKLIST','B2C','Helper Admin','06:00-14:00','12:00-13:00'],
-  ['451675','JAMES TANUARTHA','PRINT PICKLIST','B2C','Helper Admin','06:00-14:00','12:00-13:00'],
-  ['448472','AGUSTINA AGUSLINA HALAWA','SUPPLY PICKLIST','B2C','Helper Admin','07:00-16:00','12:00-13:00'],
-  ['44715','AYU DIAH MASITOH','PRINT PICKLIST','B2C','Helper Admin','07:00-16:00','12:00-13:00'],
-  ['44448','DIANA SAFITRI','SAMEDAY&INSTAN','B2C','Helper Admin','09:00-17:00','10:00-11:00'],
-  ['448198','BRENDI LEE','HELPER CCTV','B2C','Helper Admin','09:00-17:00','12:00-13:00'],
-  ['-','ZAHROTU SYITA','PERBANTUAN SOBEK','PKL','PKL','09:00-17:00','12:00-13:00'],
-  ['-','AURA RAHAYU','PERBANTUAN SOBEK','PKL','PKL','09:00-17:00','12:00-13:00'],
-  ['-','GRACE KARTIKA ANATASYA MANULLANG','PERBANTUAN SOBEK','PKL','PKL','09:00-17:00','12:00-13:00'],
-  ['-','LUTFI ZULFIAH','PERBANTUAN SOBEK','PKL','PKL','09:00-17:00','12:00-13:00'],
-  ['447099','DIKI NUR HANIF','TIM SWEEPING','B2C','SWEEPING','09:00-17:00','12:00-13:00'],
-  ['452036','DINDA DESFIYANI','SWEEPING','B2C','SWEEPING','09:00-17:00','12:00-13:00'],
-  ['250081123','MUHAMAD IRVAN SAPUTRA','LEADER ADMIN','B2C','LEADER','09:00-17:00','12:00-13:00'],
-  ['44122','CUCUN CUNAYAH','LEADER ADMIN','B2C','LEADER','09:00-17:00','12:00-13:00'],
-  ['445084','LITA NURAENI','PRINT PICKLIST','B2C','JR LEADER ADMIN','09:00-17:00','12:00-13:00'],
-  ['449550','UPILINA BUULOLO','SUPPLY PICKLIST','B2C','Helper Admin','10:00-18:00','12:00-13:00'],
-  ['240091093','INDRY ARDIYANI SUDIAR','SPV','B2C','SPV','10:00-18:00','12:00-13:00'],
-  ['449623','NADYA PASYA RAMADANI','PRINT PICKLIST','B2C','Helper Admin','10:00-18:00','00:00-01:00'],
-  ['44800','CINTA NABILA','SAMEDAY&INSTAN','B2C','SWEEPING','11:00-19:00','16:00-00:00'],
-  ['43345','PUTRI WULANDARI','SWEEPING & ONHOLD','B2C','ONHOLD','13:00-21:00','16:00-00:00'],
-  ['44381','NITA ANDINI','SWEEPING','B2C','ONHOLD','13:00-21:00','16:00-00:00'],
-  ['447085','SINTA PRASETYA','SUPPLY PICKLIST','B2C','Helper Admin','13:00-21:00','16:00-00:00'],
-  ['449440','ANGKASA MANGGALA MUKTI','TIM SWEEPING','B2C','SWEEPING','13:00-21:00','16:00-00:00'],
-  ['447216','MARIA OCTAVIANI','PRINT PICKLIST','B2C','Helper Admin','13:00-21:00','16:00-00:00'],
-  ['446002','TIYO WAHYUDI','RECONCILE','B2C','Admin B2C','15:00-23:00','18:00-19:00'],
-  ['44515','UNIK GANDA REZEKI','PRINT PICKLIST','B2C','JR LEADER ADMIN','16:00-00:00','00:00-01:00'],
-  ['449594','MUHAMMAD FAREL ADRIYANA','HELPER CCTV','B2C','Helper Admin','16:00-00:00','18:00-19:00'],
-  ['450282','SUGIARTO','TIM SWEEPING','B2C','SWEEPING','16:00-00:00','18:00-19:00'],
-  ['449151','NADIA NUR RAMADHANI','SWEEPING','B2C','SWEEPING','16:00-00:00','18:00-19:00'],
-  ['44901','FAIRUZ','SWEEPING','B2C','SWEEPING','16:00-00:00','18:00-19:00'],
-  ['448991','NAZWA TEGAR JANUARI','PRINT PICKLIST','B2C','Helper Admin','16:00-00:00','18:00-19:00'],
-  ['2607099','HAMELIA WULANDARI','SUPPLY PICKLIST','B2C','Helper Admin','16:00-00:00','18:00-19:00'],
-  ['453057','SYIFA SYAHIRA','SUPPLY PICKLIST','B2C','Helper Admin','19:00-03:00','00:00-01:00'],
-  ['452992','ADAM RIZA NOVALDI','PRINT PICKLIST','B2C','Helper Admin','19:00-03:00','00:00-01:00'],
-  ['24051069','SALSABILA','KOORDINATOR','B2C','KOORDINATOR','21:00-05:00','00:00-01:00'],
-  ['452425','AYU NOVITASARI','SUPPLY PICKLIST','B2C','Helper Admin','21:00-05:00','00:00-01:00'],
-  ['44441','HULFANA HUSNA','PRINT PICKLIST','B2C','Helper Admin','21:00-05:00','00:00-01:00'],
-  ['448128','NURUL HASANAH','SWEEPING & ONHOLD','B2C','SWEEPING','21:00-05:00','00:00-01:00'],
-  ['449762','TUANI SETIO IRAWAN PANDIANGAN','PRINT PICKLIST','B2C','Helper Admin','OFF','-'],
-  ['452766','NADIA SHAKILA HERDIANA','SUPPLY PICKLIST','B2C','Helper Admin','OFF','-'],
-  ['447794','DESITILA WARUWU','PRINT PICKLIST','B2C','Helper Admin','OFF','-'],
-  ['447071','ABDUL MOHOLIK','SUPPLY PICKLIST','B2C','Helper Admin','OFF','-']
-];
-
-const KEY = 'dashboard_hybrid_v5';
-let state = {
-  master: JSON.parse(JSON.stringify(DEFAULT_MASTER)),
-  schedule: {},
-  rekapProfile: { name:'Tiyo Wahyudi', company:'PT Flexofast Solusi Indonesia', position:'Admin B2C', nip:'446002' },
-  rekapCurrent: { year: new Date().getFullYear(), month: new Date().getMonth() },
-  rekapSelectedDay: 1,
-  rekapMonths: {},
-  payrollPeriod: 'bulanan'
-};
-
-function seedInitial(){
-  if (Object.keys(state.schedule).length === 0){
-    state.schedule['2026-10-01'] = SEED_OCT_1.map(r => ({ nik: r[0], nama: r[1], task: r[2], sub: r[3], group: r[4], shift: r[5], break: r[6] }));
-  }
-}
-function load(){
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw){ seedInitial(); return; }
-    const p = JSON.parse(raw);
-    if (p.master) state.master = Object.assign(state.master, p.master);
-    if (p.schedule) state.schedule = p.schedule;
-    if (p.rekapProfile) state.rekapProfile = Object.assign(state.rekapProfile, p.rekapProfile);
-    if (p.rekapCurrent && typeof p.rekapCurrent.year === 'number') state.rekapCurrent = p.rekapCurrent;
-    if (typeof p.rekapSelectedDay === 'number') state.rekapSelectedDay = p.rekapSelectedDay;
-    if (p.rekapMonths) state.rekapMonths = p.rekapMonths;
-    if (p.payrollPeriod) state.payrollPeriod = p.payrollPeriod;
-    seedInitial();
-  } catch(e){}
-}
-let saveT = null;
-function persist(){ clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }, 200); }
-
-/* ========== ABSENSI ========== */
-function absCurrentDate(){ return $('absDateInput').value || '2026-10-01'; }
-function absGetDay(iso){ if (!state.schedule[iso]) state.schedule[iso] = []; return state.schedule[iso]; }
-function absShiftDay(d){ $('absDateInput').value = shiftDate(absCurrentDate(), d); absRenderTable(); absRenderQuickPanel(); }
-function absToday(){ $('absDateInput').value = todayISO(); absRenderTable(); absRenderQuickPanel(); }
-function absGoOct1(){ $('absDateInput').value = '2026-10-01'; absRenderTable(); absRenderQuickPanel(); }
-
-function toggleQuickAdd(){
-  const body = $('quickBody');
-  const chev = $('quickChevron');
-  body.classList.toggle('hidden');
-  if (chev) chev.style.transform = body.classList.contains('hidden') ? '' : 'rotate(180deg)';
-}
-
-function absGetSearch(){ return (isMobile() ? ($('absSearchMob')?.value || '') : ($('absSearchDesk')?.value || '')).trim().toLowerCase(); }
-function absGetFilterCat(){ return (isMobile() ? ($('absFilterCatMob')?.value || '') : ($('absFilterCatDesk')?.value || '')); }
-
-function absRenderQuickPanel(){
-  const q = absGetSearch();
-  const cat = absGetFilterCat();
-  const panel = $('absQuickPanel');
-  const iso = absCurrentDate();
-  const today = absGetDay(iso);
-  const added = new Set(today.map(t => t.nama));
-  const list = state.master.employees.filter(e => {
-    if (cat === 'pkl' && e.cat !== 'pkl') return false;
-    if (cat === 'nonpkl' && e.cat !== 'nonpkl') return false;
-    if (cat === 'regular' && (e.cat === 'pkl' || e.cat === 'nonpkl')) return false;
-    if (!q) return true;
-    return [e.nik, e.nama, e.namaShort, e.task, e.group, e.shift].some(v => String(v||'').toLowerCase().includes(q));
-  });
-  if (!list.length){ panel.innerHTML = '<p class="text-[12px] text-ink-400 italic p-4 col-span-full text-center">Tidak ada yang cocok.</p>'; $('absQuickStats').textContent = '0'; $('absQuickStatsMobile').textContent = '0 karyawan'; return; }
-  panel.innerHTML = list.map(e => {
-    const isAdded = added.has(e.nama);
-    const off = isOff(e.shift);
-    const catCls = e.cat === 'pkl' ? 'pkl' : e.cat === 'nonpkl' ? 'nonpkl' : '';
-    const badge = e.cat === 'pkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PKL</span>' : e.cat === 'nonpkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">NP</span>' : '';
-    const name = isMobile() ? (e.namaShort || autoShortName(e.nama)) : e.nama;
-    const shiftDisplay = displayMode === 'short' ? (e.shiftShort || autoShortShift(e.shift)) : e.shift;
-    return `<div class="emp-card ${isAdded ? 'added' : ''} ${catCls}" onclick="absQuickAdd('${esc(e.nama).replace(/'/g,"\\'")}')">
-      <div class="text-[12px] font-bold text-ink-800 truncate leading-tight pr-4">${esc(name)}</div>
-      <div class="text-[10.5px] text-ink-400 font-medium mt-0.5">${esc(e.nik || '-')}</div>
-      <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">${badge}<span class="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-ink-100 text-ink-600">${esc(e.group || '—')}</span><span class="text-[9.5px] font-semibold px-1.5 py-0.5 rounded ${off ? 'bg-rose-100 text-rose-600' : 'bg-sky-100 text-sky-700'}">${esc(shiftDisplay || '—')}</span></div>
-    </div>`;
-  }).join('');
-  $('absQuickStats').textContent = `${list.length} dari ${state.master.employees.length} · ${today.length} ditambahkan`;
-  $('absQuickStatsMobile').textContent = `${today.length} dipilih · ${list.length} tersedia`;
-}
-
-function absQuickAdd(nama){
-  const p = state.master.employees.find(e => e.nama === nama);
-  if (!p) return;
-  const iso = absCurrentDate();
-  const day = absGetDay(iso);
-  if (day.some(t => t.nama === p.nama)) day.splice(day.findIndex(t => t.nama === p.nama), 1);
-  else day.push({ nik: p.nik||'', nama: p.nama, task: p.task||'', sub: p.sub||'', group: p.group||'', shift: p.shift||'', break: p.break||'' });
-  absRenderTable(); absRenderQuickPanel(); persist();
-}
-
-function absAddAll(){
-  const q = absGetSearch();
-  const cat = absGetFilterCat();
-  const iso = absCurrentDate();
-  const day = absGetDay(iso);
-  const existing = new Set(day.map(t => t.nama));
-  const list = state.master.employees.filter(e => {
-    if (existing.has(e.nama)) return false;
-    if (cat === 'pkl' && e.cat !== 'pkl') return false;
-    if (cat === 'nonpkl' && e.cat !== 'nonpkl') return false;
-    if (cat === 'regular' && (e.cat === 'pkl' || e.cat === 'nonpkl')) return false;
-    if (!q) return true;
-    return [e.nik, e.nama, e.namaShort, e.task, e.group, e.shift].some(v => String(v||'').toLowerCase().includes(q));
-  });
-  if (!list.length){ toast('warning', 'Tidak ada karyawan baru'); return; }
-  if (!confirm(`Tambahkan ${list.length} karyawan?`)) return;
-  list.forEach(e => day.push({ nik: e.nik||'', nama: e.nama, task: e.task||'', sub: e.sub||'', group: e.group||'', shift: e.shift||'', break: e.break||'' }));
-  absRenderTable(); absRenderQuickPanel(); persist();
-  toast('success', `${list.length} karyawan ditambahkan`);
-}
-
-function absRenderTable(){
-  const iso = absCurrentDate();
-  const data = absGetDay(iso);
-  $('absDateLabel').textContent = formatDateID(iso);
-  $('absTableTitle').textContent = `Schedule — ${formatDateID(iso)}`;
-  $('absTableSub').textContent = `${data.length} karyawan tersimpan`;
-  let masuk=0, off=0, malam=0, pkl=0;
-  data.forEach(d => {
-    if (isOff(d.shift)) off++;
-    else if (d.shift){ masuk++; const m = String(d.shift).match(/^(\d{1,2}):/); if (m && Number(m[1]) >= 16) malam++; }
-    if (d.sub === 'PKL' || d.sub === 'NON PKL' || d.group === 'PKL' || d.group === 'NON PKL') pkl++;
-  });
-  $('absStatTotal').textContent = data.length;
-  $('absStatMasuk').textContent = masuk;
-  $('absStatOff').textContent = off;
-  $('absStatMalam').textContent = malam;
-  $('absStatPkl').textContent = pkl;
-
-  if (!data.length){
-    $('absTbody').innerHTML = ''; $('absCardList').innerHTML = '';
-    $('absEmpty').classList.remove('hidden'); $('absResultCount').textContent = '0';
-    return;
-  }
-  $('absEmpty').classList.add('hidden');
-  $('absResultCount').textContent = data.length;
-
-  $('absTbody').innerHTML = data.map((item, idx) => {
-    const off = isOff(item.shift);
-    const isPkl = item.sub === 'PKL' || item.group === 'PKL';
-    const isNonPkl = item.sub === 'NON PKL' || item.group === 'NON PKL';
-    const rowBg = off ? 'row-off' : isPkl ? 'bg-amber-50/50' : isNonPkl ? 'bg-violet-50/50' : '';
-    return `<tr class="${rowBg} border-b border-ink-100 hover:bg-ink-50/60 transition-colors" data-idx="${idx}">
-      <td class="px-2 py-1 text-center text-[11px] font-medium text-ink-400 tabular-nums">${idx+1}</td>
-      <td class="px-1 py-1"><input class="cell-input" data-field="nik" value="${esc(item.nik)}" list="dlNIKx"></td>
-      <td class="px-1 py-1"><input class="cell-input !text-left" data-field="nama" value="${esc(item.nama)}" list="dlNamaX"><div class="text-[10px] ${displayMode === 'short' ? 'text-sky-600 font-semibold' : 'text-ink-400'} px-1.5 mt-0.5 truncate">${esc(getDisplayName(item))}</div></td>
-      <td class="px-1 py-1"><input class="cell-input" data-field="task" value="${esc(item.task)}" list="dlTask"></td>
-      <td class="px-1 py-1"><input class="cell-input" data-field="sub" value="${esc(item.sub)}" list="dlSub"></td>
-      <td class="px-1 py-1"><input class="cell-input" data-field="group" value="${esc(item.group)}" list="dlGroup"></td>
-      <td class="px-1 py-1"><input class="cell-input ${off?'is-off':''}" data-field="shift" value="${esc(item.shift)}" list="dlShift"><div class="text-[10px] text-center ${off?'text-rose-500 font-bold':'text-sky-600 font-bold'}">${esc(getDisplayShift(item))}</div></td>
-      <td class="px-1 py-1"><input class="cell-input" data-field="break" value="${esc(item.break)}" list="dlBreak"></td>
-      <td class="px-2 py-1 text-center whitespace-nowrap">
-        <button onclick="absRefill(${idx})" class="text-ink-400 hover:text-emerald-600 text-[13px] leading-none px-1" title="Isi ulang"><i class="fa-solid fa-rotate"></i></button>
-        <button onclick="absDelete(${idx})" class="text-ink-300 hover:text-rose-500 text-sm leading-none px-1" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
-      </td></tr>`;
-  }).join('');
-
-  $('absCardList').innerHTML = data.map((item, idx) => {
-    const off = isOff(item.shift);
-    const isPkl = item.sub === 'PKL' || item.group === 'PKL';
-    const isNonPkl = item.sub === 'NON PKL' || item.group === 'NON PKL';
-    const badge = isPkl ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PKL</span>' : isNonPkl ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">NON-PKL</span>' : '';
-    const shiftCls = off ? 'bg-rose-100 text-rose-700' : 'bg-sky-100 text-sky-700';
-    const shortName = getDisplayName(item);
-    const shortShift = getDisplayShift(item);
-    const initials = (shortName || item.nama).split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
-    return `<div class="att-card ${off ? 'is-off' : ''}" data-idx="${idx}">
-      <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-full ${off ? 'bg-rose-200 text-rose-800' : 'bg-ink-900 text-white'} flex items-center justify-center font-bold text-[11px] shrink-0">${initials}</div>
-        <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-1.5 flex-wrap"><p class="text-[13px] font-bold text-ink-900 leading-tight truncate">${esc(shortName)}</p>${badge}</div>
-          <p class="text-[10.5px] text-ink-500 mt-0.5">${esc(item.nik||'-')} · ${esc(item.task||'-')}</p>
-        </div>
-        <span class="text-[10px] font-bold px-2 py-1 rounded-full ${shiftCls} shrink-0">${esc(shortShift)}</span>
-      </div>
-      <button onclick="toggleAttEdit(${idx})" class="mt-2 w-full text-left flex items-center justify-between text-[11px] font-semibold text-ink-500 hover:text-ink-800 py-1"><span><i class="fa-solid fa-pen-to-square text-[10px] mr-1"></i> Ubah / Hapus</span><i class="fa-solid fa-chevron-down text-[10px] transition-transform" id="chev-${idx}"></i></button>
-      <div id="edit-${idx}" class="hidden mt-2 pt-2 border-t border-ink-200/60 space-y-2">
-        <div class="grid grid-cols-2 gap-2">
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">NIK</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="nik" data-idx="${idx}" value="${esc(item.nik)}" list="dlNIKx"></div>
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Sub</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="sub" data-idx="${idx}" value="${esc(item.sub)}" list="dlSub"></div>
-        </div>
-        <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Nama</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="nama" data-idx="${idx}" value="${esc(item.nama)}" list="dlNamaX"></div>
-        <div class="grid grid-cols-2 gap-2">
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Task</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="task" data-idx="${idx}" value="${esc(item.task)}" list="dlTask"></div>
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Group</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="group" data-idx="${idx}" value="${esc(item.group)}" list="dlGroup"></div>
-        </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Shift</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="shift" data-idx="${idx}" value="${esc(item.shift)}" list="dlShift"></div>
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Break</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="break" data-idx="${idx}" value="${esc(item.break)}" list="dlBreak"></div>
-        </div>
-        <div class="flex gap-2 pt-1">
-          <button onclick="absRefill(${idx})" class="flex-1 h-11 rounded-lg bg-ink-100 text-ink-700 text-[12px] font-semibold"><i class="fa-solid fa-rotate text-[11px] mr-1"></i> Reset</button>
-          <button onclick="absDelete(${idx})" class="flex-1 h-11 rounded-lg bg-rose-50 text-rose-600 text-[12px] font-semibold"><i class="fa-solid fa-trash text-[11px] mr-1"></i> Hapus</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const mk = (id, arr) => { let el = document.getElementById(id); if (!el){ el = document.createElement('datalist'); el.id = id; document.body.appendChild(el); } el.innerHTML = arr.map(v => `<option value="${esc(v)}"></option>`).join(''); };
-  mk('dlNIKx', state.master.employees.map(e => e.nik).filter(Boolean));
-  mk('dlNamaX', state.master.employees.map(e => e.nama));
-}
-
-function toggleAttEdit(idx){ const el = $('edit-' + idx); const chev = $('chev-' + idx); if (!el) return; el.classList.toggle('hidden'); if (chev) chev.style.transform = el.classList.contains('hidden') ? '' : 'rotate(180deg)'; }
-function absDelete(idx){ state.schedule[absCurrentDate()].splice(idx, 1); absRenderTable(); absRenderQuickPanel(); persist(); toast('success','Dihapus'); }
-function absRefill(idx){
-  const item = state.schedule[absCurrentDate()][idx];
-  if (!item) return;
-  const p = state.master.employees.find(e => e.nama === item.nama) || state.master.employees.find(e => String(e.nik) === String(item.nik));
-  if (!p){ toast('warning','Profil tidak ada'); return; }
-  ['nik','nama','task','sub','group','shift','break'].forEach(f => item[f] = p[f] || '');
-  absRenderTable(); persist();
-}
-function absAutofill(){
-  const data = absGetDay(absCurrentDate());
-  let filled = 0;
-  data.forEach(item => {
-    const p = state.master.employees.find(e => e.nama === item.nama) || state.master.employees.find(e => String(e.nik) === String(item.nik));
-    if (!p) return;
-    ['task','sub','group','shift','break'].forEach(f => { if (!item[f] && p[f]){ item[f] = p[f]; filled++; } });
-  });
-  absRenderTable(); persist();
-  toast('success', `${filled} kolom diisi`);
-}
-function absCopyPrev(){
-  const iso = absCurrentDate();
-  const prev = shiftDate(iso, -1);
-  if (!state.schedule[prev] || !state.schedule[prev].length){ toast('warning','Hari sebelumnya kosong'); return; }
-  if (state.schedule[iso] && state.schedule[iso].length && !confirm('Timpa data tanggal ini?')) return;
-  state.schedule[iso] = JSON.parse(JSON.stringify(state.schedule[prev]));
-  absRenderTable(); absRenderQuickPanel(); persist();
-  toast('success', 'Disalin');
-}
-function absClearDay(){
-  const iso = absCurrentDate();
-  if (!state.schedule[iso] || !state.schedule[iso].length){ toast('warning','Sudah kosong'); return; }
-  if (!confirm('Kosongkan hari ini?')) return;
-  state.schedule[iso] = [];
-  absRenderTable(); absRenderQuickPanel(); persist();
-  toast('success', 'Dikosongkan');
-}
-
-function absBindTable(){
-  $('absTbody').addEventListener('input', e => {
-    const t = e.target;
-    if (!t.matches('input[data-field]')) return;
-    const tr = t.closest('tr');
-    if (!tr) return;
-    const idx = Number(tr.dataset.idx);
-    const field = t.dataset.field;
-    const item = state.schedule[absCurrentDate()][idx];
-    if (!item) return;
-    item[field] = t.value;
-    if (field === 'nama' || field === 'shift'){
-      const td = t.closest('td');
-      const disp = td ? td.querySelector('div') : null;
-      if (disp){
-        if (field === 'nama') disp.textContent = getDisplayName(item);
-        else { disp.textContent = getDisplayShift(item); disp.className = `text-[10px] text-center ${isOff(item.shift) ? 'text-rose-500 font-bold' : 'text-sky-600 font-bold'}`; }
-      }
-      if (field === 'shift'){ t.classList.toggle('is-off', isOff(item.shift)); tr.classList.toggle('row-off', isOff(item.shift)); }
-    }
-    persist();
-  });
-
-  // ==== FIX BUG MOBILE: live update visual kartu ====
-  $('absCardList').addEventListener('input', e => {
-    const t = e.target;
-    if (!t.matches('input[data-field]')) return;
-    const idx = Number(t.dataset.idx);
-    const field = t.dataset.field;
-    const item = state.schedule[absCurrentDate()][idx];
-    if (!item) return;
-    item[field] = t.value;
-
-    if (field === 'shift' || field === 'nama'){
-      const card = document.querySelector('.att-card[data-idx="' + idx + '"]');
-      if (card){
-        const off = isOff(item.shift);
-        card.classList.toggle('is-off', off);
-
-        const av = card.querySelector('div.w-9.h-9');
-        if (av){
-          av.classList.toggle('bg-rose-200', off);
-          av.classList.toggle('text-rose-800', off);
-          av.classList.toggle('bg-ink-900', !off);
-          av.classList.toggle('text-white', !off);
-        }
-
-        const shiftBadge = card.querySelector('span.rounded-full.shrink-0');
-        if (shiftBadge){
-          shiftBadge.textContent = getDisplayShift(item);
-          shiftBadge.classList.toggle('bg-rose-100', off);
-          shiftBadge.classList.toggle('text-rose-700', off);
-          shiftBadge.classList.toggle('bg-sky-100', !off);
-          shiftBadge.classList.toggle('text-sky-700', !off);
-        }
-
-        if (field === 'nama'){
-          const nameEl = card.querySelector('p.text-\\[13px\\]');
-          if (nameEl) nameEl.textContent = getDisplayName(item);
-        }
-      }
-    }
-
-    persist();
-  });
-}
-
-/* ========== MASTER DATA ========== */
-function absOpenMaster(){ absRenderMaster(); $('masterModal').classList.remove('hidden'); document.body.classList.add('sheet-open'); }
-function absCloseMaster(){ $('masterModal').classList.add('hidden'); document.body.classList.remove('sheet-open'); absRenderTable(); absRenderQuickPanel(); }
-
-function absRenderMaster(){
-  const tbody = $('empTableBody');
-  const mlist = $('empMobileList');
-  const emps = state.master.employees;
-
-  tbody.innerHTML = emps.map((e, i) => `
-    <tr class="hover:bg-ink-50/70 transition" data-idx="${i}">
-      <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="nik" value="${esc(e.nik||'')}" placeholder="NIK"></td>
-      <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="nama" value="${esc(e.nama||'')}" placeholder="Nama"></td>
-      <td class="px-2 py-1 bg-sky-50/30"><input class="cell-input" data-idx="${i}" data-field="namaShort" value="${esc(e.namaShort||'')}" placeholder="Pendek"></td>
-      <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="task" value="${esc(e.task||'')}" list="dlTask" placeholder="Task"></td>
-      <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="sub" value="${esc(e.sub||'')}" list="dlSub" placeholder="Sub"></td>
-      <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="group" value="${esc(e.group||'')}" list="dlGroup" placeholder="Group"></td>
-      <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="shift" value="${esc(e.shift||'')}" list="dlShift" placeholder="Shift"></td>
-      <td class="px-2 py-1 bg-sky-50/30"><input class="cell-input" data-idx="${i}" data-field="shiftShort" value="${esc(e.shiftShort||'')}" placeholder="Pendek"></td>
-      <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="break" value="${esc(e.break||'')}" list="dlBreak" placeholder="Break"></td>
-      <td class="px-2 py-1 text-center"><button onclick="absDelEmployee(${i})" class="text-ink-300 hover:text-rose-500 transition text-[13px] px-1" title="Hapus"><i class="fa-solid fa-xmark"></i></button></td>
-    </tr>`).join('');
-
-  mlist.innerHTML = emps.map((e, i) => {
-    const catBadge = e.cat === 'pkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PKL</span>' : e.cat === 'nonpkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">NP</span>' : '';
-    return `<div class="border border-ink-200 rounded-lg p-2.5 bg-white">
-      <div class="flex items-start gap-2">
-        <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-1.5 flex-wrap"><p class="text-[12.5px] font-bold text-ink-900 truncate">${esc(e.nama||'-')}</p>${catBadge}</div>
-          <p class="text-[10.5px] text-ink-400 mt-0.5">${esc(e.nik||'-')} · ${esc(e.group||'-')} · ${esc(e.shift||'-')}</p>
-        </div>
-        <button onclick="absDelEmployee(${i})" class="w-8 h-8 rounded-lg text-ink-300 hover:text-rose-500 hover:bg-rose-50 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark text-[13px]"></i></button>
-      </div>
-    </div>`;
-  }).join('');
-
-  const total = emps.length;
-  const pkl = emps.filter(e => e.cat === 'pkl').length;
-  const nonpkl = emps.filter(e => e.cat === 'nonpkl').length;
-  const reg = total - pkl - nonpkl;
-  $('totalEmp').textContent = total; $('totalPkl').textContent = pkl; $('totalNonPkl').textContent = nonpkl; $('totalReg').textContent = reg;
-}
-
-function absDelEmployee(i){
-  const emp = state.master.employees[i];
-  if (!emp) return;
-  if (!confirm(`Hapus profil "${emp.nama}"?`)) return;
-  state.master.employees.splice(i, 1);
-  absRenderMaster(); persist(); toast('success', 'Profil dihapus');
-}
-
-function absAddEmployee(){
-  const nik = ($('empNIK').value || '').trim();
-  const nama = ($('empNama').value || '').trim();
-  if (!nama){ toast('warning', 'Nama wajib diisi'); return; }
-  if (state.master.employees.some(e => e.nama.toLowerCase() === nama.toLowerCase())){ toast('warning', 'Nama sudah ada'); return; }
-  const task = ($('empTask').value || '').trim();
-  const sub  = ($('empSub').value || '').trim();
-  const group= ($('empGroup').value || '').trim();
-  const shift= ($('empShift').value || '').trim();
-  const shiftShort = ($('empShiftShort').value || '').trim() || autoShortShift(shift);
-  const brk  = ($('empBreak').value || '').trim();
-  const namaShort = ($('empNameShort').value || '').trim() || autoShortName(nama);
-  let cat = 'regular';
-  const upSub = sub.toUpperCase();
-  const upGrp = group.toUpperCase();
-  if (upSub.includes('NON PKL') || upGrp.includes('NON PKL')) cat = 'nonpkl';
-  else if (upSub === 'PKL' || upGrp === 'PKL') cat = 'pkl';
-  state.master.employees.push({ nik, nama, namaShort, task, sub, group, shift, shiftShort, break: brk, cat });
-  ['empNIK','empNama','empNameShort','empTask','empSub','empGroup','empShift','empShiftShort','empBreak'].forEach(id => { const el = $(id); if (el) el.value = ''; });
-  absRenderMaster(); persist(); toast('success', `Profil "${nama}" ditambahkan`);
-}
-
-function absResetMaster(){
-  if (!confirm('Reset master ke data awal? Semua perubahan profil akan hilang.')) return;
-  state.master = JSON.parse(JSON.stringify(DEFAULT_MASTER));
-  absRenderMaster(); persist(); toast('success', 'Master direset');
-}
-
-function absBindMasterTable(){
-  $('empTableBody').addEventListener('input', e => {
-    const t = e.target;
-    if (!t.matches('input[data-field]')) return;
-    const i = Number(t.dataset.idx);
-    const field = t.dataset.field;
-    const emp = state.master.employees[i];
-    if (!emp) return;
-    emp[field] = t.value;
-    if (field === 'nama' && !emp.namaShort) emp.namaShort = autoShortName(t.value);
-    if (field === 'sub' || field === 'group'){
-      const s = String(emp.sub || '').toUpperCase();
-      const g = String(emp.group || '').toUpperCase();
-      emp.cat = (s.includes('NON PKL') || g.includes('NON PKL')) ? 'nonpkl' : (s === 'PKL' || g === 'PKL') ? 'pkl' : 'regular';
-    }
-    persist();
-  });
-}
-
-function fillDatalists(){
-  const mk = (id, arr) => { const el = $(id); if (el) el.innerHTML = arr.filter(Boolean).map(v => `<option value="${esc(v)}"></option>`).join(''); };
-  mk('dlTask', state.master.tasks || []);
-  mk('dlSub', state.master.subs || []);
-  mk('dlGroup', state.master.groups || []);
-  mk('dlShift', state.master.shifts || []);
-  mk('dlBreak', state.master.breaks || []);
-}
-
-/* ========== EXPORT CSV ========== */
-function absExportCSV(){
-  const iso = absCurrentDate();
-  const data = absGetDay(iso);
-  if (!data.length){ toast('warning', 'Tidak ada data'); return; }
-  const header = ['No','NIK','Nama','Task','Sub','Group','Shift','Break'];
-  const rows = data.map((d, i) => [i+1, d.nik, d.nama, d.task, d.sub, d.group, d.shift, d.break]);
-  const csv = [header, ...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
-  downloadBlob(csv, `schedule-${iso}.csv`, 'text/csv;charset=utf-8');
-  toast('success', 'CSV diunduh');
-}
-function rkExportCSV(){
-  const { year, month } = state.rekapCurrent;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const m = rkMonthData();
-  const header = ['Tanggal','Hari','Status','Lembur (jam)','Keterangan'];
-  const rows = [];
-  for (let d = 1; d <= daysInMonth; d++){
-    if (!rkInPeriod(d)) continue;
-    const data = m.days[d] || {};
-    const dt = new Date(year, month, d);
-    rows.push([d, DAY_NAMES[dt.getDay()], data.status || '', data.ot || 0, data.note || '']);
-  }
-  const csv = [header, ...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
-  downloadBlob(csv, `rekap-${year}-${pad2(month+1)}.csv`, 'text/csv;charset=utf-8');
-  toast('success', 'CSV diunduh');
-}
-function downloadBlob(content, filename, mime){
-  const blob = new Blob([content], { type: mime });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
-}
-
-/* ========== CAPTURE ABSENSI ========== */
-async function absCapture(){
-  const iso = absCurrentDate();
-  const data = absGetDay(iso);
-  if (!data.length){ toast('warning', 'Tidak ada data untuk diambil'); return; }
-  toast('info', 'Membuat gambar...');
-
-  const wrap = document.createElement('div');
-  wrap.style.cssText = 'position:fixed;left:-99999px;top:0;background:#ffffff;padding:28px;font-family:Inter,system-ui,sans-serif;width:900px;';
-  const rows = data.map((d, i) => {
-    const off = isOff(d.shift);
-    return `<tr style="border-bottom:1px solid #f1f5f9;${off ? 'background:#fef2f2;' : ''}">
-      <td style="padding:8px 10px;font-size:11px;color:#64748b;text-align:center;">${i+1}</td>
-      <td style="padding:8px 10px;font-size:11px;color:#334155;">${esc(d.nik||'-')}</td>
-      <td style="padding:8px 10px;font-size:12px;font-weight:600;color:#0f172a;">${esc(d.nama||'-')}</td>
-      <td style="padding:8px 10px;font-size:11px;color:#334155;">${esc(d.task||'-')}</td>
-      <td style="padding:8px 10px;font-size:11px;color:#334155;">${esc(d.group||'-')}</td>
-      <td style="padding:8px 10px;font-size:11px;font-weight:600;color:${off ? '#dc2626' : '#0369a1'};">${esc(d.shift||'-')}</td>
-      <td style="padding:8px 10px;font-size:11px;color:#334155;">${esc(d.break||'-')}</td>
-    </tr>`;
-  }).join('');
-
-  wrap.innerHTML = `
-    <div style="border-bottom:2px solid #0f172a;padding-bottom:14px;margin-bottom:18px;">
-      <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;color:#64748b;text-transform:uppercase;">PT Flexofast Solusi Indonesia</div>
-      <div style="font-size:20px;font-weight:800;color:#0f172a;margin-top:4px;">Schedule Karyawan</div>
-      <div style="font-size:12.5px;color:#475569;margin-top:2px;">${esc(formatDateID(iso))}</div>
-    </div>
-    <table style="width:100%;border-collapse:collapse;">
-      <thead><tr style="background:#f8fafc;">
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:center;">No</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">NIK</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Nama</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Task</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Group</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Shift</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Break</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-    <div style="margin-top:18px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between;">
-      <span>Total: ${data.length} karyawan</span>
-      <span>by @tyowhydi · ${new Date().toLocaleDateString('id-ID')}</span>
-    </div>`;
-
-  document.body.appendChild(wrap);
-  try {
-    const canvas = await html2canvas(wrap, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
-    canvas.toBlob(blob => {
-      if (!blob){ toast('error', 'Gagal membuat gambar'); return; }
-      const reader = new FileReader();
-      reader.onload = () => { autoSaveImage(reader.result, blob, `schedule-${iso}.png`); };
-      reader.readAsDataURL(blob);
-    }, 'image/png', 0.95);
-  } catch(err){
-    toast('error', 'Capture gagal: ' + err.message);
-  } finally {
-    document.body.removeChild(wrap);
-  }
-}
-
-/* ========== REKAP PRIBADI ========== */
-function rkMonthKey(){ return monthKey(state.rekapCurrent.year, state.rekapCurrent.month); }
-function rkMonthData(){
-  const k = rkMonthKey();
-  if (!state.rekapMonths[k]) state.rekapMonths[k] = { days: {} };
-  if (!state.rekapMonths[k].days) state.rekapMonths[k].days = {};
-  return state.rekapMonths[k];
-}
-function rkGetDayData(day){
-  const m = rkMonthData();
-  if (!m.days[day]) m.days[day] = { status: '', ot: 0, note: '' };
-  return m.days[day];
-}
-function rkInPeriod(day){
-  const p = state.payrollPeriod || 'bulanan';
-  if (p === 'p1') return day <= 15;
-  if (p === 'p2') return day >= 16;
-  return true;
-}
-function rkSetPeriod(p){
-  state.payrollPeriod = p;
-  ['bulanan','p1','p2'].forEach(k => {
-    const el = $('chip' + k.charAt(0).toUpperCase() + k.slice(1));
-    if (!el) return;
-    const on = (p === k);
-    el.classList.toggle('bg-ink-900', on);
-    el.classList.toggle('text-white', on);
-    el.classList.toggle('text-ink-500', !on);
-  });
-  rkRenderRangeLabel(); rkRenderCalendar(); rkUpdateStats(); persist();
-}
-function rkShiftMonth(delta){
-  const dt = new Date(state.rekapCurrent.year, state.rekapCurrent.month + delta, 1);
-  state.rekapCurrent.year = dt.getFullYear();
-  state.rekapCurrent.month = dt.getMonth();
-  state.rekapSelectedDay = 1;
-  if ($('rkSelMonth')) $('rkSelMonth').value = String(state.rekapCurrent.month);
-  if ($('rkSelYear')) $('rkSelYear').value = String(state.rekapCurrent.year);
-  rkRenderRangeLabel(); rkRenderCalendar(); rkRenderDetail(); rkUpdateStats(); persist();
-}
-function rkRenderRangeLabel(){
-  const { year, month } = state.rekapCurrent;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  let a = 1, b = daysInMonth, label = 'Periode Bulanan';
-  if (state.payrollPeriod === 'p1'){ a = 1; b = 15; label = 'Periode 1–15'; }
-  else if (state.payrollPeriod === 'p2'){ a = 16; b = daysInMonth; label = 'Periode 16–Akhir'; }
-  $('rkRangeLabel').textContent = `${label} · ${a} ${MONTH_NAMES[month]} – ${b} ${MONTH_NAMES[month]} ${year}`;
-}
-function rkRenderCalendar(){
-  const { year, month } = state.rekapCurrent;
-  const first = new Date(year, month, 1);
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  let offset = first.getDay() - 1;
-  if (offset < 0) offset = 6;
-  const grid = $('rkCalendarGrid');
-  if (!grid) return;
-  let html = '';
-  for (let i = 0; i < offset; i++) html += `<div class="cal-day empty"></div>`;
-  const todayISOStr = todayISO();
-  for (let d = 1; d <= daysInMonth; d++){
-    const dt = new Date(year, month, d);
-    const dow = dt.getDay();
-    const iso = `${year}-${pad2(month + 1)}-${pad2(d)}`;
-    const inP = rkInPeriod(d);
-    const data = rkMonthData().days[d] || {};
-    const status = data.status || '';
-    const isWeekend = (dow === 0);
-    const isSel = state.rekapSelectedDay === d;
-    const cls = ['cal-day'];
-    if (isWeekend) cls.push('is-weekend');
-    if (!inP) cls.push('outside-period');
-    if (isSel) cls.push('selected');
-    let statusLabel = status || '—';
-    if (!status && iso === todayISOStr) statusLabel = 'Hari ini';
-    if (!inP) statusLabel = '—';
-    html += `<div class="${cls.join(' ')}" data-day="${d}" data-status="${esc(status)}" onclick="rkSelectDay(${d})"><div class="day-num">${d}</div><div class="day-status">${esc(statusLabel)}</div></div>`;
-  }
-  grid.innerHTML = html;
-}
-function rkSelectDay(day){ state.rekapSelectedDay = day; rkRenderCalendar(); rkRenderDetail(); persist(); }
-function rkRenderDetail(){
-  const day = state.rekapSelectedDay || 1;
-  const data = rkGetDayData(day);
-  const dt = new Date(state.rekapCurrent.year, state.rekapCurrent.month, day);
-  $('rkDetailDate').textContent = `${DAY_NAMES[dt.getDay()]}, ${day} ${MONTH_NAMES[state.rekapCurrent.month]} ${state.rekapCurrent.year}`;
-  const statuses = [
-    { key: 'Masuk', label: 'Masuk' }, { key: 'Absen', label: 'Absen' }, { key: 'Cuti', label: 'Cuti' }, { key: 'Sakit', label: 'Sakit' }, { key: 'Off', label: 'Off' }
-  ];
-  $('rkStatusButtons').innerHTML = statuses.map(s => {
-    const on = data.status === s.key;
-    return `<button class="status-pill ${on ? 'active' : ''}" data-status="${s.key}" onclick="rkSetStatus('${s.key}')">${s.label}</button>`;
-  }).join('');
-  $('rkOTDisplay').textContent = round1(data.ot || 0);
-  $('rkDetailNote').value = data.note || '';
-}
-function rkSetStatus(status){
-  const day = state.rekapSelectedDay;
-  const data = rkGetDayData(day);
-  data.status = (data.status === status) ? '' : status;
-  rkRenderCalendar(); rkRenderDetail(); rkUpdateStats(); persist();
-}
-function rkAdjustOT(delta){
-  const day = state.rekapSelectedDay;
-  const data = rkGetDayData(day);
-  data.ot = round1(Math.max(0, (data.ot || 0) + delta));
-  $('rkOTDisplay').textContent = data.ot;
-  rkUpdateStats(); persist();
-}
-function rkSaveNote(){ const day = state.rekapSelectedDay; const data = rkGetDayData(day); data.note = $('rkDetailNote').value || ''; persist(); }
-function rkFillWeekdays(status){
-  const { year, month } = state.rekapCurrent;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  for (let d = 1; d <= daysInMonth; d++){
-    if (!rkInPeriod(d)) continue;
-    const dow = new Date(year, month, d).getDay();
-    if (dow >= 1 && dow <= 6) rkGetDayData(d).status = status;
-  }
-  rkRenderCalendar(); rkUpdateStats(); persist(); toast('success', 'Senin–Sabtu diisi');
-}
-function rkFillWeekends(status){
-  const { year, month } = state.rekapCurrent;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  for (let d = 1; d <= daysInMonth; d++){
-    if (!rkInPeriod(d)) continue;
-    if (new Date(year, month, d).getDay() === 0) rkGetDayData(d).status = status;
-  }
-  rkRenderCalendar(); rkUpdateStats(); persist(); toast('success', 'Minggu diisi');
-}
-function rkFillAllPeriod(status){
-  const { year, month } = state.rekapCurrent;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  if (!confirm(`Isi semua tanggal dalam periode dengan "${status}"?`)) return;
-  for (let d = 1; d <= daysInMonth; d++){
-    if (!rkInPeriod(d)) continue;
-    rkGetDayData(d).status = status;
-  }
-  rkRenderCalendar(); rkUpdateStats(); persist(); toast('success', 'Periode diisi');
-}
-function rkBulkClearPeriod(){
-  const { year, month } = state.rekapCurrent;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  if (!confirm('Reset lembur semua tanggal dalam periode?')) return;
-  for (let d = 1; d <= daysInMonth; d++){
-    if (!rkInPeriod(d)) continue;
-    rkGetDayData(d).ot = 0;
-  }
-  rkUpdateStats(); rkRenderDetail(); persist(); toast('success', 'Lembur direset');
-}
-function rkResetMonth(){
-  if (!confirm(`Reset seluruh data bulan ${MONTH_NAMES[state.rekapCurrent.month]} ${state.rekapCurrent.year}?`)) return;
-  delete state.rekapMonths[rkMonthKey()];
-  rkRenderCalendar(); rkRenderDetail(); rkUpdateStats(); persist(); toast('success', 'Bulan direset');
-}
-function rkUpdateStats(){
-  const { year, month } = state.rekapCurrent;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const m = rkMonthData();
-  let hadir = 0, off = 0, absen = 0, ot = 0, total = 0;
-  for (let d = 1; d <= daysInMonth; d++){
-    if (!rkInPeriod(d)) continue;
-    total++;
-    const data = m.days[d] || {};
-    if (data.status === 'Masuk') hadir++;
-    else if (data.status === 'Off') off++;
-    else if (data.status === 'Absen') absen++;
-    ot += Number(data.ot) || 0;
-  }
-  $('rkStatHadir').textContent = hadir;
-  $('rkStatOff').textContent = off;
-  $('rkStatAbsen').textContent = absen;
-  $('rkStatOT').textContent = round1(ot);
-  $('rkRingHadir').textContent = hadir;
-  $('rkRingOff').textContent = off;
-  $('rkRingOt').textContent = round1(ot);
-  const pct = total > 0 ? Math.round((hadir / total) * 100) : 0;
-  $('rkRingPct').textContent = pct + '%';
-  const dash = 289;
-  const bar = $('rkRingBar');
-  if (bar) bar.setAttribute('stroke-dashoffset', dash - (dash * pct / 100));
-  if ($('rkStatTotal')) $('rkStatTotal').textContent = total;
-  if ($('rkStatEfektif')) $('rkStatEfektif').textContent = total;
-  if ($('rkSlipHadir')) $('rkSlipHadir').textContent = hadir;
-  if ($('rkSlipAbsen')) $('rkSlipAbsen').textContent = absen;
-  if ($('rkSlipOt')) $('rkSlipOt').textContent = round1(ot);
-  if ($('rkSlipEfektif')) $('rkSlipEfektif').textContent = total;
-}
-
-function rkBindProfile(){
-  const p = state.rekapProfile;
-  $('rkInpName').value = p.name || '';
-  $('rkInpCompany').value = p.company || '';
-  $('rkInpPosition').value = p.position || '';
-  $('rkInpNip').value = p.nip || '';
-  $('rkRoleLabel').textContent = p.position || '—';
-  $('rkNipLabel').textContent = p.nip || '—';
-  const initials = (p.name || '--').split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
-  $('rkAvatar').textContent = initials || '--';
-  ['rkInpName','rkInpCompany','rkInpPosition','rkInpNip'].forEach(id => {
-    const el = $(id);
-    if (!el) return;
-    el.addEventListener('input', () => {
-      state.rekapProfile.name = $('rkInpName').value;
-      state.rekapProfile.company = $('rkInpCompany').value;
-      state.rekapProfile.position = $('rkInpPosition').value;
-      state.rekapProfile.nip = $('rkInpNip').value;
-      $('rkRoleLabel').textContent = state.rekapProfile.position || '—';
-      $('rkNipLabel').textContent = state.rekapProfile.nip || '—';
-      const ini = (state.rekapProfile.name || '--').split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
-      $('rkAvatar').textContent = ini || '--';
-      persist();
-    });
-  });
-  $('rkDetailNote').addEventListener('input', rkSaveNote);
-}
-
-function rkBindSelectors(){
-  const monthSel = $('rkSelMonth');
-  const yearSel = $('rkSelYear');
-  monthSel.innerHTML = MONTH_NAMES.map((m, i) => `<option value="${i}">${m}</option>`).join('');
-  const y0 = new Date().getFullYear() - 2;
-  const y1 = new Date().getFullYear() + 3;
-  const years = [];
-  for (let y = y0; y <= y1; y++) years.push(y);
-  yearSel.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join('');
-  monthSel.value = String(state.rekapCurrent.month);
-  yearSel.value = String(state.rekapCurrent.year);
-  monthSel.addEventListener('change', () => {
-    state.rekapCurrent.month = Number(monthSel.value);
-    state.rekapSelectedDay = 1;
-    rkRenderRangeLabel(); rkRenderCalendar(); rkRenderDetail(); rkUpdateStats(); persist();
-  });
-  yearSel.addEventListener('change', () => {
-    state.rekapCurrent.year = Number(yearSel.value);
-    state.rekapSelectedDay = 1;
-    rkRenderRangeLabel(); rkRenderCalendar(); rkRenderDetail(); rkUpdateStats(); persist();
-  });
-}
-
-/* ========== REPORT ========== */
-function buildReportHTML(){
-  const { year, month } = state.rekapCurrent;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const m = rkMonthData();
-  const p = state.rekapProfile;
-
-  let hadir = 0, off = 0, absen = 0, ot = 0, total = 0;
-  for (let d = 1; d <= daysInMonth; d++){
-    if (!rkInPeriod(d)) continue;
-    total++;
-    const data = m.days[d] || {};
-    const st = data.status || '';
-    if (st === 'Masuk') hadir++;
-    else if (st === 'Off') off++;
-    else if (st === 'Absen') absen++;
-    ot += Number(data.ot) || 0;
-  }
-  const pct = total > 0 ? Math.round((hadir / total) * 100) : 0;
-
-  let periodLabel = 'Bulanan';
-  if (state.payrollPeriod === 'p1') periodLabel = '1–15';
-  else if (state.payrollPeriod === 'p2') periodLabel = '16–Akhir';
-
-  const first = new Date(year, month, 1);
-  let offset = first.getDay() - 1;
-  if (offset < 0) offset = 6;
-
-  const statusStyles = {
-    'Masuk': { bar: '#10b981', text: '#047857', bg: '#ecfdf5' },
-    'Off':   { bar: '#cbd5e1', text: '#94a3b8', bg: '#f8fafc' },
-    'Absen': { bar: '#e11d48', text: '#be123c', bg: '#fef2f2' },
-    'Cuti':  { bar: '#a78bfa', text: '#7c3aed', bg: '#f5f3ff' },
-    'Sakit': { bar: '#fb7185', text: '#e11d48', bg: '#fff1f2' }
-  };
-
-  let cellsHTML = '';
-  for (let i = 0; i < offset; i++) cellsHTML += `<div style="min-height:74px;"></div>`;
-  for (let d = 1; d <= daysInMonth; d++){
-    const dt = new Date(year, month, d);
-    const dow = dt.getDay();
-    const inP = rkInPeriod(d);
-    const data = m.days[d] || {};
-    const st = data.status || '';
-    const otDay = Number(data.ot) || 0;
-    const isWeekend = (dow === 0);
-    const style = statusStyles[st] || { bar: 'transparent', text: '#64748b', bg: '#ffffff' };
-    const opacity = inP ? 1 : 0.28;
-    const bgColor = isWeekend ? '#f8fafc' : (st && inP ? style.bg : '#ffffff');
-    cellsHTML += `
-      <div style="position:relative;border-radius:12px;border:1.5px solid ${st && inP ? style.bar + '30' : '#eef0f3'};background:${bgColor};padding:8px 6px 9px;text-align:center;min-height:74px;display:flex;flex-direction:column;justify-content:flex-start;opacity:${opacity};">
-        <div style="position:absolute;top:0;left:12px;right:12px;height:3px;border-radius:0 0 3px 3px;background:${inP && st ? style.bar : 'transparent'};"></div>
-        <div style="font-size:17px;font-weight:800;color:#141a20;line-height:1.05;letter-spacing:-.02em;">${d}</div>
-        <div style="font-size:10px;font-weight:600;color:${inP && st ? style.text : '#94a3b8'};margin-top:4px;letter-spacing:.01em;">${esc(st || '—')}</div>
-        ${otDay > 0 ? `<div style="display:inline-block;margin-top:4px;padding:2px 8px;background:#fef3c7;border:1px solid #fcd34d;border-radius:99px;font-size:9.5px;font-weight:800;color:#92400e;letter-spacing:.02em;">Overtime ${round1(otDay)}j</div>` : ''}
-      </div>`;
-  }
-
-  let notesHTML = '';
-  for (let d = 1; d <= daysInMonth; d++){
-    if (!rkInPeriod(d)) continue;
-    const data = m.days[d] || {};
-    if (!data.note) continue;
-    notesHTML += `<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start;"><div style="font-size:11px;font-weight:700;color:#0f172a;min-width:70px;flex-shrink:0;">${d} ${MONTH_NAMES[month].slice(0,3)}</div><div style="font-size:11px;color:#64748b;flex:1;line-height:1.5;">${esc(data.note)}</div></div>`;
-  }
-
-  return `
-    <div style="padding:32px;font-family:Inter,system-ui,sans-serif;background:#fff;width:1100px;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #0f172a;padding-bottom:16px;margin-bottom:20px;">
-        <div>
-          <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;color:#64748b;text-transform:uppercase;">${esc(p.company || 'PT Flexofast Solusi Indonesia')}</div>
-          <div style="font-size:22px;font-weight:800;color:#0f172a;margin-top:4px;">Laporan Kehadiran</div>
-          <div style="font-size:12.5px;color:#475569;margin-top:2px;">${MONTH_NAMES[month]} ${year} · ${periodLabel}</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:14px;font-weight:700;color:#0f172a;">${esc(p.name)}</div>
-          <div style="font-size:11px;color:#64748b;margin-top:2px;">NIP ${esc(p.nip)}</div>
-          <div style="font-size:11px;color:#64748b;">${esc(p.position)}</div>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:22px;">
-        <div style="padding:12px 14px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;"><div style="font-size:10px;font-weight:700;color:#047857;letter-spacing:.05em;text-transform:uppercase;">Hadir</div><div style="font-size:20px;font-weight:800;color:#047857;margin-top:3px;line-height:1;">${hadir}<span style="font-size:11px;font-weight:600;color:#10b981;margin-left:3px;">hari</span></div></div>
-        <div style="padding:12px 14px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;"><div style="font-size:10px;font-weight:700;color:#475569;letter-spacing:.05em;text-transform:uppercase;">Off</div><div style="font-size:20px;font-weight:800;color:#475569;margin-top:3px;line-height:1;">${off}<span style="font-size:11px;font-weight:600;color:#94a3b8;margin-left:3px;">hari</span></div></div>
-        <div style="padding:12px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;"><div style="font-size:10px;font-weight:700;color:#b91c1c;letter-spacing:.05em;text-transform:uppercase;">Absen</div><div style="font-size:20px;font-weight:800;color:#b91c1c;margin-top:3px;line-height:1;">${absen}<span style="font-size:11px;font-weight:600;color:#f87171;margin-left:3px;">hari</span></div></div>
-        <div style="padding:12px 14px;background:#fef3c7;border:1px solid #fde68a;border-radius:10px;"><div style="font-size:10px;font-weight:700;color:#92400e;letter-spacing:.05em;text-transform:uppercase;">Lembur</div><div style="font-size:20px;font-weight:800;color:#92400e;margin-top:3px;line-height:1;">${round1(ot)}<span style="font-size:11px;font-weight:600;color:#d97706;margin-left:3px;">jam</span></div></div>
-      </div>
-
-      <div style="margin-bottom:22px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">Kehadiran</span><span style="font-size:13px;font-weight:800;color:#0f172a;">${pct}%</span></div>
-        <div style="height:8px;background:#eef0f3;border-radius:99px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#10b981,#059669);border-radius:99px;"></div></div>
-      </div>
-
-      <div style="margin-bottom:8px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <div style="font-size:14px;font-weight:800;color:#0f172a;">Kalender Kehadiran</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:10px;font-weight:600;">
-            <span style="display:inline-flex;align-items:center;gap:5px;color:#047857;"><span style="width:8px;height:8px;border-radius:50%;background:#10b981;"></span>Hadir</span>
-            <span style="display:inline-flex;align-items:center;gap:5px;color:#64748b;"><span style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;"></span>Off</span>
-            <span style="display:inline-flex;align-items:center;gap:5px;color:#be123c;"><span style="width:8px;height:8px;border-radius:50%;background:#e11d48;"></span>Absen</span>
-            <span style="display:inline-flex;align-items:center;gap:5px;color:#7c3aed;"><span style="width:8px;height:8px;border-radius:50%;background:#a78bfa;"></span>Cuti</span>
-            <span style="display:inline-flex;align-items:center;gap:5px;color:#e11d48;"><span style="width:8px;height:8px;border-radius:50%;background:#fb7185;"></span>Sakit</span>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:8px;">
-          <div style="text-align:center;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;padding:2px 0;">Sen</div>
-          <div style="text-align:center;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;padding:2px 0;">Sel</div>
-          <div style="text-align:center;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;padding:2px 0;">Rab</div>
-          <div style="text-align:center;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;padding:2px 0;">Kam</div>
-          <div style="text-align:center;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;padding:2px 0;">Jum</div>
-          <div style="text-align:center;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;padding:2px 0;">Sab</div>
-          <div style="text-align:center;font-size:10px;font-weight:700;color:#fb7185;text-transform:uppercase;letter-spacing:.06em;padding:2px 0;">Min</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;">${cellsHTML}</div>
-      </div>
-
-      ${notesHTML ? `<div style="margin-top:24px;padding-top:18px;border-top:1px solid #e2e8f0;"><div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Catatan</div>${notesHTML}</div>` : ''}
-
-      <div style="margin-top:22px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between;">
-        <span>Dibuat otomatis · ${new Date().toLocaleString('id-ID')}</span>
-        <span>by @tyowhydi</span>
-      </div>
-    </div>`;
-}
-
-function rkOpenReport(){
-  $('reportPreview').innerHTML = buildReportHTML();
-  $('reportModal').classList.remove('hidden');
-  document.body.classList.add('sheet-open');
-  requestAnimationFrame(() => requestAnimationFrame(fitReportPreview));
-}
-
-function closeReport(){
-  $('reportModal').classList.add('hidden');
-  document.body.classList.remove('sheet-open');
-}
-
-async function downloadReport(){
-  const btn = $('btnDownload');
-  const orig = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Memproses...';
-
-  const offscreen = document.createElement('div');
-  offscreen.style.cssText = 'position:fixed;left:-99999px;top:0;background:#ffffff;width:1100px;';
-  offscreen.innerHTML = buildReportHTML();
-  document.body.appendChild(offscreen);
-
-  try {
-    if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    await new Promise(r => setTimeout(r, 150));
-
-    const canvas = await html2canvas(offscreen, { scale: 2, backgroundColor: '#ffffff', useCORS: true, width: 1100, windowWidth: 1100 });
-    document.body.removeChild(offscreen);
-
-    canvas.toBlob(blob => {
-      if (!blob){ toast('error', 'Gagal membuat gambar'); return; }
-      const reader = new FileReader();
-      reader.onload = () => {
-        const { year, month } = state.rekapCurrent;
-        if (!isIOS()) closeReport();
-        autoSaveImage(reader.result, blob, `laporan-${year}-${pad2(month+1)}.png`);
-      };
-      reader.readAsDataURL(blob);
-    }, 'image/png', 0.95);
-  } catch(err){
-    if (document.body.contains(offscreen)) document.body.removeChild(offscreen);
-    toast('error', 'Gagal: ' + err.message);
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = orig;
-  }
-}
-
-/* ========== INIT ========== */
+/* =================== INIT =================== */
 function init(){
-  try { const dm = localStorage.getItem('display_mode'); if (dm === 'long' || dm === 'short') displayMode = dm; } catch(e){}
-  load(); seedInitial();
+  load();
   $('yearNow').textContent = new Date().getFullYear();
-  $('absDateInput').value = todayISO();
-  fillDatalists();
-  absBindTable();
-  absBindMasterTable();
-  ['empNIK','empNama','empNameShort','empTask','empSub','empGroup','empShift','empShiftShort','empBreak'].forEach(id => {
-    const el = $(id);
-    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') absAddEmployee(); });
-  });
-  ['absSearchDesk','absSearchMob'].forEach(id => {
-    const el = $(id);
-    if (el) el.addEventListener('input', absRenderQuickPanel);
-  });
-  ['absFilterCatDesk','absFilterCatMob'].forEach(id => {
-    const el = $(id);
-    if (el) el.addEventListener('change', absRenderQuickPanel);
-  });
-  rkBindProfile();
-  rkBindSelectors();
-  rkSetPeriod(state.payrollPeriod || 'bulanan');
-  absRenderTable();
-  absRenderQuickPanel();
-  rkRenderRangeLabel();
-  rkRenderCalendar();
-  rkRenderDetail();
-  rkUpdateStats();
+  $('absDateInput').value = state.ui.selectedDay || todayISO();
+  if (!state.ui.rkSelectedDay) state.ui.rkSelectedDay = todayISO();
+
+  // Populate rekap inputs
+  rkInitSelects();
+
   renderHeaderActions();
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape'){
-      if (!$('masterModal').classList.contains('hidden')) absCloseMaster();
-      if (!$('reportModal').classList.contains('hidden')) closeReport();
-      if (!$('capturePreview').classList.contains('hidden')) closeCapturePreview();
+  absRenderAll();
+
+  // If active tab was rekap, switch
+  if (state.ui.activeTab === 'rekap') switchTab('rekap');
+
+  // Clear input on Enter
+  document.querySelectorAll('#masterModal input').forEach(inp => {
+    inp.addEventListener('keypress', e => { if (e.key === 'Enter') absAddEmployee(); });
+  });
+
+  window.addEventListener('resize', () => {
+    if (!$('reportModal').classList.contains('hidden')){
+      setTimeout(fitReportPreview, 50);
     }
   });
 }
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
+
 </body>
 </html>
