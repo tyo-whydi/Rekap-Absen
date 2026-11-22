@@ -1812,6 +1812,12 @@ function rkBindSelectors(){
 }
 
 /* ========== REPORT ========== */
+/* Pil lembur digambar sebagai SVG supaya posisi teksnya tidak bergeser di html2canvas */
+function otPillSVG(text){
+  const w = Math.round(text.length * 5.7 + 22), h = 18;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;"><rect x=".5" y=".5" width="${w-1}" height="${h-1}" rx="${(h-1)/2}" fill="#fef3c7" stroke="#fcd34d"/><text x="${w/2}" y="12.4" text-anchor="middle" font-family="Inter,Arial,Helvetica,sans-serif" font-size="9.5" font-weight="800" fill="#92400e">${esc(text)}</text></svg>`;
+}
+
 function buildReportHTML(){
   const { year, month } = state.rekapCurrent;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -1865,7 +1871,7 @@ function buildReportHTML(){
         <div style="position:absolute;top:0;left:12px;right:12px;height:3px;border-radius:0 0 3px 3px;background:${inP && st ? style.bar : 'transparent'};"></div>
         <div style="font-size:17px;font-weight:800;color:#141a20;line-height:1.05;letter-spacing:-.02em;">${d}</div>
         <div style="font-size:10px;font-weight:600;color:${inP && st ? style.text : '#94a3b8'};margin-top:4px;letter-spacing:.01em;">${esc(st || '—')}</div>
-        ${otDay > 0 ? `<div style="margin-top:6px;display:flex;justify-content:center;"><div style="height:18px;line-height:16px;padding:0 10px;background:#fef3c7;border:1px solid #fcd34d;border-radius:99px;font-size:9.5px;font-weight:800;color:#92400e;white-space:nowrap;">Lembur ${round1(otDay)} jam</div></div>` : ''}
+        ${otDay > 0 ? `<div style="margin-top:6px;display:flex;justify-content:center;">${otPillSVG('Lembur ' + round1(otDay) + ' jam')}</div>` : ''}
       </div>`;
   }
 
