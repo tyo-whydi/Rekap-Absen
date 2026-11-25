@@ -1459,6 +1459,7 @@ function absAddEmployee(){
   const nama = ($('empNama').value || '').trim();
   if (!nama){ toast('warning', 'Nama wajib diisi'); return; }
   if (state.master.employees.some(e => e.nama.toLowerCase() === nama.toLowerCase())){ toast('warning', 'Nama sudah ada'); return; }
+  if (nik && nik !== '-' && state.master.employees.some(e => String(e.nik).trim() === nik)){ toast('warning', 'NIK sudah ada'); return; }
   const task = ($('empTask').value || '').trim();
   const sub  = ($('empSub').value || '').trim();
   const group= ($('empGroup').value || '').trim();
@@ -1546,7 +1547,7 @@ function applyImportRows(rows){
     XL_COLS.forEach(([f, al]) => { if (al.includes(k)) hdr[h] = f; });
   });
   if (!Object.values(hdr).includes('nama')) return null;
-  const res = { added: 0, updated: 0, skipped: 0, touched: [] };
+  const res = { added: 0, updated: 0, skipped: 0, badNik: 0, touched: [] };
   const emps = state.master.employees;
   rows.forEach(r => {
     const rec = {};
@@ -1557,9 +1558,18 @@ function applyImportRows(rows){
     if (rec.shift) rec.shift = normShift(rec.shift);
     if (rec.break) rec.break = normBreak(rec.break);
 
+    // NIK format ilmiah (mis. 2.5E+08) = Excel merusak NIK, lewati agar tidak jadi data ganda
+    if (/^\d(\.\d+)?e\+\d+$/i.test(rec.nik)){ res.badNik++; res.skipped++; return; }
+    const noNik = x => { const n = String(x.nik || '').trim(); return !n || n === '-'; };
+    const sameName = x => String(x.nama).trim().toLowerCase() === rec.nama.toLowerCase();
     let e = null;
-    if (rec.nik) e = emps.find(x => String(x.nik) === rec.nik);
-    if (!e) e = emps.find(x => String(x.nama).trim().toLowerCase() === rec.nama.toLowerCase());
+    if (rec.nik){
+      // NIK = kunci utama; nama hanya dipakai untuk melengkapi data lama yang belum punya NIK
+      e = emps.find(x => String(x.nik).trim() === rec.nik);
+      if (!e) e = emps.find(x => noNik(x) && sameName(x));
+    } else {
+      e = emps.find(sameName);
+    }
     const isNew = !e;
     if (isNew) e = { nik: '-', nama: rec.nama, namaShort: '', task: '', sub: '', group: '', shift: '', shiftShort: '', break: '', cat: 'regular' };
 
@@ -1604,6 +1614,7 @@ async function absImportExcel(file){
     if (!res.touched.length){ toast('warning', 'Tidak ada baris data yang valid'); return; }
     persist(); absRenderMaster(); absRenderQuickPanel();
     toast('success', `${res.added} ditambah · ${res.updated} diperbarui · ${res.skipped} dilewati`);
+    if (res.badNik) toast('warning', `${res.badNik} baris dilewati: NIK rusak format Excel (E+). Ubah kolom NIK jadi Text.`);
     const iso = absCurrentDate();
     if (confirm(`Masukkan ${res.touched.length} karyawan dari Excel ke jadwal ${formatDateID(iso)}?\n(OK = masuk/perbarui di jadwal tanggal ini, Batal = hanya update master)`)){
       absAddToDay(res.touched, iso);
