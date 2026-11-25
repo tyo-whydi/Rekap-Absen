@@ -500,12 +500,10 @@ tailwind.config = { theme: { extend: {
         <div class="flex flex-wrap gap-2 mb-3 md:mb-4">
           <input id="empNIK" type="text" placeholder="NIK" class="h-10 md:h-9 w-full sm:w-28 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empNama" type="text" placeholder="Nama lengkap" class="h-10 md:h-9 flex-1 min-w-[180px] px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empNameShort" type="text" placeholder="Nama Pendek" class="h-10 md:h-9 w-full sm:w-36 px-3 text-[13px] md:text-[12.5px] border border-sky-200 bg-sky-50/50 rounded-lg outline-none">
           <input id="empTask" type="text" list="dlTask" placeholder="Task" class="h-10 md:h-9 w-full sm:w-40 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empSub" type="text" list="dlSub" placeholder="Sub" class="h-10 md:h-9 w-full sm:w-24 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empGroup" type="text" list="dlGroup" placeholder="Group" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <input id="empShift" type="text" list="dlShift" placeholder="Shift" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empShiftShort" type="text" placeholder="Shift Pendek" class="h-10 md:h-9 w-full sm:w-28 px-3 text-[13px] md:text-[12.5px] border border-sky-200 bg-sky-50/50 rounded-lg outline-none">
           <input id="empBreak" type="text" list="dlBreak" placeholder="Break" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
           <button onclick="absAddEmployee()" class="h-10 md:h-9 w-full sm:w-auto px-4 rounded-lg bg-ink-900 text-white text-[13px] md:text-[12px] font-medium">Tambah</button>
         </div>
@@ -513,7 +511,7 @@ tailwind.config = { theme: { extend: {
           <table class="w-full text-[12px] min-w-[1000px]">
             <thead class="bg-ink-50 text-ink-500 text-[10.5px] uppercase tracking-wider">
               <tr>
-                <th class="px-3 py-2 text-left font-semibold w-24">NIK</th><th class="px-3 py-2 text-left font-semibold">Nama</th><th class="px-3 py-2 text-left font-semibold w-32 bg-sky-50/40">Pendek</th><th class="px-3 py-2 text-left font-semibold">Task</th><th class="px-3 py-2 text-left font-semibold">Sub</th><th class="px-3 py-2 text-left font-semibold">Group</th><th class="px-3 py-2 text-left font-semibold">Shift</th><th class="px-3 py-2 text-left font-semibold w-24 bg-sky-50/40">Shift P.</th><th class="px-3 py-2 text-left font-semibold">Break</th><th class="px-3 py-2 w-10"></th>
+                <th class="px-3 py-2 text-left font-semibold w-24">NIK</th><th class="px-3 py-2 text-left font-semibold">Nama</th><th class="px-3 py-2 text-left font-semibold">Task</th><th class="px-3 py-2 text-left font-semibold">Sub</th><th class="px-3 py-2 text-left font-semibold">Group</th><th class="px-3 py-2 text-left font-semibold">Shift</th><th class="px-3 py-2 text-left font-semibold">Break</th><th class="px-3 py-2 w-10"></th>
               </tr>
             </thead>
             <tbody id="empTableBody" class="divide-y divide-ink-100"></tbody>
@@ -737,8 +735,6 @@ function getDisplayName(item){
 
 function getDisplayShift(item){
   if (displayMode === 'long') return item.shift || '—';
-  const master = state.master.employees.find(e => e.nama === item.nama);
-  if (master && master.shiftShort) return master.shiftShort;
   return autoShortShift(item.shift);
 }
 
@@ -1163,7 +1159,7 @@ function absRenderQuickPanel(){
     const catCls = e.cat === 'pkl' ? 'pkl' : e.cat === 'nonpkl' ? 'nonpkl' : '';
     const badge = e.cat === 'pkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PKL</span>' : e.cat === 'nonpkl' ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">NP</span>' : '';
     const name = isMobile() ? (e.namaShort || autoShortName(e.nama)) : e.nama;
-    const shiftDisplay = displayMode === 'short' ? (e.shiftShort || autoShortShift(e.shift)) : e.shift;
+    const shiftDisplay = displayMode === 'short' ? autoShortShift(e.shift) : e.shift;
     return `<div class="emp-card ${isAdded ? 'added' : ''} ${catCls}" onclick="absQuickAdd('${esc(e.nama).replace(/'/g,"\\'")}')">
       <div class="text-[12px] font-bold text-ink-800 truncate leading-tight pr-4">${esc(name)}</div>
       <div class="text-[10.5px] text-ink-400 font-medium mt-0.5">${esc(e.nik || '-')}</div>
@@ -1416,12 +1412,10 @@ function absRenderMaster(){
     <tr class="hover:bg-ink-50/70 transition" data-idx="${i}">
       <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="nik" value="${esc(e.nik||'')}" placeholder="NIK"></td>
       <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="nama" value="${esc(e.nama||'')}" placeholder="Nama"></td>
-      <td class="px-2 py-1 bg-sky-50/30"><input class="cell-input" data-idx="${i}" data-field="namaShort" value="${esc(e.namaShort||'')}" placeholder="Pendek"></td>
       <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="task" value="${esc(e.task||'')}" list="dlTask" placeholder="Task"></td>
       <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="sub" value="${esc(e.sub||'')}" list="dlSub" placeholder="Sub"></td>
       <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="group" value="${esc(e.group||'')}" list="dlGroup" placeholder="Group"></td>
       <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="shift" value="${esc(e.shift||'')}" list="dlShift" placeholder="Shift"></td>
-      <td class="px-2 py-1 bg-sky-50/30"><input class="cell-input" data-idx="${i}" data-field="shiftShort" value="${esc(e.shiftShort||'')}" placeholder="Pendek"></td>
       <td class="px-2 py-1"><input class="cell-input" data-idx="${i}" data-field="break" value="${esc(e.break||'')}" list="dlBreak" placeholder="Break"></td>
       <td class="px-2 py-1 text-center"><button onclick="absDelEmployee(${i})" class="text-ink-300 hover:text-rose-500 transition text-[13px] px-1" title="Hapus"><i class="fa-solid fa-xmark"></i></button></td>
     </tr>`).join('');
@@ -1464,9 +1458,9 @@ function absAddEmployee(){
   const sub  = ($('empSub').value || '').trim();
   const group= ($('empGroup').value || '').trim();
   const shift= normShift($('empShift').value);
-  const shiftShort = ($('empShiftShort').value || '').trim() || autoShortShift(shift);
+  const shiftShort = autoShortShift(shift);
   const brk  = normBreak($('empBreak').value);
-  const namaShort = ($('empNameShort').value || '').trim() || autoShortName(nama);
+  const namaShort = autoShortName(nama);
   let cat = 'regular';
   const upSub = sub.toUpperCase();
   const upGrp = group.toUpperCase();
@@ -1492,7 +1486,8 @@ function absBindMasterTable(){
     const emp = state.master.employees[i];
     if (!emp) return;
     emp[field] = t.value;
-    if (field === 'nama' && !emp.namaShort) emp.namaShort = autoShortName(t.value);
+    if (field === 'nama') emp.namaShort = autoShortName(t.value);
+    if (field === 'shift') emp.shiftShort = autoShortShift(t.value);
     if (field === 'sub' || field === 'group'){
       const s = String(emp.sub || '').toUpperCase();
       const g = String(emp.group || '').toUpperCase();
