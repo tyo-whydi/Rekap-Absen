@@ -681,10 +681,38 @@ const SHIFT_SHORT_MAP = {
 
 function autoShortShift(shift){
   if (!shift) return '—';
-  if (shift === 'OFF') return 'OFF';
-  if (SHIFT_SHORT_MAP[shift]) return SHIFT_SHORT_MAP[shift];
+  if (/^off$/i.test(String(shift).trim())) return 'OFF';
+  const m = String(shift).match(/^(\d{1,2}):/);
+  if (m){
+    const h = Number(m[1]);
+    if (h >= 4 && h <= 8) return 'PAGI';
+    if (h >= 9 && h <= 12) return 'SIANG';
+    if (h >= 13 && h <= 15) return 'SORE';
+    return 'MALAM';
+  }
   return String(shift).replace(/:/g,'').replace(/-/g,'–');
 }
+
+/* ===== Jam otomatis: pilih/ketik jam mulai → jam selesai otomatis (+8 jam shift, +1 jam istirahat) ===== */
+function parseStartTime(v){
+  const m = String(v || '').trim().match(/^(\d{1,2})(?:[:.]?(\d{2}))?$/);
+  if (!m) return null;
+  const h = Number(m[1]), mi = m[2] ? Number(m[2]) : 0;
+  if (h > 23 || mi > 59) return null;
+  return [h, mi];
+}
+function expandRange(v, addH){
+  const t = String(v || '').trim();
+  if (!t || t === '-') return t;
+  if (/^off$/i.test(t)) return 'OFF';
+  const p = parseStartTime(t);
+  if (!p) return t;
+  return `${pad2(p[0])}:${pad2(p[1])}-${pad2((p[0] + addH) % 24)}:${pad2(p[1])}`;
+}
+const normShift = v => expandRange(v, 8);
+const normBreak = v => expandRange(v, 1);
+const SHIFT_OPTIONS = [...Array.from({ length: 24 }, (_, h) => `${pad2(h)}:00-${pad2((h + 8) % 24)}:00`), 'OFF'];
+const BREAK_OPTIONS = [...Array.from({ length: 24 }, (_, h) => `${pad2(h)}:00-${pad2((h + 1) % 24)}:00`), '-'];
 
 function shiftStartMin(shift){
   if (!shift) return 99998;
@@ -1428,9 +1456,9 @@ function absAddEmployee(){
   const task = ($('empTask').value || '').trim();
   const sub  = ($('empSub').value || '').trim();
   const group= ($('empGroup').value || '').trim();
-  const shift= ($('empShift').value || '').trim();
+  const shift= normShift($('empShift').value);
   const shiftShort = ($('empShiftShort').value || '').trim() || autoShortShift(shift);
-  const brk  = ($('empBreak').value || '').trim();
+  const brk  = normBreak($('empBreak').value);
   const namaShort = ($('empNameShort').value || '').trim() || autoShortName(nama);
   let cat = 'regular';
   const upSub = sub.toUpperCase();
@@ -1472,8 +1500,8 @@ function fillDatalists(){
   mk('dlTask', state.master.tasks || []);
   mk('dlSub', state.master.subs || []);
   mk('dlGroup', state.master.groups || []);
-  mk('dlShift', state.master.shifts || []);
-  mk('dlBreak', state.master.breaks || []);
+  mk('dlShift', SHIFT_OPTIONS);
+  mk('dlBreak', BREAK_OPTIONS);
 }
 
 /* ========== EXPORT CSV ========== */
@@ -1512,54 +1540,121 @@ function downloadBlob(content, filename, mime){
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-/* ========== CAPTURE ABSENSI ========== */
+/* ========== CAPTURE ABSENSI (tampilan sama dengan laporan Rekap Pribadi) ========== */
+function rptRing(pct){
+  const R = 38, C = 2 * Math.PI * R, dash = (C * pct / 100).toFixed(1);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="92" height="92" viewBox="0 0 92 92" style="display:block;flex-shrink:0;"><circle cx="46" cy="46" r="${R}" fill="none" stroke="#e8ecf3" stroke-width="10"/><circle cx="46" cy="46" r="${R}" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="round" stroke-dasharray="${dash} ${C.toFixed(1)}" transform="rotate(-90 46 46)"/><text x="46" y="52" text-anchor="middle" font-family="Inter,Arial,Helvetica,sans-serif" font-size="19" font-weight="800" fill="#12275a">${pct}%</text></svg>`;
+}
+function rptCard(label, val, unit, color, unitColor, bar){
+  return `<div style="position:relative;background:#fff;border:1px solid #e6eaf2;border-radius:14px;padding:18px 16px 14px;box-shadow:0 8px 22px rgba(18,39,90,.10);overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:${bar};"></div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${color};">${label}</div>
+    <div style="font-size:28px;font-weight:800;color:${color};margin-top:8px;line-height:1.1;">${val}<span style="font-size:11px;font-weight:600;margin-left:4px;color:${unitColor};">${unit}</span></div>
+  </div>`;
+}
+
+function buildScheduleHTML(iso, data){
+  const logo = document.querySelector('.brand-logo')?.src || '';
+  let masuk = 0, off = 0, malam = 0, pkl = 0;
+  data.forEach(d => {
+    if (isOff(d.shift)) off++;
+    else if (d.shift){ masuk++; const m = String(d.shift).match(/^(\d{1,2}):/); if (m && Number(m[1]) >= 16) malam++; }
+    if (d.sub === 'PKL' || d.sub === 'NON PKL' || d.group === 'PKL' || d.group === 'NON PKL') pkl++;
+  });
+  const total = data.length;
+  const pct = total ? Math.round(masuk / total * 100) : 0;
+
+  const map = new Map();
+  data.forEach(d => { const k = isOff(d.shift) ? 'OFF' : (String(d.shift || '').trim() || '—'); if (!map.has(k)) map.set(k, []); map.get(k).push(d); });
+  const groups = [...map.entries()].sort((a, b) => shiftStartMin(a[0]) - shiftStartMin(b[0]));
+
+  const SH = { PAGI:'#0ea5e9', SIANG:'#f59e0b', SORE:'#fa6401', MALAM:'#4f46e5', OFF:'#e11d48' };
+  const groupCard = ([shift, items]) => {
+    const isO = shift === 'OFF';
+    const lab = isO ? 'OFF' : (shift === '—' ? 'TANPA SHIFT' : autoShortShift(shift));
+    const col = SH[lab] || '#64748b';
+    const title = isO ? 'OFF / Libur' : shift.replace('-', ' – ');
+    const rows = items.map(d => {
+      const isPkl = d.sub === 'PKL' || d.group === 'PKL';
+      const isNon = d.sub === 'NON PKL' || d.group === 'NON PKL';
+      const tag = isPkl ? '<span style="font-size:9px;font-weight:800;color:#b45309;margin-left:6px;">PKL</span>' : isNon ? '<span style="font-size:9px;font-weight:800;color:#7c3aed;margin-left:6px;">NON-PKL</span>' : '';
+      const brk = String(d.break || '').trim();
+      const showBrk = !isO && brk && brk !== '-';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 14px;border-top:1px solid #f1f5f9;${isO ? 'background:#fff7f8;' : ''}">
+        <div style="min-width:0;flex:1;">
+          <div style="font-size:11.5px;font-weight:700;color:#0f172a;line-height:1.3;">${esc(getDisplayName(d))}${tag}</div>
+          <div style="font-size:9.5px;color:#64748b;margin-top:1px;line-height:1.3;">${esc(d.task || d.group || '-')}</div>
+        </div>
+        ${showBrk ? `<div style="text-align:right;flex-shrink:0;"><div style="font-size:8.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">Istirahat</div><div style="font-size:10.5px;font-weight:600;color:#334155;">${esc(brk.replace('-', ' – '))}</div></div>` : ''}
+      </div>`;
+    }).join('');
+    return `<div style="background:#fff;border:1px solid #e6eaf2;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(18,39,90,.06);margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-left:5px solid ${col};background:#f8fafc;">
+        <div><div style="font-size:16px;font-weight:800;color:#12275a;line-height:1.1;">${esc(title)}</div><div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:${col};margin-top:3px;">${esc(lab)}</div></div>
+        <div style="text-align:right;"><div style="font-size:22px;font-weight:800;color:#12275a;line-height:1;">${items.length}</div><div style="font-size:9.5px;color:#64748b;margin-top:2px;">orang</div></div>
+      </div>${rows}</div>`;
+  };
+
+  const cols = [[], []], w = [0, 0];
+  groups.forEach(g => { const i = w[0] <= w[1] ? 0 : 1; cols[i].push(groupCard(g)); w[i] += g[1].length + 3; });
+
+  return `
+    <div style="font-family:Inter,system-ui,sans-serif;background:#fff;width:1100px;">
+      <div style="background:linear-gradient(135deg,#12275a 0%,#1c3d7d 100%);border-top:6px solid #fa6401;padding:26px 32px 78px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:18px;">
+          ${logo ? `<div style="background:#fff;border-radius:14px;padding:10px 16px;display:flex;align-items:center;box-shadow:0 6px 16px rgba(0,0,0,.18);"><img src="${logo}" style="height:40px;width:auto;display:block;"></div>` : ''}
+          <div>
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;color:#b9c6e8;text-transform:uppercase;">PT Flexofast Solusi Indonesia</div>
+            <div style="font-size:26px;font-weight:800;color:#fff;margin-top:4px;">Schedule Karyawan</div>
+            <div style="font-size:12.5px;color:#d5def5;margin-top:2px;">${esc(formatDateID(iso))}</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:16px;font-weight:700;color:#fff;">${total} karyawan</div>
+          <div style="font-size:11.5px;color:#b9c6e8;margin-top:3px;">${masuk} masuk · ${off} off</div>
+        </div>
+      </div>
+      <div style="padding:0 32px 32px;">
+        <div style="display:grid;grid-template-columns:270px 1fr 1fr 1fr 1fr;gap:12px;margin-top:-52px;margin-bottom:26px;">
+          <div style="display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #e6eaf2;border-radius:14px;padding:14px 16px;box-shadow:0 8px 22px rgba(18,39,90,.10);">
+            ${rptRing(pct)}
+            <div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#64748b;">Masuk</div>
+              <div style="font-size:15px;font-weight:800;color:#12275a;margin-top:6px;">${masuk} / ${total}</div>
+              <div style="font-size:11px;color:#64748b;margin-top:2px;">karyawan</div>
+            </div>
+          </div>
+          ${rptCard('Total', total, 'orang', '#12275a', '#64748b', '#1c3d7d')}
+          ${rptCard('Off', off, 'orang', '#b91c1c', '#f87171', '#e11d48')}
+          ${rptCard('Shift Malam', malam, 'orang', '#4338ca', '#818cf8', '#4f46e5')}
+          ${rptCard('PKL / Non', pkl, 'orang', '#92400e', '#d97706', '#fa6401')}
+        </div>
+        <div style="font-size:15px;font-weight:800;color:#12275a;margin-bottom:12px;">Jadwal per Shift</div>
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="flex:1;min-width:0;">${cols[0].join('')}</div>
+          <div style="flex:1;min-width:0;">${cols[1].join('')}</div>
+        </div>
+        <div style="margin-top:10px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between;">
+          <span>Total: ${total} karyawan · ${groups.length} kelompok shift</span>
+          <span>by @tyowhydi · ${new Date().toLocaleDateString('id-ID')}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
 async function absCapture(){
   const iso = absCurrentDate();
   const data = absGetDay(iso);
   if (!data.length){ toast('warning', 'Tidak ada data untuk diambil'); return; }
   toast('info', 'Membuat gambar...');
-
   const wrap = document.createElement('div');
-  wrap.style.cssText = 'position:fixed;left:-99999px;top:0;background:#ffffff;padding:28px;font-family:Inter,system-ui,sans-serif;width:900px;';
-  const rows = data.map((d, i) => {
-    const off = isOff(d.shift);
-    return `<tr style="border-bottom:1px solid #f1f5f9;${off ? 'background:#fef2f2;' : ''}">
-      <td style="padding:8px 10px;font-size:11px;color:#64748b;text-align:center;">${i+1}</td>
-      <td style="padding:8px 10px;font-size:11px;color:#334155;">${esc(d.nik||'-')}</td>
-      <td style="padding:8px 10px;font-size:12px;font-weight:600;color:#0f172a;">${esc(d.nama||'-')}</td>
-      <td style="padding:8px 10px;font-size:11px;color:#334155;">${esc(d.task||'-')}</td>
-      <td style="padding:8px 10px;font-size:11px;color:#334155;">${esc(d.group||'-')}</td>
-      <td style="padding:8px 10px;font-size:11px;font-weight:600;color:${off ? '#dc2626' : '#0369a1'};">${esc(d.shift||'-')}</td>
-      <td style="padding:8px 10px;font-size:11px;color:#334155;">${esc(d.break||'-')}</td>
-    </tr>`;
-  }).join('');
-
-  wrap.innerHTML = `
-    <div style="border-bottom:2px solid #0f172a;padding-bottom:14px;margin-bottom:18px;">
-      <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;color:#64748b;text-transform:uppercase;">PT Flexofast Solusi Indonesia</div>
-      <div style="font-size:20px;font-weight:800;color:#0f172a;margin-top:4px;">Schedule Karyawan</div>
-      <div style="font-size:12.5px;color:#475569;margin-top:2px;">${esc(formatDateID(iso))}</div>
-    </div>
-    <table style="width:100%;border-collapse:collapse;">
-      <thead><tr style="background:#f8fafc;">
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:center;">No</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">NIK</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Nama</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Task</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Group</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Shift</th>
-        <th style="padding:10px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;">Break</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-    <div style="margin-top:18px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between;">
-      <span>Total: ${data.length} karyawan</span>
-      <span>by @tyowhydi · ${new Date().toLocaleDateString('id-ID')}</span>
-    </div>`;
-
+  wrap.style.cssText = 'position:fixed;left:-99999px;top:0;background:#ffffff;width:1100px;';
+  wrap.innerHTML = buildScheduleHTML(iso, data);
   document.body.appendChild(wrap);
   try {
-    const canvas = await html2canvas(wrap, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    await new Promise(r => setTimeout(r, 150));
+    const canvas = await html2canvas(wrap, { scale: 2, backgroundColor: '#ffffff', useCORS: true, width: 1100, windowWidth: 1100 });
     canvas.toBlob(blob => {
       if (!blob){ toast('error', 'Gagal membuat gambar'); return; }
       const reader = new FileReader();
@@ -1569,7 +1664,7 @@ async function absCapture(){
   } catch(err){
     toast('error', 'Capture gagal: ' + err.message);
   } finally {
-    document.body.removeChild(wrap);
+    if (document.body.contains(wrap)) document.body.removeChild(wrap);
   }
 }
 
@@ -2030,6 +2125,15 @@ function init(){
   rkRenderDetail();
   rkUpdateStats();
   renderHeaderActions();
+  document.addEventListener('change', e => {
+    const t = e.target;
+    if (!t || t.tagName !== 'INPUT') return;
+    const isShift = t.matches('[data-field="shift"], #empShift');
+    const isBreak = t.matches('[data-field="break"], #empBreak');
+    if (!isShift && !isBreak) return;
+    const nv = isShift ? normShift(t.value) : normBreak(t.value);
+    if (nv !== t.value){ t.value = nv; t.dispatchEvent(new Event('input', { bubbles: true })); }
+  });
   initMotion();
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape'){
