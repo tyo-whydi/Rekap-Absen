@@ -191,6 +191,8 @@ tailwind.config = { theme: { extend: {
   .cal-day.is-holiday { background-color: rgba(254,226,226,.6) !important; }
   .cal-day.is-holiday .day-num, .cal-day.is-weekend .day-num { color: #dc2626; }
   #rkHolidayBtn.on { background-color: #dc2626 !important; border-color: #dc2626 !important; color: #fff !important; }
+  .cal-day.is-event { box-shadow: inset 0 0 0 2px #fbbf24, 0 1px 2px rgba(15,23,42,.04); }
+  .cal-day.is-event::after { content: '★'; position: absolute; top: 4px; right: 6px; font-size: 10px; line-height: 1; color: #f59e0b; }
   .pay-inp { width: 100%; margin-top: 4px; height: 40px; padding: 0 12px; font-size: 13px; font-weight: 600; color: #1e293b; border: 1px solid #dcdfe4; border-radius: 8px; outline: none; transition: border-color .15s, box-shadow .15s; }
   .pay-inp:focus { border-color: #12275a; box-shadow: 0 0 0 3px rgba(18,39,90,.10); }
   @media (max-width: 767px) {
@@ -487,7 +489,18 @@ tailwind.config = { theme: { extend: {
             <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Uang kehadiran</label><input id="payAttend" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
             <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Uang jabatan</label><input id="payPosition" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
           </div>
-          <label class="flex items-start gap-2 mt-3 text-[11.5px] text-ink-600 cursor-pointer"><input id="payVoid" type="checkbox" class="mt-0.5 w-4 h-4" style="accent-color:#1c3d7d;"><span>Absen, Sakit, atau Cuti menggugurkan uang kehadiran</span></label>
+          <div class="mt-4 pt-3 border-t border-ink-100">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-[11px] font-bold text-ink-400 uppercase tracking-wider">Event tanggal kembar</p>
+              <label class="flex items-center gap-1.5 text-[11.5px] text-ink-600 cursor-pointer"><input id="payEventOn" type="checkbox" class="w-4 h-4" style="accent-color:#1c3d7d;"> Aktif bulan ini</label>
+            </div>
+            <div class="grid grid-cols-3 gap-2.5 mt-2">
+              <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Tarif / hari</label><input id="payEventRate" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
+              <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Durasi (hari)</label><input id="payEventDays" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
+              <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Mulai tgl</label><input id="payEventStart" type="text" inputmode="numeric" class="pay-inp" placeholder="tgl"></div>
+            </div>
+            <p class="text-[10.5px] text-ink-400 mt-2 leading-snug">Syarat: masuk semua hari event. Otomatis mulai H-1 tanggal kembar (mis. tgl 10 untuk 11.11) selama 4 hari; tanggal mulai dan durasi bisa diubah per bulan.</p>
+          </div>
           <div id="rkPayBreakdown" class="mt-4"></div>
         </section>
       </aside>
@@ -1919,6 +1932,7 @@ function rkRenderCalendar(){
   let html = '';
   for (let i = 0; i < offset; i++) html += `<div class="cal-day empty"></div>`;
   const todayISOStr = todayISO();
+  const evSet = rkEventDaySet();
   for (let d = 1; d <= daysInMonth; d++){
     const dt = new Date(year, month, d);
     const dow = dt.getDay();
@@ -1931,6 +1945,7 @@ function rkRenderCalendar(){
     const cls = ['cal-day'];
     if (isWeekend) cls.push('is-weekend');
     if (data.holiday) cls.push('is-holiday');
+    if (evSet.has(d)) cls.push('is-event');
     if (!inP) cls.push('outside-period');
     if (isSel) cls.push('selected');
     let statusLabel = status || '—';
@@ -2110,8 +2125,35 @@ const parseRp = v => Number(String(v || '').replace(/\D/g, '')) || 0;
 
 function rkPay(){
   const p = state.rekapProfile;
-  p.pay = Object.assign({ daily: 125125, ot: 18980, attend: 300000, position: 600000, voidAbsen: true }, p.pay || {});
+  p.pay = Object.assign({ daily: 125125, ot: 18980, attend: 300000, position: 600000, eventRate: 150000 }, p.pay || {});
   return p.pay;
+}
+
+/* Event tanggal kembar (1.1, 2.2, ... 12.12): default mulai H-1, bisa diubah per bulan */
+function rkEvent(){
+  const m = rkMonthData();
+  const mn = state.rekapCurrent.month + 1;
+  // default: mulai H-1 tanggal kembar (mis. tgl 10 untuk 11.11), durasi 4 hari; keduanya bisa diubah per bulan
+  if (!m.event) m.event = { on: true, start: Math.max(1, mn - 1), days: 4 };
+  const ev = m.event;
+  if (ev.days === undefined) ev.days = Number(rkPay().eventDays) || 4;
+  if (!ev.touched && ev.start === mn) ev.start = Math.max(1, mn - 1);
+  return ev;
+}
+function rkEventDays(){
+  const ev = rkEvent(), pay = rkPay();
+  const dim = new Date(state.rekapCurrent.year, state.rekapCurrent.month + 1, 0).getDate();
+  const len = Math.max(0, Math.min(31, Number(ev.days) || 0));
+  const start = Math.max(1, Math.min(31, Number(ev.start) || 1));
+  const days = [];
+  for (let d = start; d < start + len; d++) days.push(d);
+  return { days, dim };
+}
+function rkEventDaySet(){
+  const ev = rkEvent(), pay = rkPay();
+  if (!ev.on || !(pay.eventRate > 0)) return new Set();
+  const { days, dim } = rkEventDays();
+  return new Set(days.filter(d => d <= dim));
 }
 
 function rkCalcPay(){
@@ -2119,7 +2161,7 @@ function rkCalcPay(){
   const dim = new Date(year, month + 1, 0).getDate();
   const m = rkMonthData();
   const pay = rkPay();
-  let hadir = 0, off = 0, absen = 0, sakit = 0, cuti = 0, ot = 0, libur = 0, minggu = 0, merah = 0, kosong = 0;
+  let hadir = 0, off = 0, ot = 0, libur = 0, minggu = 0, merah = 0, kosong = 0;
   for (let d = 1; d <= dim; d++){
     if (!rkInPeriod(d)) continue;
     const data = m.days[d] || {};
@@ -2130,36 +2172,57 @@ function rkCalcPay(){
     const st = data.status || '';
     if (st === 'Masuk') hadir++;
     else if (st === 'Off') off++;
-    else if (st === 'Absen') absen++;
-    else if (st === 'Sakit') sakit++;
-    else if (st === 'Cuti') cuti++;
-    else kosong++;
+    else if (!st) kosong++;
     ot += Number(data.ot) || 0;
   }
   const gajiHarian = hadir * pay.daily;
   const gajiOt = ot * pay.ot;
+
+  // Uang kehadiran: hanya status Off yang menggugurkan
   const noHadir = hadir === 0;
   const offOver = off > libur;
-  const voidHit = !!pay.voidAbsen && (absen + sakit + cuti) > 0;
-  const kehadiranOk = !noHadir && !offOver && !voidHit;
+  const kehadiranOk = !noHadir && !offOver;
   const kehadiran = kehadiranOk ? pay.attend : 0;
+
+  // Uang jabatan: tetap, tidak terpengaruh status apa pun
   const jabatan = pay.position;
-  const total = gajiHarian + gajiOt + kehadiran + jabatan;
-  return { hadir, off, absen, sakit, cuti, ot, libur, minggu, merah, kosong, gajiHarian, gajiOt, kehadiran, kehadiranOk, noHadir, offOver, voidHit, jabatan, total };
+
+  // Insentif event: tarif harian naik selama N hari, syarat masuk semua hari event
+  const ev = rkEvent();
+  const evActive = !!ev.on && pay.eventRate > 0;
+  let evDays = [], evQualified = false, evFail = '', evInPeriod = 0, evBonus = 0;
+  if (evActive){
+    evDays = rkEventDays().days;
+    const bad = evDays.find(d => d > dim || (m.days[d] || {}).status !== 'Masuk');
+    if (evDays.length === 0) evFail = 'Durasi event belum diisi';
+    else if (bad !== undefined) evFail = bad > dim ? `Event melewati akhir bulan (tgl ${bad})` : `tgl ${bad} ${(m.days[bad] || {}).status || 'belum diisi'}`;
+    else evQualified = true;
+    evInPeriod = evDays.filter(d => d <= dim && rkInPeriod(d)).length;
+    if (evQualified) evBonus = evInPeriod * Math.max(0, pay.eventRate - pay.daily);
+  }
+
+  const total = gajiHarian + gajiOt + kehadiran + jabatan + evBonus;
+  return { hadir, off, ot, libur, minggu, merah, kosong, gajiHarian, gajiOt, kehadiran, kehadiranOk, noHadir, offOver, jabatan, evActive, evDays, evQualified, evFail, evInPeriod, evBonus, total };
 }
 
 function rkRenderPay(){
   const box = $('rkPayBreakdown');
   if (!box) return;
-  const r = rkCalcPay(), pay = rkPay();
+  const r = rkCalcPay(), pay = rkPay(), ev = rkEvent();
   const per = { bulanan: 'Bulanan', p1: 'Periode 1–15', p2: 'Periode 16–Akhir' }[state.payrollPeriod || 'bulanan'];
   if ($('rkPayPeriod')) $('rkPayPeriod').textContent = per;
+
+  // sinkronkan kontrol event (per bulan)
+  const eo = $('payEventOn'), es = $('payEventStart');
+  if (eo) eo.checked = !!ev.on;
+  if (es && document.activeElement !== es) es.value = ev.start || '';
+  const ed = $('payEventDays');
+  if (ed && document.activeElement !== ed) ed.value = ev.days || '';
 
   let attDetail;
   if (r.kehadiranOk) attDetail = `Off ${r.off} ≤ libur ${r.libur} (Minggu ${r.minggu}${r.merah ? ' + tgl merah ' + r.merah : ''})`;
   else if (r.noHadir) attDetail = 'Belum ada hari masuk';
-  else if (r.offOver) attDetail = `Tidak dapat: Off ${r.off} melebihi libur ${r.libur}`;
-  else attDetail = `Tidak dapat: ada absen ${r.absen} · sakit ${r.sakit} · cuti ${r.cuti}`;
+  else attDetail = `Tidak dapat: Off ${r.off} melebihi libur ${r.libur}`;
 
   const row = (label, detail, amt, dim) => `
     <div class="flex items-start justify-between gap-3 py-2.5 border-b border-ink-100/70 last:border-0">
@@ -2167,11 +2230,24 @@ function rkRenderPay(){
       <div class="text-[13px] font-extrabold tabular-nums shrink-0 ${dim ? 'text-ink-400' : 'text-ink-900'}">${IDR(amt)}</div>
     </div>`;
 
+  let evRow = '';
+  if (r.evActive){
+    const mn = state.rekapCurrent.month + 1;
+    const first = r.evDays[0], last = r.evDays[r.evDays.length - 1];
+    const range = r.evDays.length ? `tgl ${first}–${last}` : '-';
+    let d;
+    if (r.evQualified && r.evInPeriod === 0) d = `Masuk semua ${range}, tapi di luar periode ini`;
+    else if (r.evQualified) d = `Masuk semua ${range} · ${r.evInPeriod} hari × ${IDR(Math.max(0, pay.eventRate - pay.daily))} (tarif event ${IDR(pay.eventRate)}/hari)`;
+    else d = `Tidak dapat (${range}): ${r.evFail}`;
+    evRow = row(`Insentif event ${mn}.${mn}`, d, r.evBonus, !r.evQualified || r.evInPeriod === 0);
+  }
+
   box.innerHTML =
     row('Gaji harian', `${r.hadir} hari × ${IDR(pay.daily)}`, r.gajiHarian) +
+    evRow +
     row('Lembur', `${round1(r.ot)} jam × ${IDR(pay.ot)}`, r.gajiOt) +
     row('Uang kehadiran', attDetail, r.kehadiran, !r.kehadiranOk) +
-    row('Uang jabatan', 'Tetap', r.jabatan) +
+    row('Uang jabatan', 'Tetap, tidak terpengaruh status Off', r.jabatan) +
     `<div class="mt-3 rounded-xl p-4 text-white" style="background:linear-gradient(135deg,#12275a,#1c3d7d);border-bottom:3px solid #fa6401;">
        <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.8;">Total gaji</div>
        <div class="tabular-nums" style="font-size:24px;font-weight:800;line-height:1.1;margin-top:4px;">${IDR(r.total)}</div>
@@ -2187,15 +2263,36 @@ function rkToggleHoliday(){
 
 function rkBindPay(){
   const pay = rkPay();
-  const map = { payDaily: 'daily', payOt: 'ot', payAttend: 'attend', payPosition: 'position' };
+  const map = { payDaily: 'daily', payOt: 'ot', payAttend: 'attend', payPosition: 'position', payEventRate: 'eventRate' };
   Object.entries(map).forEach(([id, k]) => {
     const el = $(id);
     if (!el) return;
     el.value = fmtNum(pay[k]);
-    el.addEventListener('input', () => { const n = parseRp(el.value); rkPay()[k] = n; el.value = fmtNum(n); rkRenderPay(); persist(); });
+    el.addEventListener('input', () => {
+      const n = parseRp(el.value);
+      rkPay()[k] = n;
+      el.value = fmtNum(n);
+      rkRenderPay();
+      if (k === 'eventRate') rkRenderCalendar();
+      persist();
+    });
   });
-  const v = $('payVoid');
-  if (v){ v.checked = !!pay.voidAbsen; v.addEventListener('change', () => { rkPay().voidAbsen = v.checked; rkRenderPay(); persist(); }); }
+  const eo = $('payEventOn');
+  if (eo) eo.addEventListener('change', () => { rkEvent().on = eo.checked; rkRenderPay(); rkRenderCalendar(); persist(); });
+  const es = $('payEventStart');
+  if (es) es.addEventListener('input', () => {
+    const n = Math.max(0, Math.min(31, parseRp(es.value)));
+    const ev = rkEvent(); ev.start = n || ''; ev.touched = true;
+    es.value = n || '';
+    rkRenderPay(); rkRenderCalendar(); persist();
+  });
+  const ed = $('payEventDays');
+  if (ed) ed.addEventListener('input', () => {
+    const n = Math.max(0, Math.min(31, parseRp(ed.value)));
+    const ev = rkEvent(); ev.days = n; ev.touched = true;
+    ed.value = n || '';
+    rkRenderPay(); rkRenderCalendar(); persist();
+  });
 }
 
 /* ========== REPORT ========== */
