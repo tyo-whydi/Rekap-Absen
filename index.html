@@ -116,11 +116,11 @@ tailwind.config = { theme: { extend: {
 
   .status-pill { padding: 8px 16px; border-radius: 99px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all .15s; border: 1.5px solid #e2e8f0; background: #fff; color: #464e58; white-space: nowrap; }
   .status-pill:hover { background: #f8fafc; border-color: #cbd5e1; }
-  .status-pill.active[data-status="Masuk"] { background: #059669; color: #fff; border-color: #059669; }
-  .status-pill.active[data-status="Absen"] { background: #e11d48; color: #fff; border-color: #e11d48; }
-  .status-pill.active[data-status="Cuti"] { background: #7c3aed; color: #fff; border-color: #7c3aed; }
-  .status-pill.active[data-status="Sakit"] { background: #be123c; color: #fff; border-color: #be123c; }
-  .status-pill.active[data-status="Off"] { background: #475569; color: #fff; border-color: #475569; }
+  .status-pill.active[data-status="Masuk"] { background-color: #059669 !important; color: #fff !important; border-color: #059669 !important; }
+  .status-pill.active[data-status="Absen"] { background-color: #e11d48 !important; color: #fff !important; border-color: #e11d48 !important; }
+  .status-pill.active[data-status="Cuti"] { background-color: #7c3aed !important; color: #fff !important; border-color: #7c3aed !important; }
+  .status-pill.active[data-status="Sakit"] { background-color: #be123c !important; color: #fff !important; border-color: #be123c !important; }
+  .status-pill.active[data-status="Off"] { background-color: #475569 !important; color: #fff !important; border-color: #475569 !important; }
 
   #reportScaleWrap { position: relative; margin: 0 auto; }
   #reportPreview { width: 1100px; background: #fff; transform-origin: top left; }
@@ -193,11 +193,22 @@ tailwind.config = { theme: { extend: {
   #rkHolidayBtn.on { background-color: #dc2626 !important; border-color: #dc2626 !important; color: #fff !important; }
   .cal-day.is-event { box-shadow: inset 0 0 0 2px #fbbf24, 0 1px 2px rgba(15,23,42,.04); }
   .cal-day.is-event::after { content: '★'; position: absolute; top: 4px; right: 6px; font-size: 10px; line-height: 1; color: #f59e0b; }
-  .pay-inp { width: 100%; margin-top: 4px; height: 40px; padding: 0 12px; font-size: 13px; font-weight: 600; color: #1e293b; border: 1px solid #dcdfe4; border-radius: 8px; outline: none; transition: border-color .15s, box-shadow .15s; }
+  #rkInpName { background-color: transparent; }
+  #rkDetailNote::placeholder { color: #6b7280; opacity: 1; }
+  @media (max-width: 767px) { button.h-10 { white-space: nowrap; } }
+  .pay-lbl { display: block; font-size: 10px; font-weight: 700; color: #5f6874; text-transform: uppercase; letter-spacing: .06em; }
+  .pay-sub { font-size: 11px; font-weight: 800; color: #12275a; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+  .pay-chip { font-size: 10.5px; font-weight: 700; color: #1c3d7d; background: rgba(28,61,125,.10); padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+  .pay-wrap { position: relative; margin-top: 5px; }
+  .pay-pre, .pay-suf { position: absolute; top: 50%; transform: translateY(-50%); font-size: 11.5px; font-weight: 700; color: #5f6874; pointer-events: none; }
+  .pay-pre { left: 12px; } .pay-suf { right: 12px; font-weight: 600; }
+  .pay-inp { display: block; width: 100%; height: 42px; padding: 0 12px; font-size: 14px; font-weight: 700; color: #12275a; border: 1px solid #dcdfe4; border-radius: 10px; outline: none; transition: border-color .15s, box-shadow .15s; font-variant-numeric: tabular-nums; }
+  .pay-inp.has-pre { padding-left: 34px; } .pay-inp.has-suf { padding-right: 46px; }
   .pay-inp:focus { border-color: #12275a; box-shadow: 0 0 0 3px rgba(18,39,90,.10); }
   @media (max-width: 767px) {
     input, select, textarea { font-size: 16px !important; }
     .cal-day .day-ot { padding: 1px 4px; font-size: 9.5px; letter-spacing: -.01em; }
+    .cal-day.is-event::after { top: 3px; right: 3px; font-size: 8px; }
     .cal-day .ot-l { display: none; }
     .cal-day .ot-p { display: inline; }
   }
@@ -265,7 +276,7 @@ tailwind.config = { theme: { extend: {
           <button onclick="absGoOct1()" class="flex-1 md:flex-none h-10 md:h-9 px-3 rounded-lg bg-orange-50 hover:bg-orange-100 text-brand-orange text-xs font-semibold transition">1 Okt 2026</button>
           <button onclick="absCopyPrev()" class="flex-1 md:flex-none h-10 md:h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-medium transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-copy text-[11px]"></i><span class="hidden sm:inline">Salin</span> Lalu</button>
           <button onclick="absAutofill()" class="flex-1 md:flex-none h-10 md:h-9 px-3.5 rounded-lg bg-brand-navy hover:bg-brand-navyDark text-white text-xs font-semibold transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-bolt text-[11px]"></i> Isi Otomatis</button>
-          <button onclick="absClearDay()" class="h-10 md:h-9 px-3 rounded-lg text-ink-500 hover:text-rose-600 hover:bg-rose-50 text-xs font-medium transition md:ml-auto">Kosongkan</button>
+          <button onclick="absClearDay()" class="flex-1 md:flex-none h-10 md:h-9 px-3 rounded-lg text-ink-500 hover:text-rose-600 hover:bg-rose-50 text-xs font-medium transition md:ml-auto">Kosongkan</button>
         </div>
       </div>
       <div id="absDateLabel" class="text-center md:text-left text-[11.5px] text-ink-500 mt-2 font-medium"></div>
@@ -391,7 +402,7 @@ tailwind.config = { theme: { extend: {
 
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-4 md:gap-5">
 
-      <section class="bg-white rounded-2xl border border-ink-100 p-4 md:p-6 shadow-sm">
+      <section class="bg-white rounded-2xl border border-ink-100 p-4 md:p-6 shadow-sm lg:col-start-1 lg:row-start-1 min-w-0">
         <div class="flex items-center justify-between mb-4 md:mb-5">
           <div>
             <h2 class="text-[15px] md:text-[16px] font-bold text-ink-900">Kalender kehadiran</h2>
@@ -422,8 +433,8 @@ tailwind.config = { theme: { extend: {
         </div>
       </section>
 
-      <aside class="space-y-4">
-        <section id="rkDetailPanel" class="bg-white rounded-2xl border border-ink-100 p-5 md:p-6 shadow-sm lg:sticky lg:top-20">
+      <aside class="space-y-4 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pb-1 min-w-0" data-lenis-prevent>
+        <section id="rkDetailPanel" class="bg-white rounded-2xl border border-ink-100 p-5 md:p-6 shadow-sm">
           <h3 id="rkDetailDate" class="text-[16px] md:text-[17px] font-bold text-ink-900 mb-4">—</h3>
           <div class="mb-5">
             <p class="text-[11px] font-bold text-ink-400 uppercase tracking-wider mb-2.5">Status</p>
@@ -446,7 +457,7 @@ tailwind.config = { theme: { extend: {
           </div>
           <div>
             <p class="text-[11px] font-bold text-ink-400 uppercase tracking-wider mb-2.5">Keterangan</p>
-            <textarea id="rkDetailNote" rows="3" placeholder="Keterangan, misalnya shift pagi" class="w-full px-3.5 py-2.5 text-[13px] text-ink-700 bg-ink-50 border border-ink-100 rounded-xl outline-none focus:bg-white focus:border-ink-900 focus:ring-2 focus:ring-ink-900/5 transition resize-none placeholder:text-ink-300"></textarea>
+            <textarea id="rkDetailNote" rows="2" placeholder="Keterangan, misalnya shift pagi" class="w-full px-3.5 py-2.5 text-[13px] text-ink-700 bg-ink-50 border border-ink-100 rounded-xl outline-none focus:bg-white focus:border-ink-900 focus:ring-2 focus:ring-ink-900/5 transition resize-none placeholder:text-ink-300"></textarea>
           </div>
         </section>
 
@@ -468,9 +479,12 @@ tailwind.config = { theme: { extend: {
           </div>
         </section>
 
+      </aside>
+
+      <div class="rk-extra space-y-4 lg:col-start-1 lg:row-start-2 min-w-0">
         <section class="bg-white rounded-2xl border border-ink-100 p-5 shadow-sm">
           <h4 class="text-[12px] font-bold text-ink-400 uppercase tracking-wider mb-3">Statistik Lengkap</h4>
-          <div class="grid grid-cols-2 gap-3 text-[11.5px]">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 text-[11.5px]">
             <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-100"><p class="text-emerald-700 font-semibold">Hadir</p><p id="rkStatHadir" class="text-[18px] font-extrabold text-emerald-700 mt-0.5 tabular-nums">0</p></div>
             <div class="p-3 rounded-lg bg-slate-50 border border-slate-100"><p class="text-slate-600 font-semibold">Off</p><p id="rkStatOff" class="text-[18px] font-extrabold text-slate-700 mt-0.5 tabular-nums">0</p></div>
             <div class="p-3 rounded-lg bg-rose-50 border border-rose-100"><p class="text-rose-700 font-semibold">Absen</p><p id="rkStatAbsen" class="text-[18px] font-extrabold text-rose-700 mt-0.5 tabular-nums">0</p></div>
@@ -478,32 +492,40 @@ tailwind.config = { theme: { extend: {
           </div>
         </section>
 
-        <section class="bg-white rounded-2xl border border-ink-100 p-5 shadow-sm">
-          <div class="flex items-center justify-between mb-3">
+        <section class="bg-white rounded-2xl border border-ink-100 p-5 md:p-6 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-4">
             <h4 class="text-[12px] font-bold text-ink-400 uppercase tracking-wider">Perhitungan Gaji</h4>
-            <span id="rkPayPeriod" class="text-[10.5px] font-semibold text-ink-400"></span>
+            <span id="rkPayPeriod" class="pay-chip"></span>
           </div>
-          <div class="grid grid-cols-2 gap-2.5">
-            <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Gaji harian (Rp/hari)</label><input id="payDaily" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
-            <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Lembur (Rp/jam)</label><input id="payOt" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
-            <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Uang kehadiran</label><input id="payAttend" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
-            <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Uang jabatan</label><input id="payPosition" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-ink-100">
-            <div class="flex items-center justify-between gap-2">
-              <p class="text-[11px] font-bold text-ink-400 uppercase tracking-wider">Event tanggal kembar</p>
-              <label class="flex items-center gap-1.5 text-[11.5px] text-ink-600 cursor-pointer"><input id="payEventOn" type="checkbox" class="w-4 h-4" style="accent-color:#1c3d7d;"> Aktif bulan ini</label>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8">
+            <div class="min-w-0">
+              <p class="pay-sub">Komponen gaji</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div><label class="pay-lbl">Gaji harian</label><div class="pay-wrap"><span class="pay-pre">Rp</span><input id="payDaily" type="text" inputmode="numeric" class="pay-inp has-pre has-suf" placeholder="0"><span class="pay-suf">/hari</span></div></div>
+                <div><label class="pay-lbl">Lembur</label><div class="pay-wrap"><span class="pay-pre">Rp</span><input id="payOt" type="text" inputmode="numeric" class="pay-inp has-pre has-suf" placeholder="0"><span class="pay-suf">/jam</span></div></div>
+                <div><label class="pay-lbl">Uang kehadiran</label><div class="pay-wrap"><span class="pay-pre">Rp</span><input id="payAttend" type="text" inputmode="numeric" class="pay-inp has-pre" placeholder="0"></div></div>
+                <div><label class="pay-lbl">Uang jabatan</label><div class="pay-wrap"><span class="pay-pre">Rp</span><input id="payPosition" type="text" inputmode="numeric" class="pay-inp has-pre" placeholder="0"></div></div>
+              </div>
+              <div class="mt-5 pt-4 border-t border-ink-100">
+                <div class="flex items-center justify-between gap-2 mb-2.5">
+                  <p class="pay-sub" style="margin:0;">Event tanggal kembar</p>
+                  <label class="flex items-center gap-1.5 text-[11.5px] font-semibold text-ink-600 cursor-pointer"><input id="payEventOn" type="checkbox" class="w-4 h-4" style="accent-color:#1c3d7d;"> Aktif bulan ini</label>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="col-span-2"><label class="pay-lbl">Tarif harian event</label><div class="pay-wrap"><span class="pay-pre">Rp</span><input id="payEventRate" type="text" inputmode="numeric" class="pay-inp has-pre has-suf" placeholder="0"><span class="pay-suf">/hari</span></div></div>
+                  <div><label class="pay-lbl">Durasi</label><div class="pay-wrap"><input id="payEventDays" type="text" inputmode="numeric" class="pay-inp has-suf" placeholder="0"><span class="pay-suf">hari</span></div></div>
+                  <div><label class="pay-lbl">Mulai tanggal</label><div class="pay-wrap"><span class="pay-pre">tgl</span><input id="payEventStart" type="text" inputmode="numeric" class="pay-inp has-pre" placeholder="0"></div></div>
+                </div>
+                <p class="text-[10.5px] text-ink-400 mt-2.5 leading-snug">Syarat: masuk semua hari event. Otomatis mulai H-1 tanggal kembar (mis. tgl 10 untuk 11.11) selama 4 hari; tanggal mulai dan durasi bisa diubah per bulan.</p>
+              </div>
             </div>
-            <div class="grid grid-cols-3 gap-2.5 mt-2">
-              <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Tarif / hari</label><input id="payEventRate" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
-              <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Durasi (hari)</label><input id="payEventDays" type="text" inputmode="numeric" class="pay-inp" placeholder="0"></div>
-              <div><label class="text-[9.5px] font-bold text-ink-400 uppercase tracking-wider">Mulai tgl</label><input id="payEventStart" type="text" inputmode="numeric" class="pay-inp" placeholder="tgl"></div>
+            <div class="min-w-0">
+              <p class="pay-sub">Rincian</p>
+              <div id="rkPayBreakdown"></div>
             </div>
-            <p class="text-[10.5px] text-ink-400 mt-2 leading-snug">Syarat: masuk semua hari event. Otomatis mulai H-1 tanggal kembar (mis. tgl 10 untuk 11.11) selama 4 hari; tanggal mulai dan durasi bisa diubah per bulan.</p>
           </div>
-          <div id="rkPayBreakdown" class="mt-4"></div>
         </section>
-      </aside>
+      </div>
     </div>
 
     <div class="hidden">
@@ -538,20 +560,20 @@ tailwind.config = { theme: { extend: {
       <div class="flex-1 overflow-y-auto p-3 md:p-5">
         <div class="bg-amber-50 border border-amber-100 rounded-lg p-3 mb-3 md:mb-4 text-[11.5px] text-amber-800">Total <b id="totalEmp">0</b> · <span id="totalPkl">0</span> PKL · <span id="totalNonPkl">0</span> Non-PKL · <span id="totalReg">0</span> reguler</div>
         <div class="flex flex-wrap gap-2 mb-3 md:mb-4">
-          <button onclick="absDownloadTemplate()" class="h-10 md:h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-arrow-down text-[11px]"></i> Template Excel</button>
-          <button onclick="absExportMasterXLSX()" class="h-10 md:h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-excel text-[11px]"></i> Ekspor Data</button>
-          <button onclick="document.getElementById('xlsxInput').click()" class="h-10 md:h-9 px-3.5 rounded-lg bg-brand-navy hover:bg-brand-navyDark text-white text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-import text-[11px]"></i> Impor Excel</button>
+          <button onclick="absDownloadTemplate()" class="flex-1 sm:flex-none justify-center h-10 md:h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-arrow-down text-[11px]"></i> Template<span class="hidden sm:inline"> Excel</span></button>
+          <button onclick="absExportMasterXLSX()" class="flex-1 sm:flex-none justify-center h-10 md:h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-excel text-[11px]"></i> Ekspor<span class="hidden sm:inline"> Data</span></button>
+          <button onclick="document.getElementById('xlsxInput').click()" class="flex-1 sm:flex-none justify-center h-10 md:h-9 px-3.5 rounded-lg bg-brand-navy hover:bg-brand-navyDark text-white text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-import text-[11px]"></i> Impor<span class="hidden sm:inline"> Excel</span></button>
           <input id="xlsxInput" type="file" accept=".xlsx,.xls,.csv" class="hidden">
         </div>
         <div class="flex flex-wrap gap-2 mb-3 md:mb-4">
-          <input id="empNIK" type="text" placeholder="NIK" class="h-10 md:h-9 w-full sm:w-28 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empNama" type="text" placeholder="Nama lengkap" class="h-10 md:h-9 flex-1 min-w-[180px] px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empTask" type="text" list="dlTask" placeholder="Task" class="h-10 md:h-9 w-full sm:w-40 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empSub" type="text" list="dlSub" placeholder="Sub" class="h-10 md:h-9 w-full sm:w-24 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empGroup" type="text" list="dlGroup" placeholder="Group" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empShift" type="text" list="dlShift" placeholder="Shift" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <input id="empBreak" type="text" list="dlBreak" placeholder="Break" class="h-10 md:h-9 w-full sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
-          <button onclick="absAddEmployee()" class="h-10 md:h-9 w-full sm:w-auto px-4 rounded-lg bg-ink-900 text-white text-[13px] md:text-[12px] font-medium">Tambah</button>
+          <input id="empNIK" type="text" placeholder="NIK" class="h-10 md:h-9 order-2 sm:order-none w-[calc(50%-4px)] sm:w-28 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empNama" type="text" placeholder="Nama lengkap" class="h-10 md:h-9 w-full order-1 sm:order-none sm:w-auto sm:flex-1 sm:min-w-[180px] px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empTask" type="text" list="dlTask" placeholder="Task" class="h-10 md:h-9 order-4 sm:order-none w-[calc(50%-4px)] sm:w-40 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empSub" type="text" list="dlSub" placeholder="Sub" class="h-10 md:h-9 order-3 sm:order-none w-[calc(50%-4px)] sm:w-24 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empGroup" type="text" list="dlGroup" placeholder="Group" class="h-10 md:h-9 order-5 sm:order-none w-[calc(50%-4px)] sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empShift" type="text" list="dlShift" placeholder="Shift" class="h-10 md:h-9 order-6 sm:order-none w-[calc(50%-4px)] sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <input id="empBreak" type="text" list="dlBreak" placeholder="Break" class="h-10 md:h-9 order-7 sm:order-none w-[calc(50%-4px)] sm:w-32 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
+          <button onclick="absAddEmployee()" class="order-8 sm:order-none h-10 md:h-9 w-full sm:w-auto px-4 rounded-lg bg-ink-900 text-white text-[13px] md:text-[12px] font-medium">Tambah</button>
         </div>
         <div class="desktop-view border border-ink-200 rounded-lg overflow-x-auto">
           <table class="w-full text-[12px] min-w-[1000px]">
@@ -971,7 +993,7 @@ function switchTab(tab){
   if (tab === 'rekap'){ rkRenderCalendar(); }
   lenis ? lenis.scrollTo(0, { immediate: true }) : window.scrollTo(0, 0);
   if (tab === 'absensi'){ M.in('#pageAbsensi main > section'); M.rows(); }
-  else { M.in('#pageRekap main > section, #pageRekap aside > section'); M.cal(); }
+  else { M.in('#pageRekap main > section, #pageRekap .grid > section, #pageRekap aside > section, #pageRekap .rk-extra > section'); M.cal(); }
 }
 
 function renderHeaderActions(){
