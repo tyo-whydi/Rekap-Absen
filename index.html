@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#12275a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Flexoflow">
 <title>Flexoflow · Dashboard Absensi & Rekap</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -193,6 +196,10 @@ tailwind.config = { theme: { extend: {
   #rkHolidayBtn.on { background-color: #dc2626 !important; border-color: #dc2626 !important; color: #fff !important; }
   .cal-day.is-event { box-shadow: inset 0 0 0 2px #fbbf24, 0 1px 2px rgba(15,23,42,.04); }
   .cal-day.is-event::after { content: '★'; position: absolute; top: 4px; right: 6px; font-size: 10px; line-height: 1; color: #f59e0b; }
+  @media (max-width: 1023px) {
+    #rkDetailPanel { position: fixed !important; left: 0; right: 0; bottom: 0; top: auto; z-index: 45; max-height: 82dvh; overflow-y: auto; border-radius: 24px 24px 0 0 !important; transform: translateY(110%); visibility: hidden; transition: transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s .32s; background-color: rgba(255,255,255,.97) !important; padding-bottom: calc(env(safe-area-inset-bottom) + 20px) !important; box-shadow: 0 -12px 40px rgba(18,39,90,.25) !important; }
+    #rkDetailPanel.open { transform: none; visibility: visible; transition: transform .32s cubic-bezier(.2,.8,.2,1); }
+  }
   #rkInpName { background-color: transparent; }
   #rkDetailNote::placeholder { color: #6b7280; opacity: 1; }
   @media (max-width: 767px) { button.h-10 { white-space: nowrap; } }
@@ -385,16 +392,16 @@ tailwind.config = { theme: { extend: {
     </section>
 
     <section class="bg-white rounded-2xl border border-ink-100 p-4 md:p-5 shadow-sm mb-4">
-      <div class="flex flex-wrap items-center gap-3">
-        <button onclick="rkShiftMonth(-1)" class="w-10 h-10 rounded-xl bg-ink-100 hover:bg-ink-200 text-ink-600 transition flex items-center justify-center shrink-0"><i class="fa-solid fa-chevron-left text-[13px]"></i></button>
-        <select id="rkSelMonth" class="h-10 text-[14px] font-bold text-ink-800 bg-white border border-ink-200 rounded-lg px-3 focus:border-ink-900 outline-none cursor-pointer"></select>
-        <select id="rkSelYear" class="h-10 text-[14px] font-bold text-ink-800 bg-white border border-ink-200 rounded-lg px-3 focus:border-ink-900 outline-none cursor-pointer"></select>
-        <button onclick="rkShiftMonth(1)" class="w-10 h-10 rounded-xl bg-ink-100 hover:bg-ink-200 text-ink-600 transition flex items-center justify-center shrink-0"><i class="fa-solid fa-chevron-right text-[13px]"></i></button>
-        <div class="flex-1"></div>
-        <div class="flex items-center gap-1.5 p-1 bg-ink-50 rounded-xl border border-ink-100">
-          <button onclick="rkSetPeriod('bulanan')" id="chipBulanan" class="px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition">Bulanan</button>
-          <button onclick="rkSetPeriod('p1')" id="chipP1" class="px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition">1–15</button>
-          <button onclick="rkSetPeriod('p2')" id="chipP2" class="px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition">16–Akhir</button>
+      <div class="flex flex-wrap items-center gap-2 md:gap-3">
+        <button onclick="rkShiftMonth(-1)" class="w-9 md:w-10 h-10 rounded-xl bg-ink-100 hover:bg-ink-200 text-ink-600 transition flex items-center justify-center shrink-0"><i class="fa-solid fa-chevron-left text-[13px]"></i></button>
+        <select id="rkSelMonth" class="flex-[3] min-w-0 md:flex-none h-10 text-[14px] font-bold text-ink-800 bg-white border border-ink-200 rounded-lg px-2 md:px-3 focus:border-ink-900 outline-none cursor-pointer"></select>
+        <select id="rkSelYear" class="flex-[2] min-w-0 md:flex-none h-10 text-[14px] font-bold text-ink-800 bg-white border border-ink-200 rounded-lg px-2 md:px-3 focus:border-ink-900 outline-none cursor-pointer"></select>
+        <button onclick="rkShiftMonth(1)" class="w-9 md:w-10 h-10 rounded-xl bg-ink-100 hover:bg-ink-200 text-ink-600 transition flex items-center justify-center shrink-0"><i class="fa-solid fa-chevron-right text-[13px]"></i></button>
+        <div class="hidden md:block flex-1"></div>
+        <div class="flex items-center gap-1.5 p-1 bg-ink-50 rounded-xl border border-ink-100 w-full md:w-auto">
+          <button onclick="rkSetPeriod('bulanan')" id="chipBulanan" class="flex-1 md:flex-none px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition">Bulanan</button>
+          <button onclick="rkSetPeriod('p1')" id="chipP1" class="flex-1 md:flex-none px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition">1–15</button>
+          <button onclick="rkSetPeriod('p2')" id="chipP2" class="flex-1 md:flex-none px-3 py-1.5 rounded-lg text-[11.5px] font-bold transition">16–Akhir</button>
         </div>
       </div>
       <div id="rkRangeLabel" class="text-[11.5px] text-ink-500 font-medium mt-3 text-center md:text-left">—</div>
@@ -434,8 +441,12 @@ tailwind.config = { theme: { extend: {
       </section>
 
       <aside class="space-y-4 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pb-1 min-w-0" data-lenis-prevent>
-        <section id="rkDetailPanel" class="bg-white rounded-2xl border border-ink-100 p-5 md:p-6 shadow-sm">
-          <h3 id="rkDetailDate" class="text-[16px] md:text-[17px] font-bold text-ink-900 mb-4">—</h3>
+        <section id="rkDetailPanel" data-lenis-prevent class="bg-white rounded-2xl border border-ink-100 p-5 md:p-6 shadow-sm">
+          <div class="lg:hidden mx-auto mb-3 w-10 h-1 rounded-full bg-ink-300"></div>
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <h3 id="rkDetailDate" class="text-[16px] md:text-[17px] font-bold text-ink-900">—</h3>
+            <button onclick="rkCloseSheet()" class="lg:hidden w-9 h-9 rounded-lg bg-ink-100 text-ink-500 flex items-center justify-center shrink-0" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+          </div>
           <div class="mb-5">
             <p class="text-[11px] font-bold text-ink-400 uppercase tracking-wider mb-2.5">Status</p>
             <div id="rkStatusButtons" class="flex flex-wrap gap-2"></div>
@@ -522,6 +533,7 @@ tailwind.config = { theme: { extend: {
             <div class="min-w-0">
               <p class="pay-sub">Rincian</p>
               <div id="rkPayBreakdown"></div>
+              <button onclick="rkCopyPay()" class="mt-3 w-full h-10 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-[12px] font-semibold flex items-center justify-center gap-1.5"><i class="fa-regular fa-copy text-[11px]"></i> Salin rincian gaji</button>
             </div>
           </div>
         </section>
@@ -534,6 +546,8 @@ tailwind.config = { theme: { extend: {
     </div>
   </main>
 </div>
+
+<div id="rkSheetBackdrop" class="hidden fixed inset-0 z-[44] bg-ink-900/40 lg:hidden" onclick="rkCloseSheet()"></div>
 
 <footer class="border-t border-ink-100 mt-auto py-6 no-print" style="padding-bottom: calc(env(safe-area-inset-bottom) + 76px);">
   <div class="max-w-[1400px] mx-auto px-5 text-center space-y-1.5">
@@ -564,6 +578,17 @@ tailwind.config = { theme: { extend: {
           <button onclick="absExportMasterXLSX()" class="flex-1 sm:flex-none justify-center h-10 md:h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-excel text-[11px]"></i> Ekspor<span class="hidden sm:inline"> Data</span></button>
           <button onclick="document.getElementById('xlsxInput').click()" class="flex-1 sm:flex-none justify-center h-10 md:h-9 px-3.5 rounded-lg bg-brand-navy hover:bg-brand-navyDark text-white text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-import text-[11px]"></i> Impor<span class="hidden sm:inline"> Excel</span></button>
           <input id="xlsxInput" type="file" accept=".xlsx,.xls,.csv" class="hidden">
+        </div>
+        <div class="rounded-lg border border-ink-200/70 p-3 mb-3 md:mb-4">
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="min-w-0 flex-1" style="min-width:200px;">
+              <p class="text-[12px] font-bold text-ink-800">Cadangan data</p>
+              <p class="text-[10.5px] text-ink-500 leading-snug mt-0.5">Data tersimpan di browser tiap perangkat. Pakai cadangan untuk memindahkan data HP ↔ laptop atau berjaga-jaga kalau browser dibersihkan.</p>
+            </div>
+            <button onclick="backupData()" class="flex-1 sm:flex-none justify-center h-10 md:h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-cloud-arrow-down text-[11px]"></i> Cadangkan</button>
+            <button onclick="document.getElementById('restoreInput').click()" class="flex-1 sm:flex-none justify-center h-10 md:h-9 px-3.5 rounded-lg bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-[12px] font-semibold flex items-center gap-1.5"><i class="fa-solid fa-cloud-arrow-up text-[11px]"></i> Pulihkan</button>
+            <input id="restoreInput" type="file" accept=".json,application/json" class="hidden">
+          </div>
         </div>
         <div class="flex flex-wrap gap-2 mb-3 md:mb-4">
           <input id="empNIK" type="text" placeholder="NIK" class="h-10 md:h-9 order-2 sm:order-none w-[calc(50%-4px)] sm:w-28 px-3 text-[13px] md:text-[12.5px] border border-ink-200 rounded-lg outline-none">
@@ -685,7 +710,7 @@ const M = {
     gsap.from('#rkCalendarGrid .cal-day:not(.empty)', { scale: .88, opacity: 0, duration: .4, stagger: { each: .012 }, ease: 'back.out(1.6)', clearProps: 'transform,opacity' });
   },
   detail(){
-    if (!hasMotion()) return;
+    if (!hasMotion() || window.innerWidth < 1024) return;
     gsap.fromTo('#rkDetailPanel', { y: 8, opacity: .7 }, { y: 0, opacity: 1, duration: .3, ease: 'power2.out', clearProps: 'transform,opacity' });
   }
 };
@@ -980,6 +1005,7 @@ async function saveCapturedImage(){
 let currentTab = 'absensi';
 function switchTab(tab){
   currentTab = tab;
+  rkCloseSheet();
   $('pageAbsensi').classList.toggle('hidden', tab !== 'absensi');
   $('pageRekap').classList.toggle('hidden', tab !== 'rekap');
   $('tabAbsensi').classList.toggle('active', tab === 'absensi');
@@ -993,7 +1019,7 @@ function switchTab(tab){
   if (tab === 'rekap'){ rkRenderCalendar(); }
   lenis ? lenis.scrollTo(0, { immediate: true }) : window.scrollTo(0, 0);
   if (tab === 'absensi'){ M.in('#pageAbsensi main > section'); M.rows(); }
-  else { M.in('#pageRekap main > section, #pageRekap .grid > section, #pageRekap aside > section, #pageRekap .rk-extra > section'); M.cal(); }
+  else { M.in('#pageRekap main > section, #pageRekap .grid > section, #pageRekap aside > section:not(#rkDetailPanel), #pageRekap .rk-extra > section'); M.cal(); }
 }
 
 function renderHeaderActions(){
@@ -1731,6 +1757,50 @@ function absDownloadTemplate(){
   } catch(err){ toast('error', 'Gagal mengunduh template: ' + err.message); }
 }
 
+/* ========== CADANGAN & PULIHKAN ========== */
+function backupData(){
+  const payload = { app: 'flexoflow', version: 1, savedAt: new Date().toISOString(), state };
+  downloadBlob(JSON.stringify(payload), `cadangan-flexoflow-${todayISO()}.json`, 'application/json');
+  toast('success', 'Cadangan diunduh');
+}
+function restoreData(file){
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const j = JSON.parse(r.result);
+      const st = j.state || j;
+      if (!st || !st.master || !Array.isArray(st.master.employees) || !st.schedule) throw new Error('File ini bukan cadangan Flexoflow');
+      if (!confirm('Pulihkan data dari cadangan ini?\nSemua data di perangkat ini akan diganti.')) return;
+      localStorage.setItem(KEY, JSON.stringify(st));
+      toast('success', 'Data dipulihkan, memuat ulang...');
+      setTimeout(() => location.reload(), 700);
+    } catch(err){
+      toast('error', 'Gagal memulihkan: ' + err.message);
+    }
+  };
+  r.onerror = () => toast('error', 'File tidak bisa dibaca');
+  r.readAsText(file);
+}
+
+/* ========== SALIN RINCIAN GAJI ========== */
+async function rkCopyPay(){
+  const r = rkCalcPay(), pay = rkPay();
+  const { year, month } = state.rekapCurrent;
+  const per = { bulanan: 'Bulanan', p1: 'Periode 1–15', p2: 'Periode 16–Akhir' }[state.payrollPeriod || 'bulanan'];
+  const mn = month + 1;
+  const L = [`Rincian gaji ${state.rekapProfile.name || ''}`.trim(), `${MONTH_NAMES[month]} ${year} · ${per}`, '',
+    `Gaji harian: ${r.hadir} hari × ${IDR(pay.daily)} = ${IDR(r.gajiHarian)}`];
+  if (r.evActive && r.evQualified && r.evBonus > 0) L.push(`Insentif event ${mn}.${mn}: ${IDR(r.evBonus)}`);
+  L.push(`Lembur: ${round1(r.ot)} jam × ${IDR(pay.ot)} = ${IDR(r.gajiOt)}`,
+    `Uang kehadiran: ${IDR(r.kehadiran)}`, `Uang jabatan: ${IDR(r.jabatan)}`, '', `Total gaji: ${IDR(r.total)}`);
+  const text = L.join('\n');
+  try {
+    if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(text);
+    else { const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+    toast('success', 'Rincian gaji disalin');
+  } catch(err){ toast('error', 'Gagal menyalin'); }
+}
+
 /* ========== EXPORT CSV ========== */
 function absExportCSV(){
   const iso = absCurrentDate();
@@ -1977,7 +2047,10 @@ function rkRenderCalendar(){
   }
   grid.innerHTML = html;
 }
-function rkSelectDay(day){ state.rekapSelectedDay = day; rkRenderCalendar(); rkRenderDetail(); persist(); M.detail(); }
+function rkSelectDay(day){ state.rekapSelectedDay = day; rkRenderCalendar(); rkRenderDetail(); persist(); M.detail(); rkOpenSheet(); }
+const isSheetMode = () => window.innerWidth < 1024;
+function rkOpenSheet(){ if (!isSheetMode()) return; $('rkDetailPanel').classList.add('open'); $('rkSheetBackdrop').classList.remove('hidden'); document.body.classList.add('sheet-open'); }
+function rkCloseSheet(){ const p = $('rkDetailPanel'), b = $('rkSheetBackdrop'); if (p) p.classList.remove('open'); if (b) b.classList.add('hidden'); document.body.classList.remove('sheet-open'); }
 function rkRenderDetail(){
   const day = state.rekapSelectedDay || 1;
   const data = rkGetDayData(day);
@@ -2546,13 +2619,16 @@ function init(){
     const nv = isShift ? normShift(t.value) : normBreak(t.value);
     if (nv !== t.value){ t.value = nv; t.dispatchEvent(new Event('input', { bubbles: true })); }
   });
+  $('restoreInput').addEventListener('change', e => { const f = e.target.files[0]; if (f) restoreData(f); e.target.value = ''; });
   $('xlsxInput').addEventListener('change', e => { const f = e.target.files[0]; if (f) absImportExcel(f); e.target.value = ''; });
+  window.addEventListener('resize', () => { if (!isSheetMode()) rkCloseSheet(); });
   initMotion();
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape'){
       if (!$('masterModal').classList.contains('hidden')) absCloseMaster();
       if (!$('reportModal').classList.contains('hidden')) closeReport();
       if (!$('capturePreview').classList.contains('hidden')) closeCapturePreview();
+      rkCloseSheet();
     }
   });
 }
