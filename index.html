@@ -188,6 +188,29 @@ tailwind.config = { theme: { extend: {
   .lenis.lenis-stopped { overflow: hidden; }
   /* ===== LEMBUR BADGE KALENDER ===== */
   .cal-day .day-ot { margin: 5px auto 0; padding: 1px 7px; border-radius: 99px; background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; font-size: 9px; font-weight: 800; white-space: nowrap; }
+  /* ===== ABSENSI UPGRADE ===== */
+  .wk { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 0 5px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,.55); background: rgba(255,255,255,.45); cursor: pointer; transition: all .15s; min-width: 0; }
+  .wk:hover { background: rgba(255,255,255,.75); }
+  .wk-n { font-size: 10px; font-weight: 700; color: #5f6874; text-transform: uppercase; letter-spacing: .05em; }
+  .wk-d { font-size: 16px; font-weight: 800; color: #12275a; line-height: 1.1; }
+  .wk-c { font-size: 9.5px; font-weight: 700; color: #8e96a1; }
+  .wk-c.has { color: #047857; }
+  .wk.sel { background: #12275a; border-color: #12275a; }
+  .wk.sel .wk-n, .wk.sel .wk-c { color: #c7d2ee; }
+  .wk.sel .wk-d { color: #fff; }
+  .wk.today:not(.sel) { border-color: #fa6401; }
+  .abs-chip { padding: 6px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 700; border: 1.5px solid rgba(203,213,225,.9); background: rgba(255,255,255,.55); color: #464e58; white-space: nowrap; cursor: pointer; transition: all .15s; flex-shrink: 0; }
+  .abs-chip b { font-weight: 800; margin-left: 2px; }
+  .abs-chip.zero { opacity: .55; }
+  .abs-chip.on { background: #12275a; border-color: #12275a; color: #fff; opacity: 1; }
+  .abs-chip.off.on { background: #e11d48; border-color: #e11d48; }
+  .abs-chk { width: 16px; height: 16px; accent-color: #1c3d7d; cursor: pointer; }
+  tr.row-sel { background-color: rgba(28,61,125,.10) !important; }
+  .att-card.sel { box-shadow: 0 0 0 2px #1c3d7d; }
+  tr.abs-grp td { background-color: rgba(238,242,250,.85) !important; border-bottom: 1px solid #e2e8f0; }
+  .abs-grp-card { background: rgba(238,242,250,.85); border-radius: 12px; margin-top: 6px; }
+  .bulk-inp { height: 40px; padding: 0 12px; border-radius: 10px; border: 0; outline: none; font-size: 13px; font-weight: 600; color: #12275a; background: #fff !important; min-width: 0; }
+  .bulk-btn { height: 40px; padding: 0 14px; border-radius: 10px; color: #fff; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
   /* ===== MOBILE (Android & iOS) ===== */
   html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   .ot-p { display: none; }
@@ -287,6 +310,7 @@ tailwind.config = { theme: { extend: {
         </div>
       </div>
       <div id="absDateLabel" class="text-center md:text-left text-[11.5px] text-ink-500 mt-2 font-medium"></div>
+      <div id="absWeekStrip" class="grid grid-cols-7 gap-1.5 mt-3"></div>
     </section>
 
     <section class="bg-white rounded-2xl border border-ink-100 overflow-hidden shadow-sm">
@@ -345,6 +369,31 @@ tailwind.config = { theme: { extend: {
       <div class="bg-white rounded-2xl border border-ink-100 p-3 md:p-4 hidden md:block shadow-sm"><p class="text-[10.5px] font-semibold text-ink-400 uppercase tracking-wider">PKL / Non</p><p id="absStatPkl" class="text-[24px] font-bold text-amber-600 mt-1 leading-none tabular-nums">0</p></div>
     </section>
 
+    <section class="bg-white rounded-2xl border border-ink-100 shadow-sm overflow-hidden">
+      <button onclick="absToggleCoverage()" class="w-full px-4 md:px-5 py-3.5 flex items-center gap-3 text-left">
+        <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0"><i class="fa-solid fa-chart-column text-[13px]"></i></div>
+        <div class="min-w-0 flex-1"><div class="text-[13px] font-bold text-ink-800 leading-tight">Orang bertugas per jam</div><div id="absCovSummary" class="text-[11px] text-ink-500 mt-0.5 truncate">—</div></div>
+        <i id="absCovChev" class="fa-solid fa-chevron-down text-ink-400 text-[12px] transition-transform"></i>
+      </button>
+      <div id="absCovBody" class="hidden px-4 md:px-5 pb-4 pt-1 overflow-x-auto"><div id="absCovChart" style="min-width:440px;"></div></div>
+    </section>
+
+    <div id="absBulkBar" class="hidden sticky z-20 top-[62px] md:top-[116px]">
+      <div class="rounded-2xl p-3 shadow-2xl" style="background:#12275a;">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[12.5px] font-bold text-white"><span id="absSelCount">0</span> karyawan dipilih</span>
+          <button onclick="absSelClear()" class="text-[12px] font-semibold text-white/80 hover:text-white px-2 py-1">Batal</button>
+        </div>
+        <div class="grid grid-cols-2 md:flex md:flex-wrap gap-2">
+          <input id="absBulkShift" type="text" list="dlShift" placeholder="Shift (mis. 8)" class="bulk-inp md:w-40">
+          <input id="absBulkBreak" type="text" list="dlBreak" placeholder="Break (mis. 12)" class="bulk-inp md:w-40">
+          <button onclick="absBulkApply()" class="bulk-btn" style="background:#fa6401;">Terapkan</button>
+          <button onclick="absBulkOff()" class="bulk-btn" style="background:rgba(255,255,255,.18);">Jadikan OFF</button>
+          <button onclick="absBulkDelete()" class="bulk-btn col-span-2 md:col-span-1" style="background:rgba(225,29,72,.92);">Hapus dari jadwal</button>
+        </div>
+      </div>
+    </div>
+
     <section class="bg-white rounded-2xl border border-ink-100 overflow-hidden shadow-sm">
       <div class="px-4 md:px-5 py-3.5 border-b border-ink-100 flex items-center justify-between gap-3 flex-wrap">
         <div><h2 id="absTableTitle" class="text-[13px] md:text-[14px] font-bold text-ink-900">Schedule —</h2><p id="absTableSub" class="text-[11px] md:text-[11.5px] text-ink-500 mt-0.5"></p></div>
@@ -355,10 +404,21 @@ tailwind.config = { theme: { extend: {
           <span id="absResultCount" class="text-[11px] md:text-[11.5px] font-medium text-ink-500 bg-ink-100 px-2.5 py-1 rounded-full">0</span>
         </div>
       </div>
+      <div class="px-4 md:px-5 py-3 border-b border-ink-100 flex flex-col md:flex-row md:items-center gap-2.5">
+        <div class="relative md:w-64 shrink-0">
+          <input id="absRowSearch" type="text" placeholder="Cari di jadwal ini..." class="w-full h-10 md:h-9 pl-9 pr-3 text-[13px] border border-ink-200 rounded-lg outline-none focus:border-ink-800">
+          <i class="fa-solid fa-magnifying-glass text-ink-400 absolute left-3 top-1/2 -translate-y-1/2 text-[12px]"></i>
+        </div>
+        <div id="absShiftChips" class="flex gap-1.5 overflow-x-auto flex-1 pb-0.5" style="scrollbar-width:none;"></div>
+        <div class="flex items-center gap-1 p-1 bg-ink-50 rounded-lg border border-ink-100 self-start md:self-auto shrink-0">
+          <button id="absViewList" onclick="absSetView('list')" class="px-3 py-1.5 rounded-md text-[11.5px] font-bold transition">Daftar</button>
+          <button id="absViewGroup" onclick="absSetView('group')" class="px-3 py-1.5 rounded-md text-[11.5px] font-bold transition">Per Shift</button>
+        </div>
+      </div>
       <div class="desktop-view overflow-x-auto">
         <table class="w-full text-left border-collapse min-w-[1100px]">
           <thead><tr class="bg-ink-50 text-[10.5px] uppercase tracking-wider text-ink-500 border-b border-ink-200">
-            <th class="py-3 px-2 font-semibold w-10 text-center">No</th><th class="py-3 px-2 font-semibold w-24">NIK</th><th class="py-3 px-2 font-semibold w-52">Nama</th><th class="py-3 px-2 font-semibold w-40">Task</th><th class="py-3 px-2 font-semibold w-24">Sub</th><th class="py-3 px-2 font-semibold w-32">Group</th><th class="py-3 px-2 font-semibold w-28">Shift</th><th class="py-3 px-2 font-semibold w-28">Break</th><th class="py-3 px-2 font-semibold w-20 text-center">Aksi</th>
+            <th class="py-3 px-2 w-8 text-center"><input type="checkbox" id="absSelAll" class="abs-chk" onchange="absSelectAll(this.checked)" aria-label="Pilih semua"></th><th class="py-3 px-2 font-semibold w-10 text-center">No</th><th class="py-3 px-2 font-semibold w-24">NIK</th><th class="py-3 px-2 font-semibold w-52">Nama</th><th class="py-3 px-2 font-semibold w-40">Task</th><th class="py-3 px-2 font-semibold w-24">Sub</th><th class="py-3 px-2 font-semibold w-32">Group</th><th class="py-3 px-2 font-semibold w-28">Shift</th><th class="py-3 px-2 font-semibold w-28">Break</th><th class="py-3 px-2 font-semibold w-20 text-center">Aksi</th>
           </tr></thead>
           <tbody id="absTbody"></tbody>
         </table>
@@ -840,6 +900,7 @@ function toggleDisplayMode(){
 }
 
 function absApplySort(mode){
+  absSel.clear();
   const iso = absCurrentDate();
   const day = state.schedule[iso];
   if (!day || !day.length){ toast('warning', 'Tidak ada data untuk diurutkan'); return; }
@@ -852,15 +913,22 @@ function absApplySort(mode){
   if (mode !== 'default') toast('success', 'Data diurutkan');
 }
 
-function toast(type, msg){
+function toast(type, msg, opts){
   const wrap = $('toastWrap');
   const icons = { success:'fa-circle-check', error:'fa-circle-exclamation', info:'fa-circle-info', warning:'fa-triangle-exclamation' };
   const colors = { success:'bg-emerald-600 text-white', error:'bg-rose-600 text-white', info:'bg-sky-600 text-white', warning:'bg-amber-500 text-white' };
   const el = document.createElement('div');
   el.className = `toast pointer-events-auto flex items-start gap-2.5 px-4 py-3 rounded-xl shadow-2xl min-w-[220px] ${colors[type] || colors.info}`;
   el.innerHTML = `<i class="fa-solid ${icons[type]||icons.info} text-[14px] mt-0.5"></i><span class="text-[12.5px] font-medium leading-snug flex-1">${esc(msg)}</span>`;
+  if (opts && opts.action){
+    const b = document.createElement('button');
+    b.className = 'shrink-0 ml-1 px-2.5 py-1 rounded-lg bg-white/25 hover:bg-white/35 text-[12px] font-bold';
+    b.textContent = opts.action;
+    b.onclick = () => { try { opts.onAction(); } finally { el.remove(); } };
+    el.appendChild(b);
+  }
   wrap.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
+  setTimeout(() => el.remove(), opts && opts.action ? 7000 : 3000);
 }
 
 /* ========== REPORT PREVIEW SCALING ========== */
@@ -1265,6 +1333,7 @@ function absRenderQuickPanel(){
 }
 
 function absQuickAdd(nama){
+  absSel.clear();
   const p = state.master.employees.find(e => e.nama === nama);
   if (!p) return;
   const iso = absCurrentDate();
@@ -1290,18 +1359,117 @@ function absAddAll(){
   });
   if (!list.length){ toast('warning', 'Tidak ada karyawan baru'); return; }
   if (!confirm(`Tambahkan ${list.length} karyawan?`)) return;
+  const snap = absSnap();
   list.forEach(e => day.push({ nik: e.nik||'', nama: e.nama, task: e.task||'', sub: e.sub||'', group: e.group||'', shift: e.shift||'', break: e.break||'' }));
   absRenderTable(); absRenderQuickPanel(); persist();
-  toast('success', `${list.length} karyawan ditambahkan`);
+  absUndoToast(`${list.length} karyawan ditambahkan`, snap);
 }
 
-function absRenderTable(){
-  const iso = absCurrentDate();
-  const data = absGetDay(iso);
-  $('absDateLabel').textContent = formatDateID(iso);
-  $('absTableTitle').textContent = `Schedule — ${formatDateID(iso)}`;
-  $('absTableSub').textContent = `${data.length} karyawan tersimpan`;
-  let masuk=0, off=0, malam=0, pkl=0;
+/* ========== ABSENSI: tampilan, filter, pilih massal, undo, kebutuhan per jam ========== */
+let absShiftFilter = 'all', absRowQuery = '', absViewMode = 'list', absSelDate = '';
+try { const v = localStorage.getItem('abs_view'); if (v === 'group' || v === 'list') absViewMode = v; } catch(e){}
+const absSel = new Set();
+const ABS_COL = { PAGI:'#0ea5e9', SIANG:'#f59e0b', SORE:'#fa6401', MALAM:'#4f46e5', OFF:'#e11d48' };
+const absLabel = item => isOff(item.shift) ? 'OFF' : (item.shift ? autoShortShift(item.shift) : '—');
+const absShiftKey = item => isOff(item.shift) ? 'OFF' : (String(item.shift || '').trim() || '—');
+
+function absMatch(item){
+  if (absShiftFilter !== 'all' && absLabel(item) !== absShiftFilter) return false;
+  const q = absRowQuery;
+  if (!q) return true;
+  return [item.nik, item.nama, getDisplayName(item), item.task, item.group, item.shift].some(v => String(v || '').toLowerCase().includes(q));
+}
+
+/* ----- undo ----- */
+function absSnap(){ const iso = absCurrentDate(); return { iso, data: JSON.parse(JSON.stringify(absGetDay(iso))) }; }
+function absUndoTo(snap){
+  state.schedule[snap.iso] = snap.data;
+  absSel.clear();
+  if (absCurrentDate() !== snap.iso) $('absDateInput').value = snap.iso;
+  absRenderTable(); absRenderQuickPanel(); persist();
+  toast('info', 'Dibatalkan');
+}
+const absUndoToast = (msg, snap) => toast('success', msg, { action: 'Urungkan', onAction: () => absUndoTo(snap) });
+
+/* ----- week strip ----- */
+function absRenderWeek(iso){
+  const el = $('absWeekStrip');
+  if (!el) return;
+  const [y, m, d] = iso.split('-').map(Number);
+  const dow = (new Date(y, m - 1, d).getDay() + 6) % 7;
+  const mon = shiftDate(iso, -dow);
+  const names = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+  const today = todayISO();
+  el.innerHTML = names.map((n, i) => {
+    const di = shiftDate(mon, i);
+    const cnt = (state.schedule[di] || []).length;
+    const dd = Number(di.split('-')[2]);
+    return `<button onclick="absGoDate('${di}')" class="wk ${di === iso ? 'sel' : ''} ${di === today ? 'today' : ''}"><span class="wk-n">${n}</span><span class="wk-d">${dd}</span><span class="wk-c ${cnt ? 'has' : ''}">${cnt || '·'}</span></button>`;
+  }).join('');
+}
+function absGoDate(iso){ $('absDateInput').value = iso; absRenderTable(); absRenderQuickPanel(); M.rows(); }
+
+/* ----- filter & view ----- */
+function absRenderChips(data){
+  const el = $('absShiftChips');
+  if (!el) return;
+  const counts = { all: data.length };
+  data.forEach(d => { const l = absLabel(d); counts[l] = (counts[l] || 0) + 1; });
+  const chips = [['all','Semua'],['PAGI','Pagi'],['SIANG','Siang'],['SORE','Sore'],['MALAM','Malam'],['OFF','OFF']];
+  el.innerHTML = chips.map(([k, t]) => `<button onclick="absSetShiftFilter('${k}')" class="abs-chip ${absShiftFilter === k ? 'on' : ''} ${k === 'OFF' ? 'off' : ''} ${counts[k] ? '' : 'zero'}">${t} <b>${counts[k] || 0}</b></button>`).join('');
+}
+function absSetShiftFilter(k){ absShiftFilter = (absShiftFilter === k) ? 'all' : k; absRenderTable(); }
+function absSetView(mode){ absViewMode = mode; try { localStorage.setItem('abs_view', mode); } catch(e){} absRenderTable(); }
+function absSyncViewButtons(){
+  [['absViewList', 'list'], ['absViewGroup', 'group']].forEach(([id, m]) => {
+    const el = $(id); if (!el) return;
+    const on = absViewMode === m;
+    el.classList.toggle('bg-ink-900', on); el.classList.toggle('text-white', on); el.classList.toggle('text-ink-500', !on);
+  });
+}
+
+/* ----- kebutuhan per jam ----- */
+function absCoverage(data){
+  const c = Array(24).fill(0);
+  data.forEach(d => {
+    if (isOff(d.shift)) return;
+    const m = String(d.shift || '').match(/^(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})$/);
+    if (!m) return;
+    const s = Number(m[1]), e = Number(m[3]);
+    let len = (e - s + 24) % 24; if (len === 0) len = 24;
+    const hrs = new Set();
+    for (let i = 0; i < len; i++) hrs.add((s + i) % 24);
+    const b = String(d.break || '').match(/^(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})$/);
+    if (b){ const bs = Number(b[1]); let bl = (Number(b[3]) - bs + 24) % 24; if (bl === 0 || bl > 3) bl = 1; for (let i = 0; i < bl; i++) hrs.delete((bs + i) % 24); }
+    hrs.forEach(h => c[h]++);
+  });
+  return c;
+}
+function absRenderCoverage(data){
+  const sum = $('absCovSummary'), chart = $('absCovChart');
+  if (!sum || !chart) return;
+  const c = absCoverage(data);
+  const max = Math.max(...c);
+  if (!max){ sum.textContent = 'Belum ada data shift'; chart.innerHTML = ''; return; }
+  const peak = c.indexOf(max);
+  const zero = c.filter(x => x === 0).length;
+  sum.textContent = `Puncak ${max} orang pukul ${pad2(peak)}:00` + (zero ? ` · ${zero} jam tanpa petugas` : ' · semua jam terisi');
+  const H = 96;
+  chart.innerHTML = `<div style="display:flex;align-items:flex-end;gap:3px;height:${H + 30}px;">` + c.map((n, h) => {
+    const bh = n ? Math.max(3, Math.round(n / max * H)) : 2;
+    const bg = n === 0 ? '#fca5a5' : (h === peak ? '#fa6401' : '#1c3d7d');
+    return `<div title="${pad2(h)}:00 — ${n} orang" style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;"><div style="font-size:9px;font-weight:700;color:#12275a;height:13px;line-height:13px;">${n || ''}</div><div style="width:72%;height:${bh}px;border-radius:4px 4px 0 0;background:${bg};"></div><div style="font-size:9px;color:#64748b;margin-top:4px;height:12px;line-height:12px;">${pad2(h)}</div></div>`;
+  }).join('') + '</div>';
+}
+function absToggleCoverage(){
+  const b = $('absCovBody'), ch = $('absCovChev');
+  b.classList.toggle('hidden');
+  if (ch) ch.style.transform = b.classList.contains('hidden') ? '' : 'rotate(180deg)';
+}
+
+/* ----- stats ----- */
+function absUpdateStats(data){
+  let masuk = 0, off = 0, malam = 0, pkl = 0;
   data.forEach(d => {
     if (isOff(d.shift)) off++;
     else if (d.shift){ masuk++; const m = String(d.shift).match(/^(\d{1,2}):/); if (m && Number(m[1]) >= 16) malam++; }
@@ -1312,75 +1480,193 @@ function absRenderTable(){
   $('absStatOff').textContent = off;
   $('absStatMalam').textContent = malam;
   $('absStatPkl').textContent = pkl;
+}
+let _absSumT = null;
+function absRefreshSummary(){
+  clearTimeout(_absSumT);
+  _absSumT = setTimeout(() => { const data = absGetDay(absCurrentDate()); absUpdateStats(data); absRenderChips(data); absRenderCoverage(data); }, 160);
+}
 
-  if (!data.length){
-    $('absTbody').innerHTML = ''; $('absCardList').innerHTML = '';
-    $('absEmpty').classList.remove('hidden'); $('absResultCount').textContent = '0';
-    return;
-  }
-  $('absEmpty').classList.add('hidden');
-  $('absResultCount').textContent = data.length;
+/* ----- pilih massal ----- */
+function absUpdateBulkBar(){
+  const bar = $('absBulkBar');
+  if (!bar) return;
+  const n = absSel.size;
+  bar.classList.toggle('hidden', n === 0);
+  $('absSelCount').textContent = n;
+  const data = absGetDay(absCurrentDate());
+  const vis = data.map((it, i) => i).filter(i => absMatch(data[i]));
+  const all = $('absSelAll');
+  if (all) all.checked = vis.length > 0 && vis.every(i => absSel.has(i));
+}
+function absSelectAll(checked){
+  const data = absGetDay(absCurrentDate());
+  data.forEach((it, i) => { if (absMatch(it)){ checked ? absSel.add(i) : absSel.delete(i); } });
+  absRenderTable();
+}
+function absSelectGroup(key){
+  const data = absGetDay(absCurrentDate());
+  data.forEach((it, i) => { if (absMatch(it) && absShiftKey(it) === key) absSel.add(i); });
+  absRenderTable();
+}
+function absSelClear(){ absSel.clear(); absRenderTable(); }
+function absBulkApply(){
+  const sh = normShift($('absBulkShift').value), br = normBreak($('absBulkBreak').value);
+  if (!absSel.size) return;
+  if (!sh && !br){ toast('warning', 'Isi shift atau break dulu'); return; }
+  const snap = absSnap(), day = absGetDay(snap.iso), n = absSel.size;
+  absSel.forEach(i => { const it = day[i]; if (!it) return; if (sh){ it.shift = sh; if (isOff(sh)) it.break = '-'; } if (br && !isOff(it.shift)) it.break = br; });
+  absSel.clear(); $('absBulkShift').value = ''; $('absBulkBreak').value = '';
+  absRenderTable(); absRenderQuickPanel(); persist();
+  absUndoToast(`${n} karyawan diubah`, snap);
+}
+function absBulkOff(){
+  if (!absSel.size) return;
+  const snap = absSnap(), day = absGetDay(snap.iso), n = absSel.size;
+  absSel.forEach(i => { const it = day[i]; if (it){ it.shift = 'OFF'; it.break = '-'; } });
+  absSel.clear(); absRenderTable(); absRenderQuickPanel(); persist();
+  absUndoToast(`${n} karyawan dijadikan OFF`, snap);
+}
+function absBulkDelete(){
+  if (!absSel.size) return;
+  const snap = absSnap(), day = absGetDay(snap.iso), n = absSel.size;
+  [...absSel].sort((a, b) => b - a).forEach(i => day.splice(i, 1));
+  absSel.clear(); absRenderTable(); absRenderQuickPanel(); persist();
+  absUndoToast(`${n} karyawan dihapus dari jadwal`, snap);
+}
+function absBindSelection(){
+  const onChk = e => {
+    const t = e.target;
+    if (!t.classList || !t.classList.contains('abs-chk')) return;
+    const idx = Number(t.dataset.idx);
+    t.checked ? absSel.add(idx) : absSel.delete(idx);
+    document.querySelectorAll(`.abs-chk[data-idx="${idx}"]`).forEach(c => {
+      c.checked = t.checked;
+      const tr = c.closest('tr'); if (tr) tr.classList.toggle('row-sel', t.checked);
+      const card = c.closest('.att-card'); if (card) card.classList.toggle('sel', t.checked);
+    });
+    absUpdateBulkBar();
+  };
+  $('absTbody').addEventListener('change', onChk);
+  $('absCardList').addEventListener('change', onChk);
+  $('absTbody').addEventListener('input', absRefreshSummary);
+  $('absCardList').addEventListener('input', absRefreshSummary);
+  $('absRowSearch').addEventListener('input', e => { absRowQuery = e.target.value.trim().toLowerCase(); absRenderTable(); });
+  $('absDateInput').addEventListener('change', () => { absRenderTable(); absRenderQuickPanel(); M.rows(); });
+}
 
-  $('absTbody').innerHTML = data.map((item, idx) => {
-    const off = isOff(item.shift);
-    const isPkl = item.sub === 'PKL' || item.group === 'PKL';
-    const isNonPkl = item.sub === 'NON PKL' || item.group === 'NON PKL';
-    const rowBg = off ? 'row-off' : isPkl ? 'bg-amber-50/50' : isNonPkl ? 'bg-violet-50/50' : '';
-    return `<tr class="${rowBg} border-b border-ink-100 hover:bg-ink-50/60 transition-colors" data-idx="${idx}">
-      <td class="px-2 py-1 text-center text-[11px] font-medium text-ink-400 tabular-nums">${idx+1}</td>
+/* ----- render ----- */
+function absRowHTML(item, idx, no){
+  const off = isOff(item.shift);
+  const isPkl = item.sub === 'PKL' || item.group === 'PKL';
+  const isNonPkl = item.sub === 'NON PKL' || item.group === 'NON PKL';
+  const sel = absSel.has(idx);
+  const rowBg = off ? 'row-off' : isPkl ? 'bg-amber-50/50' : isNonPkl ? 'bg-violet-50/50' : '';
+  return `<tr class="${rowBg} ${sel ? 'row-sel' : ''} border-b border-ink-100 hover:bg-ink-50/60 transition-colors" data-idx="${idx}">
+      <td class="px-2 py-1 text-center"><input type="checkbox" class="abs-chk" data-idx="${idx}" ${sel ? 'checked' : ''} aria-label="Pilih"></td>
+      <td class="px-2 py-1 text-center text-[11px] font-medium text-ink-400 tabular-nums">${no}</td>
       <td class="px-1 py-1"><input class="cell-input" data-field="nik" value="${esc(item.nik)}" list="dlNIKx"></td>
       <td class="px-1 py-1"><input class="cell-input !text-left" data-field="nama" value="${esc(item.nama)}" list="dlNamaX"><div class="text-[10px] ${displayMode === 'short' ? 'text-sky-600 font-semibold' : 'text-ink-400'} px-1.5 mt-0.5 truncate">${esc(getDisplayName(item))}</div></td>
       <td class="px-1 py-1"><input class="cell-input" data-field="task" value="${esc(item.task)}" list="dlTask"></td>
       <td class="px-1 py-1"><input class="cell-input" data-field="sub" value="${esc(item.sub)}" list="dlSub"></td>
       <td class="px-1 py-1"><input class="cell-input" data-field="group" value="${esc(item.group)}" list="dlGroup"></td>
-      <td class="px-1 py-1"><input class="cell-input ${off?'is-off':''}" data-field="shift" value="${esc(item.shift)}" list="dlShift"><div class="text-[10px] text-center ${off?'text-rose-500 font-bold':'text-sky-600 font-bold'}">${esc(getDisplayShift(item))}</div></td>
+      <td class="px-1 py-1"><input class="cell-input ${off ? 'is-off' : ''}" data-field="shift" value="${esc(item.shift)}" list="dlShift"><div class="text-[10px] text-center ${off ? 'text-rose-500 font-bold' : 'text-sky-600 font-bold'}">${esc(getDisplayShift(item))}</div></td>
       <td class="px-1 py-1"><input class="cell-input" data-field="break" value="${esc(item.break)}" list="dlBreak"></td>
       <td class="px-2 py-1 text-center whitespace-nowrap">
         <button onclick="absRefill(${idx})" class="text-ink-400 hover:text-emerald-600 text-[13px] leading-none px-1" title="Isi ulang"><i class="fa-solid fa-rotate"></i></button>
         <button onclick="absDelete(${idx})" class="text-ink-300 hover:text-rose-500 text-sm leading-none px-1" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
       </td></tr>`;
-  }).join('');
+}
 
-  $('absCardList').innerHTML = data.map((item, idx) => {
-    const off = isOff(item.shift);
-    const isPkl = item.sub === 'PKL' || item.group === 'PKL';
-    const isNonPkl = item.sub === 'NON PKL' || item.group === 'NON PKL';
-    const badge = isPkl ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PKL</span>' : isNonPkl ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">NON-PKL</span>' : '';
-    const shiftCls = off ? 'bg-rose-100 text-rose-700' : 'bg-sky-100 text-sky-700';
-    const shortName = getDisplayName(item);
-    const shortShift = getDisplayShift(item);
-    const initials = (shortName || item.nama).split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
-    return `<div class="att-card ${off ? 'is-off' : ''}" data-idx="${idx}">
+function absCardHTML(item, idx){
+  const off = isOff(item.shift);
+  const isPkl = item.sub === 'PKL' || item.group === 'PKL';
+  const isNonPkl = item.sub === 'NON PKL' || item.group === 'NON PKL';
+  const sel = absSel.has(idx);
+  const badge = isPkl ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PKL</span>' : isNonPkl ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">NON-PKL</span>' : '';
+  const shiftCls = off ? 'bg-rose-100 text-rose-700' : 'bg-sky-100 text-sky-700';
+  const shortName = getDisplayName(item);
+  const shortShift = getDisplayShift(item);
+  const initials = (shortName || item.nama).split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  const f = (label, field, val, list) => `<div><label class="text-[9.5px] font-bold text-ink-400 uppercase">${label}</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="${field}" data-idx="${idx}" value="${esc(val)}" list="${list}"></div>`;
+  return `<div class="att-card ${off ? 'is-off' : ''} ${sel ? 'sel' : ''}" data-idx="${idx}">
       <div class="flex items-center gap-2.5">
+        <label class="flex items-center justify-center w-6 h-10 shrink-0"><input type="checkbox" class="abs-chk" data-idx="${idx}" ${sel ? 'checked' : ''} aria-label="Pilih"></label>
         <div class="w-9 h-9 rounded-full ${off ? 'bg-rose-200 text-rose-800' : 'bg-ink-900 text-white'} flex items-center justify-center font-bold text-[11px] shrink-0">${initials}</div>
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-1.5 flex-wrap"><p class="text-[13px] font-bold text-ink-900 leading-tight truncate">${esc(shortName)}</p>${badge}</div>
-          <p class="text-[10.5px] text-ink-500 mt-0.5">${esc(item.nik||'-')} · ${esc(item.task||'-')}</p>
+          <p class="text-[10.5px] text-ink-500 mt-0.5">${esc(item.nik || '-')} · ${esc(item.task || '-')}</p>
         </div>
         <span class="text-[10px] font-bold px-2 py-1 rounded-full ${shiftCls} shrink-0">${esc(shortShift)}</span>
       </div>
       <button onclick="toggleAttEdit(${idx})" class="mt-2 w-full text-left flex items-center justify-between text-[11px] font-semibold text-ink-500 hover:text-ink-800 py-1"><span><i class="fa-solid fa-pen-to-square text-[10px] mr-1"></i> Ubah / Hapus</span><i class="fa-solid fa-chevron-down text-[10px] transition-transform" id="chev-${idx}"></i></button>
       <div id="edit-${idx}" class="hidden mt-2 pt-2 border-t border-ink-200/60 space-y-2">
-        <div class="grid grid-cols-2 gap-2">
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">NIK</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="nik" data-idx="${idx}" value="${esc(item.nik)}" list="dlNIKx"></div>
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Sub</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="sub" data-idx="${idx}" value="${esc(item.sub)}" list="dlSub"></div>
-        </div>
-        <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Nama</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="nama" data-idx="${idx}" value="${esc(item.nama)}" list="dlNamaX"></div>
-        <div class="grid grid-cols-2 gap-2">
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Task</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="task" data-idx="${idx}" value="${esc(item.task)}" list="dlTask"></div>
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Group</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="group" data-idx="${idx}" value="${esc(item.group)}" list="dlGroup"></div>
-        </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Shift</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="shift" data-idx="${idx}" value="${esc(item.shift)}" list="dlShift"></div>
-          <div><label class="text-[9.5px] font-bold text-ink-400 uppercase">Break</label><input class="cell-input mt-0.5 !h-10 text-[13px] bg-ink-50 rounded-md" data-field="break" data-idx="${idx}" value="${esc(item.break)}" list="dlBreak"></div>
-        </div>
+        <div class="grid grid-cols-2 gap-2">${f('NIK', 'nik', item.nik, 'dlNIKx')}${f('Sub', 'sub', item.sub, 'dlSub')}</div>
+        <div>${f('Nama', 'nama', item.nama, 'dlNamaX')}</div>
+        <div class="grid grid-cols-2 gap-2">${f('Task', 'task', item.task, 'dlTask')}${f('Group', 'group', item.group, 'dlGroup')}</div>
+        <div class="grid grid-cols-2 gap-2">${f('Shift', 'shift', item.shift, 'dlShift')}${f('Break', 'break', item.break, 'dlBreak')}</div>
         <div class="flex gap-2 pt-1">
           <button onclick="absRefill(${idx})" class="flex-1 h-11 rounded-lg bg-ink-100 text-ink-700 text-[12px] font-semibold"><i class="fa-solid fa-rotate text-[11px] mr-1"></i> Reset</button>
           <button onclick="absDelete(${idx})" class="flex-1 h-11 rounded-lg bg-rose-50 text-rose-600 text-[12px] font-semibold"><i class="fa-solid fa-trash text-[11px] mr-1"></i> Hapus</button>
         </div>
       </div>
     </div>`;
-  }).join('');
+}
+
+function absGroupHead(key, n){
+  const lab = key === 'OFF' ? 'OFF' : (key === '—' ? 'TANPA SHIFT' : autoShortShift(key));
+  const col = ABS_COL[lab] || '#64748b';
+  const title = key === 'OFF' ? 'OFF / Libur' : key.replace('-', ' – ');
+  return `<div style="display:flex;align-items:center;gap:10px;border-left:4px solid ${col};padding:8px 12px;"><b style="color:#12275a;font-size:13px;">${esc(title)}</b><span style="font-size:10px;font-weight:800;letter-spacing:.08em;color:${col};">${esc(lab)}</span><span style="font-size:11px;color:#64748b;">${n} orang</span><button onclick="absSelectGroup('${esc(key)}')" style="margin-left:auto;font-size:11px;font-weight:700;color:#1c3d7d;padding:4px 6px;">Pilih semua</button></div>`;
+}
+
+function absRenderTable(){
+  const iso = absCurrentDate();
+  const data = absGetDay(iso);
+  if (absSelDate !== iso){ absSel.clear(); absSelDate = iso; }
+  $('absDateLabel').textContent = formatDateID(iso);
+  $('absTableTitle').textContent = `Schedule — ${formatDateID(iso)}`;
+  $('absTableSub').textContent = `${data.length} karyawan tersimpan`;
+  absUpdateStats(data);
+  absRenderWeek(iso);
+  absRenderChips(data);
+  absRenderCoverage(data);
+  absSyncViewButtons();
+
+  if (!data.length){
+    $('absTbody').innerHTML = ''; $('absCardList').innerHTML = '';
+    $('absEmpty').classList.remove('hidden'); $('absResultCount').textContent = '0';
+    absUpdateBulkBar();
+    return;
+  }
+  $('absEmpty').classList.add('hidden');
+
+  const view = data.map((item, idx) => ({ item, idx })).filter(v => absMatch(v.item));
+  $('absResultCount').textContent = view.length === data.length ? data.length : `${view.length}/${data.length}`;
+
+  if (!view.length){
+    $('absTbody').innerHTML = '<tr><td colspan="10" class="p-8 text-center text-[12.5px] text-ink-400">Tidak ada yang cocok dengan pencarian atau filter</td></tr>';
+    $('absCardList').innerHTML = '<div class="p-6 text-center text-[12.5px] text-ink-400">Tidak ada yang cocok dengan pencarian atau filter</div>';
+    absUpdateBulkBar();
+    return;
+  }
+
+  let rows = '', cards = '';
+  if (absViewMode === 'group'){
+    const groups = new Map();
+    view.forEach(v => { const k = absShiftKey(v.item); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(v); });
+    [...groups.entries()].sort((a, b) => shiftStartMin(a[0]) - shiftStartMin(b[0])).forEach(([k, arr]) => {
+      const head = absGroupHead(k, arr.length);
+      rows += `<tr class="abs-grp"><td colspan="10" style="padding:0;">${head}</td></tr>`;
+      cards += `<div class="abs-grp-card">${head}</div>`;
+      arr.forEach((v, i) => { rows += absRowHTML(v.item, v.idx, i + 1); cards += absCardHTML(v.item, v.idx); });
+    });
+  } else {
+    view.forEach((v, i) => { rows += absRowHTML(v.item, v.idx, i + 1); cards += absCardHTML(v.item, v.idx); });
+  }
+  $('absTbody').innerHTML = rows;
+  $('absCardList').innerHTML = cards;
+  absUpdateBulkBar();
 
   const mk = (id, arr) => { let el = document.getElementById(id); if (!el){ el = document.createElement('datalist'); el.id = id; document.body.appendChild(el); } el.innerHTML = arr.map(v => `<option value="${esc(v)}"></option>`).join(''); };
   mk('dlNIKx', state.master.employees.map(e => e.nik).filter(Boolean));
@@ -1388,7 +1674,7 @@ function absRenderTable(){
 }
 
 function toggleAttEdit(idx){ const el = $('edit-' + idx); const chev = $('chev-' + idx); if (!el) return; el.classList.toggle('hidden'); if (chev) chev.style.transform = el.classList.contains('hidden') ? '' : 'rotate(180deg)'; }
-function absDelete(idx){ state.schedule[absCurrentDate()].splice(idx, 1); absRenderTable(); absRenderQuickPanel(); persist(); toast('success','Dihapus'); }
+function absDelete(idx){ const snap = absSnap(); const it = snap.data[idx]; state.schedule[snap.iso].splice(idx, 1); absSel.clear(); absRenderTable(); absRenderQuickPanel(); persist(); absUndoToast(`${(it && it.nama) || 'Data'} dihapus`, snap); }
 function absRefill(idx){
   const item = state.schedule[absCurrentDate()][idx];
   if (!item) return;
@@ -1413,17 +1699,19 @@ function absCopyPrev(){
   const prev = shiftDate(iso, -1);
   if (!state.schedule[prev] || !state.schedule[prev].length){ toast('warning','Hari sebelumnya kosong'); return; }
   if (state.schedule[iso] && state.schedule[iso].length && !confirm('Timpa data tanggal ini?')) return;
+  const snap = absSnap();
   state.schedule[iso] = JSON.parse(JSON.stringify(state.schedule[prev]));
-  absRenderTable(); absRenderQuickPanel(); persist();
-  toast('success', 'Disalin');
+  absSel.clear(); absRenderTable(); absRenderQuickPanel(); persist();
+  absUndoToast('Jadwal disalin dari hari sebelumnya', snap);
 }
 function absClearDay(){
   const iso = absCurrentDate();
   if (!state.schedule[iso] || !state.schedule[iso].length){ toast('warning','Sudah kosong'); return; }
   if (!confirm('Kosongkan hari ini?')) return;
+  const snap = absSnap();
   state.schedule[iso] = [];
-  absRenderTable(); absRenderQuickPanel(); persist();
-  toast('success', 'Dikosongkan');
+  absSel.clear(); absRenderTable(); absRenderQuickPanel(); persist();
+  absUndoToast('Jadwal dikosongkan', snap);
 }
 
 function absBindTable(){
@@ -2586,6 +2874,7 @@ function init(){
   $('absDateInput').value = todayISO();
   fillDatalists();
   absBindTable();
+  absBindSelection();
   absBindMasterTable();
   ['empNIK','empNama','empNameShort','empTask','empSub','empGroup','empShift','empShiftShort','empBreak'].forEach(id => {
     const el = $(id);
@@ -2618,6 +2907,7 @@ function init(){
     if (!isShift && !isBreak) return;
     const nv = isShift ? normShift(t.value) : normBreak(t.value);
     if (nv !== t.value){ t.value = nv; t.dispatchEvent(new Event('input', { bubbles: true })); }
+    if (isShift && t.closest('#absTbody, #absCardList') && (absViewMode === 'group' || absShiftFilter !== 'all')) setTimeout(absRenderTable, 0);
   });
   $('restoreInput').addEventListener('change', e => { const f = e.target.files[0]; if (f) restoreData(f); e.target.value = ''; });
   $('xlsxInput').addEventListener('change', e => { const f = e.target.files[0]; if (f) absImportExcel(f); e.target.value = ''; });
